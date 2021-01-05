@@ -1,0 +1,23 @@
+.party-card{
+    background-color: white;
+    padding:12px;
+    border: solid black 2px;
+}
+.party-container{
+    max-width:75%;
+    margin: auto;
+}
+.party-container-img{
+    max-width: 75px;
+}
+.party-container hr{
+    margin-top: 3px;
+    margin-bottom: 6px;
+}
+
+@media only screen and (max-width:600px) {
+    .party-card{
+        width:75%;
+        margin: auto;
+    }
+}
