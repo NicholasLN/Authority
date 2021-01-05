@@ -18,3 +18,4 @@
 Authority/!config/.gitkeep
 Authority/images/!userPics/.gitkeep
 Authority/config/server.json
+*.json
