@@ -1,4 +1,4 @@
-# Authority
+# Authority 3.0
 
 **Come join the Discord! [https://discord.gg/aqjspfseDT](https://discord.gg/aqjspfseDT)**
 
