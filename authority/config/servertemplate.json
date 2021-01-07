@@ -1,0 +1,7 @@
+{
+  "user":"Enter DB Username Here",
+  "password":"Enter DB Password Here",
+  "host":"Enter DB Host Here",
+  "database":"Enter DB Here",
+  "port":"Enter DB Port Here"
+}
