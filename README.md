@@ -18,4 +18,4 @@ In order to create a test server, you will need to create a *server.json* file w
 
 This will be used to connect to a SQL DB of your choosing.
 
-There, well, you'll have to recreate it manually cuz I'm too lazy to describe my schema.
+The SQL schema (CREATE table queries) is under *sql_schema.sql*
