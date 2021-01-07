@@ -9,7 +9,9 @@ function echoNavBar(): void
         echo <<<NAV
      
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="index" style="margin-left:15px"><b>AUTHORITY<small>3.0 (WIP)</small></b></a>
+            <a class='navbar-brand' href='index' style='margin-left:15px'>
+                <b>AUTHORITY<small>3.0 (WIP)</small></b>
+            </a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#myNavbar">
                 <span class="sr-only"></span>
                 <span class="navbar-toggler-icon"></span>
@@ -29,7 +31,9 @@ NAV;
         echo "
     
         <nav class='navbar navbar-expand-lg navbar-dark bg-dark'>
-            <a class='navbar-brand' href='index' style='margin-left:15px'><b>AUTHORITY<small>3.0 (WIP)</small></b></a>
+            <a class='navbar-brand' href='index' style='margin-left:15px'>
+                <b>AUTHORITY<small>3.0 (WIP)</small></b>
+            </a>
             <button type='button' class='navbar-toggler' data-toggle='collapse' data-target='#myNavbar'>
                 <span class='sr-only'></span>
                 <span class='navbar-toggler-icon'></span>
