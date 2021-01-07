@@ -17,31 +17,8 @@ function echoNavBar(): void
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="nav-item dropdown">
-                            <li class="dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                                    <i class="fas fa-sign-in-alt"></i>
-                                    LOG IN
-                                </a>
-                                <ul class="dropdown-menu" style="width:200px">
-                                    <li class="px-3 py-2" style=max-width:100%>
-                                        <form method="POST">
-                                            <div class="form-group">
-                                                <label for="username">Username</label>
-                                                <input name='username' type="username" class="form-control" id="username"
-                                                placeholder="Username">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="password">Password</label>
-                                                <input name='password' type="password" class="form-control" id="password" 
-                                                placeholder="Password">
-                                            </div>
-                                            <hr/>
-                                            <input type="submit" class="btn btn-primary" name="signIn" value="Sign In"/>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="login">LOGIN<span class="sr-only">(current)</span></a>
                         </li>
                     </ul>
                 </div>

@@ -77,13 +77,6 @@ ALERT;
 
 
         }
-
-        if(isset($_POST['signIn'])){
-            login($_POST['username'],$_POST['password']);
-        }
-        if(isset($_POST['logout'])){
-            logout();
-        }
     }
 
     function lastOnlineString($time): string
@@ -126,5 +119,8 @@ ALERT;
         return $lastOnline;
     }
 
+    if(isset($_POST['logout'])){
+        logout();
+    }
 
 
