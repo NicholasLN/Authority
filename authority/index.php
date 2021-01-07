@@ -17,9 +17,14 @@
                         <img src="images/AuthorityLogoV3.png" style="width:50vh;" alt="AuthorityLogo">
                         <h1>Authority 3.0</h1>
                         <p>Authority is a political game where you slip on a banana, get shanked in prison, and die. Also, elections and shit.</p>
-                        <br/>
+
                         <? if(!$_SESSION['loggedIn']){
-                        echo '<a href="register" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Register Now!</a>';
+                        echo '
+                            <hr/>
+                            <a href="register" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Register Now!</a>
+                            <br/>
+                            <br/>
+                            <p>Already have an account? <a href="login">Login Here</a></p>';
                         }
                         ?>
                     </div>
