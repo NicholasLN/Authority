@@ -1,2 +1,1 @@
-*.json
-authority/config/server.json
+server.json
