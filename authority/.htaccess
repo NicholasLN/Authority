@@ -7,3 +7,4 @@ RewriteRule ^(([A-Za-z0-9\-]+/)*[A-Za-z0-9\-]+)?$ $1.php
 RewriteCond %{HTTP_HOST} ^europeanperil.com [NC]
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+RewriteRule ^(config/server.json) - [F,L,NC]
