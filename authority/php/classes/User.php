@@ -52,6 +52,15 @@ class User
         $st->bind_param($this->type(gettype($to)), $to, $this->userID);
         $st->execute();
     }
+    public function getVariable($variable)
+    {
+        if(array_key_exists($variable,$this->getUserRow())){
+            return $this->getUserRow()[$variable];
+        }
+        else{
+            return null;
+        }
+    }
 
     private function type($var): string
     {
