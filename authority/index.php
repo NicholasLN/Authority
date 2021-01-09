@@ -12,7 +12,7 @@
             <div class="gameContainer">
                 <div class="row">
                     <div class="col-sm"></div>
-                    <div class="col-sm">
+                    <div class="col-sm-8">
                         <br/>
                         <img src="images/AuthorityLogoV3.png" style="width:50vh;" alt="AuthorityLogo">
                         <h1>Authority 3.0</h1>
@@ -27,6 +27,13 @@
                             <p>Already have an account? <a href="login">Login Here</a></p>';
                         }
                         ?>
+
+                        <hr/>
+                        <h4>Join The Discord!</h4>
+                        <iframe src="https://discord.com/widget?id=600212077461897216&theme=dark" width="50%" height="500" allowtransparency="true"
+                        frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+                        <br/>
+                        <br/>
                     </div>
                     <div class="col-sm"></div>
                 </div>
