@@ -13,7 +13,7 @@ if(isset($_GET['country'])){
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Authority</title>
+    <title>Parties | AUTHORITY</title>
     <? echoHeader(); ?>
     <link rel="stylesheet" href="css/partylist.css"/>
 </head>
@@ -27,58 +27,53 @@ if(isset($_GET['country'])){
                 <br/>
                 <h2>Political Parties</h2>
                 <hr/>
-                <div class="party-container">
-                    <?
-                        $stmt = $db->prepare("SELECT * FROM parties WHERE nation=?");
-                        $stmt->bind_param("s",$country);
-                        $stmt->execute();
-                        $array = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+                <div class="row justify-content-center">
+                <?
+                    $query = "SELECT * FROM parties WHERE nation='$country'";
+                    if($result = $db->query($query)){
+                        while ($row = $result->fetch_assoc()) {
 
-                        foreach($array as $key){
-                            $id = $key['id'];
-                            $party = new Party($id);
-                            $partyName = $party->partyRow['name'];
-                            $members = $party->getPartyMembers();
+                            $party = new Party($row['id']);
                             $logo = $party->getPartyLogo();
-                            $bio = $party->partyRow['partyBio'];
+                            $name = $party->getPartyName();
+                            $members = $party->getPartyMembers();
+                            $bio = $party->getPartyBio();
 
-                            echo <<< PARTYHTML
-                    <div class="row party-card">
-                        <div class="col-sm-2" style="margin-right: 2%">
-                            <img class="party-container-img" src="$logo" alt=""/>
-                        </div>
-                        <div class="col-sm">
-                            <div>
-                                <div class="col-12"><h4><a href="party?id=$id">$partyName</a></h4></div>
-                                <div class="col-12">
-                                    $bio
-                                </div>
+                            $leader = $party->getPartyLeader();
+                            $leaderPic = $leader->getVariable("profilePic");
+                            $leaderName = $leader->getVariable("politicianName");
+                            $leaderID = $leader->getVariable("id");
+
+                            echo "
+                            <div class='col-sm-4'>
+                                <div class='card'>
+                                    <div class='partyInfo'>
+                                        <div class='partyImgContainer'>
+                                            <img class='partyImgLogo' src='$logo' alt='$name Logo'>
+                                        </div>
+                                        <div class='partyNameContainer'>
+                                            <p>$name</p>
+                                        </div>
+                                    </div>
+                                    <div class='card-body'>
+                                        <span>Leader</span>
+                                        <br/>
+                                        <img class='leaderImg' src='$leaderPic' alt='$leaderName Logo'>
+        
+                                        <hr/>
+                                        <p class='partyBioContainer'>
+                                        $bio
+                                        </p>
+                                        <hr/>
+                                        <span><b>Members: $members</b></span>
+                                    </div>
+                                </div>                        
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="col-12" style="text-align: center">
-                            <div class="row" style="width: 100%">
-                                <div class="col-sm">
-                                    <b>Members:</b> $members
-                                </div>
-                                <div class="col-sm">
-                                    <b>Nationwide Approval:</b> 
-                                </div>
-                                <div class="col-sm">
-                                    <b>Strength:</b> 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <br/>
-PARTYHTML;
-
-
+                            ";
                         }
-
-                    ?>
+                    }
+                ?>
                 </div>
-
             </div>
             <div class="col-sm"></div>
         </div>
