@@ -22,7 +22,7 @@ if ($_SESSION['loggedIn']) {
                 <br/>
                 <h2>Login</h2>
                 <hr/>
-                <form method="POST" class="tableForm">
+                <form method="POST" class="tableForm" id="captchaVerify">
                     <table class="table table-striped table-responsive">
                         <tr>
                             <td><b>Username</b></td>
@@ -41,8 +41,10 @@ if ($_SESSION['loggedIn']) {
                                 <i style="margin-top:2px">Captcha is required to prevent bruteforce login attempts.</i>
                             </td>
                             <td>
-                                <div class="g-recaptcha" data-sitekey="6LdN68EUAAAAAC4IWflwA1qCEUP6IwZTfFCGQp45"
-                                     data-callback="enableBtn"></div>
+                                <button class="g-recaptcha btn btn-primary"
+                                data-sitekey="6LdvMycaAAAAANsGtPBR4rOBfPldDV37imU42rwc"
+                                data-callback="enableBtn"
+                                data-action='submit'>Click Here</button>
                             </td>
                         </tr>
                     </table>
@@ -54,6 +56,11 @@ if ($_SESSION['loggedIn']) {
             </div>
             <div class="col-sm"></div>
         </div>
+        <script>
+            function onSubmit(token) {
+                document.getElementById("captchaVerify").submit();
+            }
+        </script>
     </div>
     <? echoFooter() ?>
 </div>
@@ -61,7 +68,7 @@ if ($_SESSION['loggedIn']) {
 <?php
 if(isset($_POST['signIn'])) {
     $captcha = $_POST['g-recaptcha-response'];
-    $response = json_decode(file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=6LdN68EUAAAAALCciY7URV9YFcbJcUy4wkn5lDsX&response=" .
+    $response = json_decode(file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=6LdvMycaAAAAAEwRGaDzTK_zwNiano4IN5Du8eOM&response=" .
         $captcha . "&remoteip=" . $_SERVER['REMOTE_ADDR']), true);
 
     if ($response['success']) {
