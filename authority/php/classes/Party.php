@@ -3,8 +3,16 @@
 class Party
 {
     protected $partyID;
-    private $partyRolesJson;
+    public $partyRolesJson;
     public $partyRow;
+
+    public function getPartyLeader(): User{;
+        foreach($this->partyRolesJson as $roleName => $roleDetails){
+            if(isset($roleDetails['leader']) && $roleDetails['leader'] == 1){
+                return new User($roleDetails['occupant']);
+            }
+        }
+    }
 
     public function __construct($partyID)
     {
@@ -29,13 +37,14 @@ class Party
     {
         return $this->partyRow['name'];
     }
-
+    public function getPartyBio(){
+        return $this->partyRow['partyBio'];
+    }
     public function getPartyLogo()
     {
         global $db;
         return $this->partyRow['partyPic'];
     }
-
     public function getPartyMembers()
     {
         global $db;
