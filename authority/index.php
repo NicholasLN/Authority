@@ -30,7 +30,7 @@
 
                         <hr/>
                         <h4>Join The Discord!</h4>
-                        <iframe src="https://discord.com/widget?id=600212077461897216&theme=dark" width="50%" height="500" allowtransparency="true"
+                        <iframe style='width:50%;min-height:49vh;' src="https://discord.com/widget?id=600212077461897216&theme=dark" allowtransparency="true"
                         frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
                         <br/>
                         <br/>
