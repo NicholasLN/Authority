@@ -49,3 +49,4 @@ include 'essentials/htmlFunctions.php';
 include 'essentials/navBar.php';
 include 'functions/positionFunctions.php';
 include 'functions/usefulFunctions.php';
+include 'functions/discordMeta.php';
