@@ -40,13 +40,13 @@
     width: 100%;
     background-color:rgb(220,220,220);
 }
-.partyNameContainer p{
+.partyNameContainer a{
     margin-top:3px;
     margin-bottom:3px;
     font-size: 20px;
 }
 .leaderImg{
     border:solid black 1px;
-    max-width:25%;
-    max-height:25%;
+    max-width:100px;
+    height:100px;
 }
