@@ -6,10 +6,16 @@ class Party
     public $partyRolesJson;
     public $partyRow;
 
-    public function getPartyLeader(): User{;
+    public function getPartyLeader(){;
         foreach($this->partyRolesJson as $roleName => $roleDetails){
             if(isset($roleDetails['leader']) && $roleDetails['leader'] == 1){
-                return new User($roleDetails['occupant']);
+                if($roleDetails['occupant'] != 0) {
+                    return new User($roleDetails['occupant']);
+                }
+                else{
+                    // null if no leader.
+                    return false;
+                }
             }
         }
     }
