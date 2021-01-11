@@ -8,13 +8,14 @@ class Party
 
     public function getPartyLeader(){;
         foreach($this->partyRolesJson as $roleName => $roleDetails){
-            if(isset($roleDetails['leader']) && $roleDetails['leader'] == 1){
-                if($roleDetails['occupant'] != 0) {
-                    return new User($roleDetails['occupant']);
-                }
-                else{
-                    // null if no leader.
-                    return false;
+            if(array_key_exists("leader",$roleDetails['perms'])){
+                if($roleDetails['perms']['leader'] == true){
+                    if($roleDetails['occupant'] != 0){
+                        return new User($roleDetails['occupant']);
+                    }
+                    else{
+                        return null;
+                    }
                 }
             }
         }

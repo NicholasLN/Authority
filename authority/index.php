@@ -1,4 +1,9 @@
-<?php include 'php/functions.php'; ?>
+<?php
+//echo getcwd();
+include 'php/functions.php';
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -22,10 +27,10 @@
                         <? if(!$_SESSION['loggedIn']){
                         echo '
                             <hr/>
-                            <a href="register" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Register Now!</a>
+                            <a href="register.php" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Register Now!</a>
                             <br/>
                             <br/>
-                            <p>Already have an account? <a href="login">Login Here</a></p>';
+                            <p>Already have an account? <a href="login.php">Login Here</a></p>';
                         }
                         ?>
 

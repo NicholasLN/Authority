@@ -28,7 +28,7 @@ function register($username, $password, $politicianName, $ecoPosition, $socPosit
 
                     $_SESSION['loggedIn'] = true;
                     $_SESSION['loggedInID'] = $registerID;
-                    redirect('politician?id=' . $_SESSION['loggedInID']);
+                    redirect('politician.php?id=' . $_SESSION['loggedInID']);
 
                 }
             } else {
@@ -67,7 +67,7 @@ function login($username, $password)
                     mysqli_query($db, "UPDATE users SET currentCookie=$cookie, currentIP=$ipAddress WHERE username=$username");
                     $_SESSION['loggedIn'] = true;
                     $_SESSION['loggedInID'] = $userRow['id'];
-                    redirect('politician?id=' . $_SESSION['loggedInID']);
+                    redirect('politician.php?id=' . $_SESSION['loggedInID']);
                 } else {
                     alert("Error!", "Invalid password.");
                 }
@@ -84,5 +84,5 @@ function login($username, $password)
 function logout()
 {
     session_destroy();
-    redirect('index');
+    redirect('index.php');
 }
