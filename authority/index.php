@@ -1,7 +1,6 @@
-<?php
+<?
 //echo getcwd();
 include 'php/functions.php';
-
 
 ?>
 <!DOCTYPE html>
