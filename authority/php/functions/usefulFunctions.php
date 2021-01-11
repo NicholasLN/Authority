@@ -18,7 +18,8 @@ function numFilter($number){
 function invalidPage(){
     global $loggedInID;
     if($_SESSION['loggedIn']){
-        redirect("politician?id=".$loggedInID);
+        alert("Error","Profile doesn't exist");
+        redirect("politician.php?id=".$loggedInID);
     }
     else{
         redirect('index');

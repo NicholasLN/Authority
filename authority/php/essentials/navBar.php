@@ -9,7 +9,7 @@ function echoNavBar(): void
         echo <<<NAV
      
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class='navbar-brand' href='index' style='margin-left:15px'>
+            <a class='navbar-brand' href='index.php' style='margin-left:15px'>
                 <b>AUTHORITY<small>3.0 (WIP)</small></b>
             </a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#myNavbar">
@@ -20,7 +20,7 @@ function echoNavBar(): void
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav navbar-right">
                         <li class="nav-item active">
-                            <a class="nav-link" href="login">LOGIN<span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="login.php">LOGIN<span class="sr-only">(current)</span></a>
                         </li>
                     </ul>
                 </div>
@@ -31,7 +31,7 @@ NAV;
         echo "
     
         <nav class='navbar navbar-expand-lg navbar-dark bg-dark'>
-            <a class='navbar-brand' href='index' style='margin-left:15px'>
+            <a class='navbar-brand' href='index.php' style='margin-left:15px'>
                 <b>AUTHORITY<small>3.0 (WIP)</small></b>
             </a>
             <button type='button' class='navbar-toggler' data-toggle='collapse' data-target='#myNavbar'>
@@ -47,8 +47,8 @@ NAV;
                                 " . $loggedInRow['politicianName'] . "
                             </a>              
                             <ul class='dropdown-menu'>
-                                <a class='dropdown-item' href='politician?id=" . $loggedInRow['id'] . "'>Profile</a>
-                                <a class='dropdown-item' href='editprofile'>Edit Profile</a>
+                                <a class='dropdown-item' href='politician.php?id=" . $loggedInRow['id'] . "'>Profile</a>
+                                <a class='dropdown-item' href='editprofile.php'>Edit Profile</a>
                                 <form method='post'><input class='dropdown-item' type='submit' value='Log Out' name='logout'/></form>
                             </ul>            
                         </li>
@@ -58,7 +58,7 @@ NAV;
                                 " . $loggedInRow['country'] . "
                             </a>              
                             <ul class='dropdown-menu'>
-                                <a class='dropdown-item' href='politicalparties?country=" . $loggedInRow['country'] . "'>Political Parties</a>
+                                <a class='dropdown-item' href='politicalparties.php?country=" . $loggedInRow['country'] . "'>Political Parties</a>
                             </ul>            
                         </li>
                     </ul>

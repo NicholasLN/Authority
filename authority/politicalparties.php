@@ -36,14 +36,14 @@ if(isset($_GET['country'])){
                     echo "
                     <b><i>Parties that are NOT defunct (more than 0 members)</i></b>
                     <br/>
-                    <a class='btn btn-primary' style='margin-top:4px' href='politicalparties?country=$country&defunct=True'>Defunct Parties</a>
+                    <a class='btn btn-primary' style='margin-top:4px' href='politicalparties.php?country=$country&defunct=True'>Defunct Parties</a>
                     ";
                 }
                 else{
                     echo "
                     <b><i>Parties that ARE defunct (no active members)</i></b>
                     <br/>
-                    <a class='btn btn-primary' style='margin-top:4px' href='politicalparties?country=$country&defunct=False'>Active Parties</a>
+                    <a class='btn btn-primary' style='margin-top:4px' href='politicalparties.php?country=$country&defunct=False'>Active Parties</a>
                     ";
                 }
                 ?>
@@ -84,13 +84,13 @@ if(isset($_GET['country'])){
                                                 <img class='partyImgLogo' src='$logo' alt='$name Logo'>
                                             </div>
                                             <div class='partyNameContainer'>
-                                                <a href='party?id=$partyID'>$name</a>
+                                                <a href='party.php?id=$partyID'>$name</a>
                                             </div>
                                         </div>
                                         <div class='card-body'>
                                             <span>Leader</span>
                                             <br/>
-                                            <a href='politician?id=$leaderID'>
+                                            <a href='politician.php?id=$leaderID'>
                                                 <img class='leaderImg' src='$leaderPic' alt='$leaderName Logo'>
                                                 <br/>
                                                 <span>$leaderName</span>
@@ -115,13 +115,13 @@ if(isset($_GET['country'])){
                                                 <img class='partyImgLogo' src='$logo' alt='$name Logo'>
                                             </div>
                                             <div class='partyNameContainer'>
-                                                <a href='party?id=$partyID'>$name</a>
+                                                <a href='party.php?id=$partyID'>$name</a>
                                             </div>
                                         </div>
                                         <div class='card-body'>
                                             <span>Leader</span>
                                             <br/>
-                                            <a href='politician?id=$leaderID'>
+                                            <a href='politician.php?id=$leaderID'>
                                                 <img class='leaderImg' src='$leaderPic' alt='$leaderName Logo'>
                                                 <br/>
                                                 <span>$leaderName</span>
