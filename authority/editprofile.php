@@ -86,7 +86,7 @@ if (isset($_POST)) {
                 $user->updateVariable("profilePic", $fileString);
 
                 if ($moved) {
-                    redirect("politician?id=$loggedInID");
+                    redirect("politician.php?id=$loggedInID");
                 } else {
                     echo $_FILES['file']['error'];
                 }
