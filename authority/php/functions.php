@@ -1,5 +1,7 @@
 <?php
 session_start();
+$onlineThreshold = time() - 259200;
+
 
 $serverConfigFile = file_get_contents('./config/server.json');
 // If there is an error in opening the config for the DB
@@ -47,6 +49,9 @@ if (isset($_SESSION['loggedInID'])) {
 include 'essentials/registerLogin.php';
 include 'essentials/htmlFunctions.php';
 include 'essentials/navBar.php';
+
 include 'functions/positionFunctions.php';
 include 'functions/usefulFunctions.php';
 include 'functions/discordMeta.php';
+
+include 'views/party.php';
