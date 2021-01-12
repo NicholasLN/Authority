@@ -21,7 +21,7 @@ include 'php/functions.php';
                         <br/>
                         <img src="images/AuthorityLogoV3.png" style="width:50vh;" alt="AuthorityLogo">
                         <h1>Authority 3.0</h1>
-                        <p>Authority is a political game where you slip on a banana, get shanked in prison, and die. Also, elections and shit.</p>
+                        <p>Authority is an indev. political game in which users can register as a politician, run for offices, run countries, play a vital part in the economic system within their countries (and others), and seize power through a variety of methods--legal, or illegal.</p>
 
                         <? if(!$_SESSION['loggedIn']){
                         echo '
