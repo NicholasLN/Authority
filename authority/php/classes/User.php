@@ -11,7 +11,6 @@ class User
     {
         $this->userID = $userID;
     }
-
     /**
      * Grabs user object based on their username.
      * Primarily used for registration.
@@ -83,5 +82,21 @@ class User
     public function updateAuthority(int $authority)
     {
         $this->updateVariable("authority", $authority);
+    }
+    public function pictureArray(): array
+    {
+        $userID = $this->userID;
+        $array = array("picture"=>0, "name"=>0,"id"=>0);
+        if($userID != 0){
+            $array['picture'] = $this->getVariable("profilePic");
+            $array['name'] = $this->getVariable("politicianName");
+            $array['id'] = $this->getVariable("id");
+        }
+        else{
+            $array['picture'] = "images/userPics/default.jpg";
+            $array['name'] = "None";
+            $array['id'] = 0;
+        }
+        return $array;
     }
 }
