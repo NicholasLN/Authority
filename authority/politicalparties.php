@@ -21,7 +21,7 @@ if(isset($_GET['country'])){
     <meta charset="utf-8"/>
     <title>Parties | AUTHORITY</title>
     <? echoHeader(); ?>
-    <link rel="stylesheet" href="css/partylist.css"/>
+    <link rel="stylesheet" href="css/partylist.css?id=2"/>
 </head>
 <? echoNavBar() ?>
 <body>
@@ -61,20 +61,15 @@ if(isset($_GET['country'])){
                             $members = $party->getPartyMembers();
                             $bio = $party->getPartyBio();
 
+                            // party leader details
                             $leader = $party->getPartyLeader();
+                            $leaderTitle = $party->partyRoles->partyLeaderTitle();
+                            // GRAB user DETAILS
+                            $leaderPic = $leader->pictureArray()['picture'];
+                            $leaderName = $leader->pictureArray()['name'];
+                            $leaderID = $leader->pictureArray()['id'];
 
-                            // TODO: More programmatic way to echo invalid user details.
-                            if($leader) {
-                                $leaderPic = $leader->getVariable("profilePic");
-                                $leaderName = $leader->getVariable("politicianName");
-                                $leaderID = $leader->getVariable("id");
-                            }
-                            else{
-                                $leaderPic = "images/userPics/default.jpg";
-                                $leaderName = "No Leader";
-                                $leaderID = 0;
-
-                            }
+                            // if party has members and mode is not defunct
                             if($members > 0 && !$defunct) {
                                 echo "
                                 <div class='col-sm-4'>
@@ -88,7 +83,7 @@ if(isset($_GET['country'])){
                                             </div>
                                         </div>
                                         <div class='card-body'>
-                                            <span>Leader</span>
+                                            <span>$leaderTitle</span>
                                             <br/>
                                             <a href='politician.php?id=$leaderID'>
                                                 <img class='leaderImg' src='$leaderPic' alt='$leaderName Logo'>
@@ -106,6 +101,7 @@ if(isset($_GET['country'])){
                                 </div>
                                 ";
                             }
+                            // if mode is defunct and there are no members.
                             if($defunct && $members == 0){
                                 echo "
                                 <div class='col-sm-4'>
