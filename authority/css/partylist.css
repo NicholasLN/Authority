@@ -14,7 +14,6 @@
 .party-leader-pic{
     max-width:12%;
     max-height:12%;
-    border: solid black 1px;
 }
 .partyBioContainer{
     max-height:55%;
@@ -46,7 +45,6 @@
     font-size: 20px;
 }
 .leaderImg{
-    border:solid black 1px;
     max-width:100px;
     height:100px;
 }
