@@ -55,10 +55,10 @@ NAV;
                         <li class='dropdown'>
                             <a class='nav-link dropdown-toggle' id='navBarDrop' role='button' data-toggle='dropdown'>
                                 <i class='fas fa-flag'></i>
-                                " . $loggedInRow['country'] . "
+                                " . $loggedInRow['nation'] . "
                             </a>              
                             <ul class='dropdown-menu'>
-                                <a class='dropdown-item' href='politicalparties.php?country=" . $loggedInRow['country'] . "'>Political Parties</a>
+                                <a class='dropdown-item' href='politicalparties.php?country=" . $loggedInRow['nation'] . "'>Political Parties</a>
                             </ul>            
                         </li>
                     </ul>
