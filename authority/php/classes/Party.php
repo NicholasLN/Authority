@@ -3,29 +3,24 @@
 class Party
 {
     protected $partyID;
-    public $partyRolesJson;
+    public $partyRoles;
     public $partyRow;
 
-    public function getPartyLeader(){;
-        foreach($this->partyRolesJson as $roleName => $roleDetails){
-            if(array_key_exists("leader",$roleDetails['perms'])){
-                if($roleDetails['perms']['leader'] == true){
-                    if($roleDetails['occupant'] != 0){
-                        return new User($roleDetails['occupant']);
-                    }
-                    else{
-                        return null;
-                    }
-                }
-            }
+    public function getPartyLeader(): ?User
+    {;
+        $leader = $this->partyRoles->partyLeaderArray();
+        if($leader['occupant'] != 0){
+            return new User($leader['occupant']);
+        }
+        else{
+            return null;
         }
     }
-
     public function __construct($partyID)
     {
         $this->partyID = $partyID;
         $this->partyRow = $this->getPartyRowConstructor($partyID);
-        $this->partyRolesJson = json_decode($this->partyRow['partyRoles'], true);
+        $this->partyRoles = new PartyRoles($this->partyRow['partyRoles']);
     }
     public function getPartyRowConstructor($partyID): ?array
     {
@@ -64,8 +59,6 @@ class Party
         $stmt->bind_param("ii", $partyID, $onlineThreshold);
         $stmt->execute();
         return $stmt->get_result()->num_rows;
-
     }
-
 }
 
