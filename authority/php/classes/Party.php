@@ -47,6 +47,9 @@ class Party
         global $db;
         return $this->partyRow['partyPic'];
     }
+    public function getPartyDiscordCode(){
+        return $this->partyRow['discord'];
+    }
     public function getPartyMembers()
     {
         global $db;
