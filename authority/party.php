@@ -101,6 +101,22 @@ if (isset($_GET['id'])) {
                         <br/>
                         <span>$leaderName</span>
                     </a> 
+                ";
+                if($_SESSION['loggedIn'] == true){
+                    if($leaderID == 0 && $loggedInRow['party'] == $partyID){
+                        echo "
+                            <div style='margin-top: 8px' class='row justify-content-center'>
+                                <div class='col'>
+                                    <form method='post'>
+                                        <input type='submit' class='btn btn-primary' name='claimLeaderSubmit' value='Claim'/>
+                                    </form>
+                                </div>
+                            </div>
+                        ";
+
+                    }
+                }
+                echo "
                     <br/>
                     <hr/>
                     <h4>Party Roles</h4>
@@ -146,7 +162,8 @@ if (isset($_GET['id'])) {
         $(document).ready(function () {
             $('#members').DataTable({
                 "responsive": true,
-                "autoWidth": false
+                "autoWidth": false,
+                "order":[[3,"desc"]]
 
             });
         });
@@ -192,6 +209,15 @@ if (isset($_GET['id'])) {
                 $user->updateSI(($loggedInRow['hsi']*.50));
 
                 redirect("party.php?id=$partyID");
+
+            }
+        }
+        if(isset($_POST['claimLeaderSubmit'])){
+            if($loggedInRow['party'] == $partyID && $leaderID == 0){
+                $party->partyRoles->changeLeader($loggedInID);
+                $party->partyRoles->updateRoles();
+                redirect("party.php?id=$partyID");
+
             }
         }
     }
