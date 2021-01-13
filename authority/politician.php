@@ -12,10 +12,10 @@ if (isset($_GET['id'])) {
             $profileIsLoggedInUser = true;
         }
     } else {
-        invalidPage();
+        invalidPage("Invalid Page","User does not exist.");
     }
 } else {
-    invalidPage();
+    invalidPage("Invalid Page","User does not exist.");
 }
 ?>
 <!DOCTYPE html>
