@@ -74,8 +74,14 @@ class User
         }
     }
 
-    public function updateSI(double $newSI)
+    public function updateSI($newSI)
     {
+        if($newSI < 1){
+            $newSI = 1;
+        }
+        if($newSI > 100){
+            $newSI = 100;
+        }
         $this->updateVariable("hsi", $newSI);
     }
 
