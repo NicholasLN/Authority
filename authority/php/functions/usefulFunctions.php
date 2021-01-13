@@ -15,14 +15,14 @@ function in_range($number, $min, $max, $inclusive = FALSE): bool
 function numFilter($number){
     return preg_replace("/[^0-9.]/","",$number);
 }
-function invalidPage(){
+function invalidPage($alertHeader="Invalid Page",$alertMsg=""){
     global $loggedInID;
     if($_SESSION['loggedIn']){
         alert("Error","Profile doesn't exist");
-        redirect("politician.php?id=".$loggedInID);
+        redirect("politician.php?id=$loggedInID&alertHeader=$alertHeader&alertMsg=$alertMsg");
     }
     else{
-        redirect('index');
+        redirect("index.php?alertHeader=$alertHeader&alertMsg=$alertMsg");
     }
 
 }
