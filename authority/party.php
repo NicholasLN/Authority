@@ -47,6 +47,7 @@ if (isset($_GET['id'])) {
 
 
                 <?  // Join/Leave Party Button and PHP //
+                    // TODO: Confirmation window for leaving or defecting.
                     if($_SESSION['loggedIn'] == True){
                         // if they are within the same nation...
                         if($loggedInRow['nation'] == $party->partyRow['nation']){
@@ -57,7 +58,7 @@ if (isset($_GET['id'])) {
                             // if they are in the party
                             if($loggedInRow['party'] == $partyID){
                                 echo "
-                                        <input type='submit' class='btn btn-danger' name='leavePartySubmit' value='Leave Party (50% reduction in SI)'/>
+                                        <input type='submit' class='btn btn-danger' name='leavePartySubmit' value='Leave Party (Lose 50% HSI)'/>
                                 ";
                             }
                             // if they have no party
@@ -69,7 +70,7 @@ if (isset($_GET['id'])) {
                             // if they are in a party, but it is not their own
                             if($loggedInRow['party'] != 0 && $partyID != $loggedInRow['party']){
                                 echo "
-                                        <input type='submit' class='btn btn-danger' name='defectPartySubmit' value='Defect (50% reduction in SI)'/>
+                                        <input type='submit' class='btn btn-danger' name='defectPartySubmit' value='Defect (Lose 50% HSI)'/>
                                 ";
                             }
                             echo "
@@ -153,3 +154,49 @@ if (isset($_GET['id'])) {
     <? echoFooter() ?>
 </div>
 </html>
+
+<?php
+    echo getcwd();
+    if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True){
+        if(isset($_POST['joinPartySubmit'])) {
+            // validate that user isn't already in a party in post
+            if($loggedInRow['party'] == 0){
+                $user = new User($loggedInID);
+                $user->updateVariable("party",$partyID);
+                redirect("party.php?id=$partyID");
+            }
+        }
+        if(isset($_POST['leavePartySubmit'])){
+            // validate that user is actually in the party
+            if($loggedInRow['party'] == $partyID){
+                $user = new User($loggedInID);
+
+                $party->partyRoles->userLeave($loggedInID);
+                $party->partyRoles->updateRoles();
+
+                $user->updateVariable("party",0);
+                $user->updateSI(($loggedInRow['hsi']*.50));
+
+                redirect("party.php?id=$partyID");
+            }
+        }
+        if(isset($_POST['defectPartySubmit'])){
+            if($partyID != $loggedInRow['party'] && $loggedInRow['party'] != 0){
+                $user = new User($loggedInID);
+
+                $oldParty = new Party($loggedInRow['party']);
+                $oldParty->partyRoles->userLeave($loggedInID);
+                $oldParty->partyRoles->updateRoles();
+
+                $user->updateVariable("party",$partyID);
+                $user->updateSI(($loggedInRow['hsi']*.50));
+
+                redirect("party.php?id=$partyID");
+            }
+        }
+    }
+
+
+
+
+
