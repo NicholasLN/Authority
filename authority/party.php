@@ -192,6 +192,7 @@ if (isset($_GET['id'])) {
                 $party->partyRoles->updateRoles();
 
                 $user->updateVariable("party",0);
+                $user->updateVariable("partyInfluence",0);
                 $user->updateSI(($loggedInRow['hsi']*.50));
 
                 redirect("party.php?id=$partyID");
@@ -206,6 +207,7 @@ if (isset($_GET['id'])) {
                 $oldParty->partyRoles->updateRoles();
 
                 $user->updateVariable("party",$partyID);
+                $user->updateVariable("partyInfluence",0);
                 $user->updateSI(($loggedInRow['hsi']*.50));
 
                 redirect("party.php?id=$partyID");
