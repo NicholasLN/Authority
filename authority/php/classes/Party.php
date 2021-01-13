@@ -13,14 +13,14 @@ class Party
             return new User($leader['occupant']);
         }
         else{
-            return null;
+            return new User(0);
         }
     }
     public function __construct($partyID)
     {
         $this->partyID = $partyID;
         $this->partyRow = $this->getPartyRowConstructor($partyID);
-        $this->partyRoles = new PartyRoles($this->partyRow['partyRoles']);
+        $this->partyRoles = new PartyRoles($this->partyRow['partyRoles'],$partyID);
     }
     public function getPartyRowConstructor($partyID): ?array
     {
