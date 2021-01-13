@@ -3,10 +3,22 @@
 class PartyRoles
 {
     private $partyRoleJson;
+    private $partyID;
 
-    public function __construct($partyRoles)
+    public function __construct($partyRoles,$partyID)
     {
         $this->partyRoleJson = json_decode($partyRoles, true);
+        $this->partyID = $partyID;
+    }
+    public function updateRoles(){
+        $update = json_encode($this->partyRoleJson);
+        if(!json_last_error()){
+            global $db;
+
+            $stmt = $db->prepare("UPDATE parties SET partyRoles = ? WHERE id = ?");
+            $stmt->bind_param("si",$update,$this->partyID);
+            $stmt->execute();
+        }
     }
 
     public function partyLeaderArray(): array
@@ -20,6 +32,13 @@ class PartyRoles
                     );
                     return $array;
                 }
+            }
+        }
+    }
+    public function userLeave(int $userID){
+        foreach($this->partyRoleJson as $roleName => &$roleDetails){
+            if($roleDetails['occupant'] == $userID){
+                $roleDetails['occupant'] = 0;
             }
         }
     }
