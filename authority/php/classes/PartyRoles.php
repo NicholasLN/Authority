@@ -20,7 +20,20 @@ class PartyRoles
             $stmt->execute();
         }
     }
-
+    public function changeOccupant($roleName, $userID){
+        foreach($this->partyRoleJson as $name=>&$roleDetails){
+            if($name == $roleName){
+                $roleDetails['occupant'] = $userID;
+            }
+        }
+    }
+    public function changeLeader($userID){
+        foreach($this->partyRoleJson as $name=>&$roleDetails){
+            if($name == $this->partyLeaderTitle()){
+                $roleDetails['occupant'] = $userID;
+            }
+        }
+    }
     public function partyLeaderArray(): array
     {
         foreach($this->partyRoleJson as $roleName => $roleDetails) {
