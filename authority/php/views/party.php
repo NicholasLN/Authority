@@ -53,6 +53,8 @@ function partyMembersTable($partyID){
             $userID = $user->pictureArray()['id'];
 
             $userRegion = $user->getUserRow()['state'];
+            $userPartyInfluence = $user->getUserRow()['partyInfluence'];
+
 
             $userRole = $party->partyRoles->getUserTitle($userID);
             echo "
@@ -71,7 +73,7 @@ function partyMembersTable($partyID){
                         <p style='vertical-align: center'>$userRegion</p>
                     </td>
                     <td>
-                        <p style='vertical-align: center'>0</p>
+                        <p style='vertical-align: center'>$userPartyInfluence</p>
                     </td>
                 </tr>
             ";
