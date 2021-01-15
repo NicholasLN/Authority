@@ -25,7 +25,7 @@ if (isset($_GET['id'])) {
     <? politicianMeta($profileUser); ?>
     <title><? echo $profileRow['politicianName'] ?> | AUTHORITY 3.0</title>
     <? echoHeader(); ?>
-    <link href="css/profile.css?id=2" rel="stylesheet"/>
+    <link href="css/profile.css?id=12" rel="stylesheet"/>
 </head>
 <? echoNavBar() ?>
 <body>
@@ -68,6 +68,20 @@ if (isset($_GET['id'])) {
                         <td><?php echo $profileRow['hsi'] ?>%</td>
                     </tr>
                     <tr>
+                        <td><b>Party</b></td>
+                        <td>
+                            <?
+                            $party = new Party($profileUser->getUserRow()['party']);
+                            $partyPic = $party->pictureArray(true)['picture'];
+                            $partyName = $party->pictureArray()['name'];
+                            $partyID = $party->pictureArray()['id'];
+
+                            echo "
+                                <a href='party.php?id=$partyID'><img class='profilePartyPic' src='$partyPic' alt='$partyName Picture'/>$partyName</a>";
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
                         <td><b>Region</b></td>
                         <td>
                             <?
@@ -78,7 +92,7 @@ if (isset($_GET['id'])) {
                             $name = $state['name'];
 
                             echo "
-                                <a href='state?state=$abbreviation'><img class='profileStateFlag' src='images/flags/$country/$flag' alt='$name'/>$name</a>";
+                                <a href='state.php?state=$abbreviation'><img class='profileStateFlag' src='images/flags/$country/$flag' alt='$name'/>$name</a>";
                             ?>
                         </td>
                     </tr>

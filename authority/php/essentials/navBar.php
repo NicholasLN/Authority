@@ -61,6 +61,26 @@ NAV;
                                 <a class='dropdown-item' href='politicalparties.php?country=" . $loggedInRow['nation'] . "'>Political Parties</a>
                             </ul>            
                         </li>
+                        ";
+                        if($loggedInRow['party'] != 0){
+                        $party = new Party($loggedInRow['party']);
+                        $partyName = $party->getPartyName();
+                        $partyID = $party->getVariable("id");
+                        echo "
+                        <li class='dropdown'>
+                            <a class='nav-link dropdown-toggle' id='navBarDrop' role='button' data-toggle='dropdown'>
+                                <i class='fas fa-handshake'></i>
+                                $partyName
+                            </a>              
+                            <ul class='dropdown-menu'>
+                                <a class='dropdown-item' href='party.php?id=$partyID'>Party Overview</a>
+                            </ul>            
+                        </li>                                                     
+                        ";
+
+                        }
+
+                        echo "
                     </ul>
                 </div>
             </div>
