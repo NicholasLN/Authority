@@ -11,14 +11,28 @@ function register($username, $password, $politicianName, $ecoPosition, $socPosit
             $passwordHashed = password_hash($password, PASSWORD_BCRYPT);
             $country = getStateByAbbreviation($state)['country'];
 
+            $usernameStmt = $db->prepare("SELECT * FROM users WHERE username = ?");
+            $usernameStmt->bind_param("s",$username);
+            $usernameStmt->execute();
+            $usernameRows = $usernameStmt->get_result()->num_rows;
+
+            $politicianNameStmt = $db->prepare("SELECT * FROM users WHERE politicianName = ?");
+            $politicianNameStmt->bind_param("s",$politicianName);
+            $politicianNameStmt->execute();
+            $politicianNameRows = $politicianNameStmt->get_result()->num_rows;
+
             if ((getNumRows("SELECT * FROM users WHERE regIP='$ipAddress'") == 0) &&
-                (getNumRows("SELECT * FROM users WHERE username='$username'") == 0) &&
-                (getNumRows("SELECT * FROM users WHERE politicianName='$politicianName'") == 0)) {
+                ($usernameRows == 0) &&
+                ($politicianNameRows == 0)) {
 
                 $stmt = $db->prepare("INSERT into users(
-                username, password, regcookie, currentcookie, regip, currentip, 
-                politicianname, state, country, 
-                ecopos, socpos) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+                    username, password, 
+                    regcookie, currentcookie,
+                    regip, currentip, 
+                    politicianName, 
+                    state, nation, 
+                    ecopos, socpos
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
                 $stmt->bind_param("sssssssssii", $username, $passwordHashed, $initCookie, $initCookie, $ipAddress, $ipAddress, $politicianName, $state, $country, $ecoPosition, $socPosition);
                 $stmt->execute();
 

@@ -20,7 +20,7 @@ if ($_SESSION['loggedIn']) {
     <div class="gameContainer">
         <div class="row">
             <div class="col-sm"></div>
-            <div class="col-sm">
+            <div class="col-sm-6">
                 <br/>
                 <h1>Register Now!</h1>
                 <h6>Please do not put any revealing information or important passwords here.
