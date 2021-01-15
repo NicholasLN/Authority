@@ -27,6 +27,10 @@
     max-width:40px;
     margin-right:3px;
 }
+.profilePartyPic{
+    max-width:30px;
+    margin-right:3px;
+}
 .lastOnline{
     margin-top: 10px;
     font-weight: bold;

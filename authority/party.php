@@ -14,10 +14,10 @@ if (isset($_GET['id'])) {
             $mode = "overview";
         }
     } else {
-        invalidPage();
+        invalidPage("Not a party","Invalid party page.");
     }
 } else {
-    invalidPage();
+    invalidPage("Not a party.","Invalid party page.");
 }
 ?>
 <!DOCTYPE html>
