@@ -5,7 +5,7 @@
  */
 class User
 {
-    protected $userID;
+    public $userID;
 
     public function __construct(int $userID)
     {
@@ -84,7 +84,16 @@ class User
         }
         $this->updateVariable("hsi", $newSI);
     }
+    public function getUserPartyVotes(){
+        global $db;
+        global $onlineThreshold;
+        $stmt = $db->prepare("SELECT * FROM users WHERE partyVotingFor = ? AND lastOnline > ?");
+        $stmt->bind_param("ii",$this->userID, $onlineThreshold);
+        $stmt->execute();
 
+        return $stmt->get_result()->num_rows;
+
+    }
     public function updateAuthority(int $authority)
     {
         $this->updateVariable("authority", $authority);
