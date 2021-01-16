@@ -69,10 +69,16 @@ if(isset($_GET['country'])){
                             $leaderName = $leader->pictureArray()['name'];
                             $leaderID = $leader->pictureArray()['id'];
 
+                            $socIdeologyRGB = getPositionFontColor($party->partyRow['socPos']);
+                            $ecoIdeologyRGB = getPositionFontColor($party->partyRow['ecoPos']);
+
+                            $socIdeology = getSocPositionName($party->partyRow['socPos']);
+                            $ecoIdeology = getEcoPositionName($party->partyRow['ecoPos']);
+
                             // if party has members and mode is not defunct
                             if($members > 0 && !$defunct) {
                                 echo "
-                                <div class='col-sm-4'>
+                                <div class='col-sm-6'>
                                     <div class='card'>
                                         <div class='partyInfo'>
                                             <div class='partyImgContainer'>
@@ -96,6 +102,10 @@ if(isset($_GET['country'])){
                                             </p>
                                             <hr/>
                                             <span><b>Members: $members</b></span>
+                                            <hr/>
+                                            <span><b>Social Ideology: <span style='color:$socIdeologyRGB'>$socIdeology</span></b></span>
+                                            <br/>
+                                            <span><b>Economic Ideology: <span style='color:$ecoIdeologyRGB'>$ecoIdeology</span></b></span>
                                         </div>
                                     </div>                        
                                 </div>
