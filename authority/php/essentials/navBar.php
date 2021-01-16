@@ -10,7 +10,7 @@ function echoNavBar(): void
      
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class='navbar-brand' href='index.php' style='margin-left:15px'>
-                <b>AUTHORITY<small>3.0 (WIP)</small></b>
+                <b>AUTHORITY<small>Glorified Profile Sim™</small></b>
             </a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#myNavbar">
                 <span class="sr-only"></span>
@@ -32,7 +32,7 @@ NAV;
     
         <nav class='navbar navbar-expand-lg navbar-dark bg-dark'>
             <a class='navbar-brand' href='index.php' style='margin-left:15px'>
-                <b>AUTHORITY<small>3.0 (WIP)</small></b>
+                <b>AUTHORITY<small>Glorified Profile Sim™</small></b>
             </a>
             <button type='button' class='navbar-toggler' data-toggle='collapse' data-target='#myNavbar'>
                 <span class='sr-only'></span>
@@ -82,6 +82,7 @@ NAV;
 
                         echo "
                     </ul>
+
                 </div>
             </div>
         </nav>   
