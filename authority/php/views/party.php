@@ -40,6 +40,8 @@ function partyMembersTable($partyID){
                         <td>Party Role</td>
                         <td>Region</td>
                         <td>Party Influence</td>
+                        <td>Votes</td>
+                        <td>Voting For</td>
                     </tr>
                 </thead>
             ";
@@ -51,12 +53,17 @@ function partyMembersTable($partyID){
             $userPic = $user->pictureArray()['picture'];
             $userName = $user->pictureArray()['name'];
             $userID = $user->pictureArray()['id'];
-
             $userRegion = $user->getUserRow()['state'];
             $userPartyInfluence = $user->getUserRow()['partyInfluence'];
-
-
             $userRole = $party->partyRoles->getUserTitle($userID);
+            $votes = $user->getUserPartyVotes();
+
+
+            $votingFor = new User($user->getVariable('partyVotingFor'));
+            $votingForPic = $votingFor->pictureArray()['picture'];
+            $votingForName = $votingFor->pictureArray()['name'];
+            $votingForID = $votingFor->pictureArray()['id'];
+
             echo "
                 <tr>
                     <td>
@@ -73,7 +80,21 @@ function partyMembersTable($partyID){
                         <p style='vertical-align: center'>$userRegion</p>
                     </td>
                     <td>
-                        <p style='vertical-align: center'>$userPartyInfluence</p>
+                        $userPartyInfluence
+                    </td>
+                    <td>
+                        <span>$votes</span>                        
+                        <form method='POST'>
+                            <input type='submit' class='btn btn-primary' value='Vote For' name='voteFor'/>
+                            <input type='hidden' name='voteForID' value='$userID'/>
+                        </form> 
+                    </td>
+                    <td>
+                        <a href='politician.php?id=$votingForID'>
+                            <img style='max-width:30px;max-height:30px;' src='$votingForPic'/>
+        
+                            $votingForName
+                        </a>
                     </td>
                 </tr>
             ";
