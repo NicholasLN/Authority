@@ -174,52 +174,66 @@ if (isset($_GET['id'])) {
 
 <?php
     echo getcwd();
-    if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True){
-        if(isset($_POST['joinPartySubmit'])) {
+    if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
+        if (isset($_POST['joinPartySubmit'])) {
             // validate that user isn't already in a party in post
-            if($loggedInRow['party'] == 0){
+            if ($loggedInRow['party'] == 0) {
                 $user = new User($loggedInID);
-                $user->updateVariable("party",$partyID);
+                $user->updateVariable("party", $partyID);
                 redirect("party.php?id=$partyID");
             }
         }
-        if(isset($_POST['leavePartySubmit'])){
+        if (isset($_POST['leavePartySubmit'])) {
             // validate that user is actually in the party
-            if($loggedInRow['party'] == $partyID){
-                $user = new User($loggedInID);
-
+            if ($loggedInRow['party'] == $partyID) {
                 $party->partyRoles->userLeave($loggedInID);
                 $party->partyRoles->updateRoles();
 
-                $user->updateVariable("party",0);
-                $user->updateVariable("partyInfluence",0);
-                $user->updateSI(($loggedInRow['hsi']*.50));
+                $loggedInUser->updateVariable("party", $partyID);
+                $loggedInUser->updateVariable("partyInfluence", 0);
+                $loggedInUser->updateVariable("partyVotingFor", 0);
+                $loggedInUser->updateSI(($loggedInRow['hsi'] * .50));
 
                 redirect("party.php?id=$partyID");
             }
         }
-        if(isset($_POST['defectPartySubmit'])){
-            if($partyID != $loggedInRow['party'] && $loggedInRow['party'] != 0){
-                $user = new User($loggedInID);
+        if (isset($_POST['defectPartySubmit'])) {
+            if ($partyID != $loggedInRow['party'] && $loggedInRow['party'] != 0) {
 
                 $oldParty = new Party($loggedInRow['party']);
                 $oldParty->partyRoles->userLeave($loggedInID);
                 $oldParty->partyRoles->updateRoles();
 
-                $user->updateVariable("party",$partyID);
-                $user->updateVariable("partyInfluence",0);
-                $user->updateSI(($loggedInRow['hsi']*.50));
+                $loggedInUser->updateVariable("party", $partyID);
+                $loggedInUser->updateVariable("partyInfluence", 0);
+                $loggedInUser->updateVariable("partyVotingFor", 0);
+                $loggedInUser->updateSI(($loggedInRow['hsi'] * .50));
 
                 redirect("party.php?id=$partyID");
 
             }
         }
-        if(isset($_POST['claimLeaderSubmit'])){
-            if($loggedInRow['party'] == $partyID && $leaderID == 0){
+        if (isset($_POST['claimLeaderSubmit'])) {
+            if ($loggedInRow['party'] == $partyID && $leaderID == 0) {
                 $party->partyRoles->changeLeader($loggedInID);
                 $party->partyRoles->updateRoles();
                 redirect("party.php?id=$partyID");
 
+            }
+        }
+
+        //TODO: Turn this into an Ajax form request instead of a PHP Submit.
+
+        if(isset($_POST['voteFor'])){
+            if(isset($_POST['voteForID']) && $_POST['voteForID'] != 0){
+                $votingFor = new User(numFilter($_POST['voteForID']));
+                if($votingFor->getVariable("party") == $loggedInRow['party']){
+                    $loggedInUser->updateVariable("partyVotingFor",$votingFor->userID);
+                    redirect("party.php?id=$partyID&mode=members");
+                }
+                else{
+                    alert("Error","They are not in your party.");
+                }
             }
         }
     }
