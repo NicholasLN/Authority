@@ -41,6 +41,7 @@ if (isset($_SESSION['loggedInID'])) {
         $user = new User($_SESSION['loggedInID']);
         $loggedInID = $_SESSION['loggedInID'];
         $loggedInRow = $user->getUserRow();
+        $loggedInUser = new User($loggedInID);
         $user->updateTime();
     }
 }
