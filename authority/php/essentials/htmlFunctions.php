@@ -52,7 +52,7 @@ ALERT;
         // bootstrap cdns
         echoNoScript();
         echoAlertify();
-        echo '<meta name="viewport" content="width=device-width, initial-scale=0.74">';
+        echo '<meta name="viewport" content="width=device-width, initial-scale=0.68">';
         echoJQuery();
         echoBootstrap();
         echoFA();

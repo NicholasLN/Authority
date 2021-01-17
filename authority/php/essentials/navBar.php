@@ -73,7 +73,8 @@ NAV;
                                 $partyName
                             </a>              
                             <ul class='dropdown-menu'>
-                                <a class='dropdown-item' href='party.php?id=$partyID'>Party Overview</a>
+                                <a class='dropdown-item' href='party.php?id=$partyID#overview'>Party Overview</a>
+                                <a class='dropdown-item' href='party.php?id=$partyID&mode=members#members'>Party Members</a>
                             </ul>            
                         </li>                                                     
                         ";

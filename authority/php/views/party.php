@@ -1,16 +1,5 @@
 <?php
 
-function partyOverview($partyID){
-    $party = new Party($partyID);
-    $bio = $party->getPartyBio();
-
-    echo "
-        <pre class='partyBioBox'>$bio</pre>
-    ";
-
-}
-
-
 function partyRoles($partyID){
     $party = new Party($partyID);
 
@@ -83,11 +72,16 @@ function partyMembersTable($partyID){
                         $userPartyInfluence
                     </td>
                     <td>
-                        <span>$votes</span>                        
+                        <span>$votes</span>      
+                        ";
+                        if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true) {
+                        echo "                  
                         <form method='POST'>
                             <input type='submit' class='btn btn-primary' value='Vote For' name='voteFor'/>
                             <input type='hidden' name='voteForID' value='$userID'/>
-                        </form> 
+                        </form>";
+                        }
+                        echo "
                     </td>
                     <td>
                         <a href='politician.php?id=$votingForID'>
@@ -101,10 +95,60 @@ function partyMembersTable($partyID){
         }
     }
     echo "</table>";
+}
+function partyOverview($partyID){
+    global $loggedInRow;
+    $party = new Party($partyID);
 
+    echo "
+    ";
 
+    $leader = $party->getPartyLeader();
 
+    $leaderPic = $leader->pictureArray()['picture'];
+    $leaderName = $leader->pictureArray()['name'];
+    $leaderID = $leader->pictureArray()['id'];
 
+    echo
+    "    
+    <h3>".$party->partyRoles->partyLeaderTitle()."</h3>
+    <a href='politician.php?id=$leaderID'>
+        <img style='max-width:120px;max-height:120px; border:4px ridge yellow;' src='$leaderPic' alt='$leaderName Logo'>
+        <br/>
+        <span>$leaderName</span>
+    </a> 
+    ";
+    if($_SESSION['loggedIn'] == true){
+        if($leaderID == 0 && $loggedInRow['party'] == $partyID){
+            echo "
+            <div style='margin-top: 8px' class='row justify-content-center'>
+                <div class='col'>
+                    <form method='post'>
+                        <input type='submit' class='btn btn-primary' name='claimLeaderSubmit' value='Claim'/>
+                    </form>
+                </div>
+            </div>
+            ";
+
+        }
+    }
+    echo "
+    <br/>
+    <hr/>
+    ";
+
+    if($party->partyRoles->getRoleCount() > 0){
+        echo "<h4>Party Roles</h4>";
+        // Party Role View
+        partyRoles($partyID);
+        //
+    }
+    $party = new Party($partyID);
+    $bio = $party->getPartyBio();
+
+    echo "
+        <pre class='partyBioBox'>$bio</pre>
+    ";
 
 }
 

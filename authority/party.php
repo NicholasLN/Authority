@@ -85,51 +85,9 @@ if (isset($_GET['id'])) {
                 ?>
 
                 <hr/>
-                <h3><? echo $party->partyRoles->partyLeaderTitle(); ?></h3>
-
-                <?
-                $leader = $party->getPartyLeader();
-
-                $leaderPic = $leader->pictureArray()['picture'];
-                $leaderName = $leader->pictureArray()['name'];
-                $leaderID = $leader->pictureArray()['id'];
-
-                echo
-                "
-                    <a href='politician.php?id=$leaderID'>
-                        <img style='max-width:120px;max-height:120px; border:4px ridge yellow;' src='$leaderPic' alt='$leaderName Logo'>
-                        <br/>
-                        <span>$leaderName</span>
-                    </a> 
-                ";
-                if($_SESSION['loggedIn'] == true){
-                    if($leaderID == 0 && $loggedInRow['party'] == $partyID){
-                        echo "
-                            <div style='margin-top: 8px' class='row justify-content-center'>
-                                <div class='col'>
-                                    <form method='post'>
-                                        <input type='submit' class='btn btn-primary' name='claimLeaderSubmit' value='Claim'/>
-                                    </form>
-                                </div>
-                            </div>
-                        ";
-
-                    }
-                }
-                echo "
-                    <br/>
-                    <hr/>
-                    <h4>Party Roles</h4>
-                ";
-                // Party Role View
-                partyRoles($partyID);
-                //
-                ?>
-
-                <hr/>
                 <div class="row justify-content-center">
                     <div class="col">
-                        <a href="party.php?id=<? echo $partyID ?>&mode=members" class="btn btn-primary">Members</a>
+                        <a href="party.php?id=<? echo $partyID ?>&mode=members#members" class="btn btn-primary">Members</a>
                         <a href="party.php?id=<? echo $partyID ?>&mode=overview" class="btn btn-primary">Overview</a>
                         <?
                             if($party->getPartyDiscordCode() != "0"){

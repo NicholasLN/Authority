@@ -94,6 +94,15 @@ class PartyRoles
         }
 
     }
+    public function getRoleCount(){
+        $i = 0;
+        foreach($this->partyRoleJson as $roleName=>$roleDetails){
+            if($roleName != $this->partyLeaderTitle()) {
+                $i += 1;
+            }
+        }
+        return $i;
+    }
 
 
 }
