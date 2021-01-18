@@ -1,18 +1,3 @@
--- Dumping structure for table jwjfgexukw.demodata
-CREATE TABLE IF NOT EXISTS `demodata` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `state` varchar(255) DEFAULT NULL,
-  `genderName` text,
-  `gender` int(11) DEFAULT NULL,
-  `age` varchar(255) DEFAULT NULL,
-  `raceName` text,
-  `race` int(11) DEFAULT NULL,
-  `pop` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2624 DEFAULT CHARSET=latin1;
-
--- Dumping data for table jwjfgexukw.demodata: ~2,448 rows (approximately)
-/*!40000 ALTER TABLE `demodata` DISABLE KEYS */;
 INSERT INTO `demodata` (`id`, `state`, `genderName`, `gender`, `age`, `raceName`, `race`, `pop`) VALUES
 	(1, 'Alabama', 'Male', 0, 'Minors', 'White', 1, 495751),
 	(2, 'Alabama', 'Male', 0, 'Young Adults', 'White', 1, 164142),
