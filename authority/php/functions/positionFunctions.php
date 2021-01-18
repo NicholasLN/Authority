@@ -35,12 +35,13 @@ function getPositionFontColor($pos)
     $gradientColors = array($red,$lightred,$grey,$grey,$lightblue,$blue);
     $rgb = selectColor($gradientColors, $pos);
 
-    if($pos > -0.5 && $pos < 0.5) {
-        return 'rgb(0,0,0)';
+    if($pos < 0.1 && $pos > -0.1){
+        return "rgb(0,0,0)";
     }
     else {
         return $rgb;
     }
+
 }
 function getEcoPositionName($position){
     $str = "";
@@ -61,13 +62,13 @@ function getEcoPositionName($position){
         case ($position > -2) && ($position <= -1):
             $str = "Slightly Left Wing";
             break;
-        case ($position > -1) && ($position < 0):
+        case ($position > -1) && ($position < -0.1):
             $str = "Center Left";
             break;
-        case $position == 0:
+        case $position >= -0.1 && $position <= 0.1:
             $str = "Mixed Capitalism";
             break;
-        case ($position > 0) && ($position < 1):
+        case ($position > 0.1) && ($position < 1):
             $str = "Center Right";
             break;
         case ($position >= 1) && ($position < 2):
@@ -109,13 +110,13 @@ function getSocPositionName($position){
         case ($position > -2) && ($position <= -1):
             $str = "Slightly Left Wing";
             break;
-        case ($position > -1) && ($position < 0):
+        case ($position > -1) && ($position < -0.1):
             $str = "Center Left";
             break;
-        case $position == 0:
-            $str = "Centrism";
+        case $position >= -0.1 && $position <= 0.1:
+            $str = "Centrist";
             break;
-        case ($position > 0) && ($position < 1):
+        case ($position > 0.1) && ($position < 1):
             $str = "Center Right";
             break;
         case ($position >= 1) && ($position < 2):
