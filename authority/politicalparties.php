@@ -72,8 +72,11 @@ if(isset($_GET['country'])){
                             $socIdeologyRGB = getPositionFontColor($party->partyRow['socPos']);
                             $ecoIdeologyRGB = getPositionFontColor($party->partyRow['ecoPos']);
 
-                            $socIdeology = getSocPositionName($party->partyRow['socPos']);
-                            $ecoIdeology = getEcoPositionName($party->partyRow['ecoPos']);
+                            $socNum = $party->getVariable("socPos");
+                            $ecoNum = $party->getVariable("ecoPos");
+
+                            $socIdeology = getSocPositionName($socNum);
+                            $ecoIdeology = getEcoPositionName($ecoNum);
 
                             // if party has members and mode is not defunct
                             if($members > 0 && !$defunct) {
@@ -103,9 +106,9 @@ if(isset($_GET['country'])){
                                             <hr/>
                                             <span><b>Members: $members</b></span>
                                             <hr/>
-                                            <span><b>Social Ideology: <span style='color:$socIdeologyRGB'>$socIdeology</span></b></span>
+                                            Social Ideology: <span style='font-weight: bold;font-family: Ebrima;'><span style='color:$socIdeologyRGB'>$socIdeology ($socNum)</span></span>
                                             <br/>
-                                            <span><b>Economic Ideology: <span style='color:$ecoIdeologyRGB'>$ecoIdeology</span></b></span>
+                                            Economic Ideology: <span style='font-weight: bold;font-family: Ebrima;'><span style='color:$ecoIdeologyRGB'>$ecoIdeology ($ecoNum)</span></span>
                                         </div>
                                     </div>                        
                                 </div>
