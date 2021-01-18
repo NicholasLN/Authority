@@ -8,7 +8,10 @@ if($result = $db->query($query)) {
 
         $user = new User($row['id']);
         $party = new Party($row['party']);
-        $partyInfluenceGross = $user->getUserPartyVotes() * 3;
+
+        $baseGain = 2;
+
+        $partyInfluenceGross = $user->getUserPartyVotes() * 3 + $baseGain;
 
 
         $socDiff = abs($user->getVariable("socPos") - $party->partyRow['socPos']);
