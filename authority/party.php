@@ -31,6 +31,7 @@ if (isset($_GET['id'])) {
     <link rel="stylesheet" href="css/party.css?id=5"/>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.23/b-1.6.5/datatables.min.js"></script>
     <script src='https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js'></script>
+    <script src='https://cdn.datatables.net/plug-ins/1.10.22/sorting/natural.js'></script>
 
 </head>
 <? echoNavBar() ?>
@@ -121,7 +122,10 @@ if (isset($_GET['id'])) {
             $('#members').DataTable({
                 "responsive": true,
                 "autoWidth": false,
-                "order":[[3,"desc"]]
+                "order":[[3,"desc"]],
+                columnDefs: [
+                    { type: 'natural', targets: 0 }
+                ]
 
             });
         });

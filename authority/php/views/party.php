@@ -1,6 +1,7 @@
 <?php
 
-function partyRoles($partyID){
+function partyRoles($partyID)
+{
     $party = new Party($partyID);
 
     echo "
@@ -15,9 +16,11 @@ function partyRoles($partyID){
 }
 
 
-function partyMembersTable($partyID){
+function partyMembersTable($partyID)
+{
     global $db;
     global $onlineThreshold;
+    global $loggedInUser;
     $party = new Party($partyID);
 
     echo "
@@ -35,8 +38,8 @@ function partyMembersTable($partyID){
                 </thead>
             ";
     $query = "SELECT * FROM users WHERE party='$partyID' and lastOnline > '$onlineThreshold'";
-    if($result = $db->query($query)) {
-        while($row = $result->fetch_assoc()) {
+    if ($result = $db->query($query)) {
+        while ($row = $result->fetch_assoc()) {
             $user = new User($row['id']);
 
             $userPic = $user->pictureArray()['picture'];
@@ -53,6 +56,9 @@ function partyMembersTable($partyID){
             $votingForName = $votingFor->pictureArray()['name'];
             $votingForID = $votingFor->pictureArray()['id'];
 
+
+            $totalInfluence = $party->getTotalPartyInfluence();
+            $percentage = round($user->getVariable("partyInfluence") / $totalInfluence * 100,2) . "%";
             echo "
                 <tr>
                     <td>
@@ -69,19 +75,21 @@ function partyMembersTable($partyID){
                         <p style='vertical-align: center'>$userRegion</p>
                     </td>
                     <td>
-                        $userPartyInfluence
+                        <span>$percentage</span>
                     </td>
                     <td>
                         <span>$votes</span>      
                         ";
-                        if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true) {
-                        echo "                  
+            if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true) {
+                if ($loggedInUser->getVariable("party") == $partyID) {
+                    echo "                  
                         <form method='POST'>
                             <input type='submit' class='btn btn-primary' value='Vote For' name='voteFor'/>
                             <input type='hidden' name='voteForID' value='$userID'/>
                         </form>";
-                        }
-                        echo "
+                }
+            }
+            echo "
                     </td>
                     <td>
                         <a href='politician.php?id=$votingForID'>
@@ -95,8 +103,12 @@ function partyMembersTable($partyID){
         }
     }
     echo "</table>";
+    echo '<a href="#" title="Header" data-toggle="popover" data-placement="top" data-content="Content">Click</a>';
+
 }
-function partyOverview($partyID){
+
+function partyOverview($partyID)
+{
     global $loggedInRow;
     $party = new Party($partyID);
 
@@ -110,16 +122,16 @@ function partyOverview($partyID){
     $leaderID = $leader->pictureArray()['id'];
 
     echo
-    "    
-    <h3>".$party->partyRoles->partyLeaderTitle()."</h3>
+        "    
+    <h3>" . $party->partyRoles->partyLeaderTitle() . "</h3>
     <a href='politician.php?id=$leaderID'>
         <img style='max-width:120px;max-height:120px; border:4px ridge yellow;' src='$leaderPic' alt='$leaderName Logo'>
         <br/>
         <span>$leaderName</span>
     </a> 
     ";
-    if($_SESSION['loggedIn'] == true){
-        if($leaderID == 0 && $loggedInRow['party'] == $partyID){
+    if ($_SESSION['loggedIn'] == true) {
+        if ($leaderID == 0 && $loggedInRow['party'] == $partyID) {
             echo "
             <div style='margin-top: 8px' class='row justify-content-center'>
                 <div class='col'>
@@ -137,7 +149,7 @@ function partyOverview($partyID){
     <hr/>
     ";
 
-    if($party->partyRoles->getRoleCount() > 0){
+    if ($party->partyRoles->getRoleCount() > 0) {
         echo "<h4>Party Roles</h4>";
         // Party Role View
         partyRoles($partyID);
