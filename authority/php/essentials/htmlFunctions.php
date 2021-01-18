@@ -1,18 +1,29 @@
 <?php
-    function redirect($url){
-        echo '<script type="text/javascript">';
-        echo 'window.location.href="'.$url.'";';
-        echo '</script>';
-        echo '<noscript>';
-        echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
-        echo '</noscript>';
-    }
     function alert($header,$msg){
         echo <<<ALERT
         <script>
             alertify.alert("$header", "$msg");
         </script>
 ALERT;
+    }
+    function redirect($url, $header="",$msg="", $s="&"){
+        if($header=="") {
+            echo '<script type="text/javascript">';
+            echo 'window.location.href="' . $url . '";';
+            echo '</script>';
+            echo '<noscript>';
+            echo '<meta http-equiv="refresh" content="0;url=' . $url . '" />';
+            echo '</noscript>';
+        }
+        else{
+            $url .= "$s"."alertHeader=$header&alertMsg=$msg";
+            echo '<script type="text/javascript">';
+            echo 'window.location.href="' . $url . '";';
+            echo '</script>';
+            echo '<noscript>';
+            echo '<meta http-equiv="refresh" content="0;url=' . $url . '" />';
+            echo '</noscript>';
+        }
     }
     function echoNoScript(){
         echo '<noscript>
