@@ -114,4 +114,18 @@ class User
         }
         return $array;
     }
+    public function deleteUser(){
+        global $db;
+        if ($this->getUserRow()['profilePic'] != "images/userPics/default.jpg") {
+            $pic = substr($this->getUserRow()['profilePic'], 0, strpos($this->getUserRow()[ 'profilePic'], "?ver="));
+            try {
+                unlink($pic);
+            }
+            catch (Exception $exception){
+
+            }
+        }
+        $query = "DELETE FROM users WHERE id=".$this->userID;
+        $db->query($query);
+    }
 }
