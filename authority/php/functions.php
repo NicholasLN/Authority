@@ -1,7 +1,7 @@
 <?php
 session_start();
 $onlineThreshold = time() - 259200;
-$_SERVER['REMOTE_ADDR'] = $_SERVER['CF_CONNECTING_IP'];
+$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
 
 
 $serverConfigFile = file_get_contents('./config/server.json');
