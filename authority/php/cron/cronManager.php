@@ -20,6 +20,8 @@ else{
 include '../functionsOnly.php';
 
 
+// Party Position Drift script
+include 'partyPositionDrift.php';
 
-
+// Party Power script
 include 'partyPower.php';
