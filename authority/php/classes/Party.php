@@ -72,7 +72,32 @@ class Party
             return null;
         }
     }
-
+    private function type($var): string
+    {
+        if ($var == "string") {
+            return "si";
+        }
+        if ($var == "integer") {
+            return "ii";
+        }
+        if ($var == "double") {
+            return "di";
+        }
+    }
+    public function updateVariable($variable, $to)
+    {
+        global $db;
+        $st = $db->prepare("UPDATE parties SET " . $variable . " = ? WHERE id=?");
+        $st->bind_param($this->type(gettype($to)), $to, $this->partyID);
+        $st->execute();
+    }
+    public function getTotalPartyInfluence(){
+        global $db;
+        global $onlineThreshold;
+        $total = $db->query("SELECT SUM(partyInfluence) as partyInfluenceSum FROM users WHERE party = ".$this->partyID." AND lastOnline>$onlineThreshold");
+        $total = $total->fetch_assoc();
+        return round($total['partyInfluenceSum'],2);
+    }
     public function pictureArray($profile = false): array
     {
         $partyID = $this->partyID;
