@@ -6,8 +6,7 @@ function echoNavBar(): void
     global $loggedInID;
 
     if ($_SESSION['loggedIn'] == False) {
-        echo <<<NAV
-     
+        ?>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class='navbar-brand' href='index.php' style='margin-left:15px'>
                 <b>AUTHORITY<small>Glorified Profile Sim™</small></b>
@@ -26,9 +25,9 @@ function echoNavBar(): void
                 </div>
             </div>
         </nav>
-NAV;
+    <?
     } else {
-        echo "
+    ?>
     
         <nav class='navbar navbar-expand-lg navbar-dark bg-dark'>
             <a class='navbar-brand' href='index.php' style='margin-left:15px'>
@@ -44,10 +43,10 @@ NAV;
                         <li class='dropdown'>
                             <a class='nav-link dropdown-toggle' id='navBarDrop' role='button' data-toggle='dropdown'>
                                 <i class='fas fa-user'></i>
-                                " . $loggedInRow['politicianName'] . "
+                                <? echo $loggedInRow['politicianName'] ?>
                             </a>              
                             <ul class='dropdown-menu'>
-                                <a class='dropdown-item' href='politician.php?id=" . $loggedInRow['id'] . "'>Profile</a>
+                                <a class='dropdown-item' href='politician.php?id=<? echo $loggedInID ?>'>Profile</a>
                                 <a class='dropdown-item' href='editprofile.php'>Edit Profile</a>
                                 <form method='post'><input class='dropdown-item' type='submit' value='Log Out' name='logout'/></form>
                             </ul>            
@@ -55,35 +54,33 @@ NAV;
                         <li class='dropdown'>
                             <a class='nav-link dropdown-toggle' id='navBarDrop' role='button' data-toggle='dropdown'>
                                 <i class='fas fa-flag'></i>
-                                " . $loggedInRow['nation'] . "
+                                <? echo $loggedInRow['nation'] ?>
                             </a>              
                             <ul class='dropdown-menu'>
-                                <a class='dropdown-item' href='politicalparties.php?country=" . $loggedInRow['nation'] . "'>Political Parties</a>
+                                <a class='dropdown-item' href='politicalparties.php?country=<? echo $loggedInRow['nation'] ?>'>Political Parties</a>
                             </ul>            
                         </li>
-                        ";
+                        <?
                         if($loggedInRow['party'] != 0){
-                        $party = new Party($loggedInRow['party']);
-                        $partyName = $party->getPartyName();
-                        $partyID = $party->getVariable("id");
-                        echo "
+                            $party = new Party($loggedInRow['party']);
+                            $partyName = $party->getPartyName();
+                            $partyID = $party->getVariable("id");
+                        ?>
                         <li class='dropdown'>
                             <a class='nav-link dropdown-toggle' id='navBarDrop' role='button' data-toggle='dropdown'>
                                 <i class='fas fa-handshake'></i>
-                                $partyName
-                            </a>              
+                                <? echo $partyName ?>
+                            </a>
                             <ul class='dropdown-menu'>
-                                <a class='dropdown-item' href='party.php?id=$partyID#overview'>Party Overview</a>
-                                <a class='dropdown-item' href='party.php?id=$partyID&mode=members#members'>Party Members</a>
-                            </ul>            
-                        </li>                                                     
-                        ";
-
+                                <a class='dropdown-item' href='party.php?id=<? echo $partyID ?>#overview'>Party Overview</a>
+                                <a class='dropdown-item' href='party.php?id=<? echo $partyID ?>&mode=members#members'>Party Members</a>
+                            </ul>
+                        </li>
+                        <?
                         }
-
                         echo "
-                    </ul>
-
+                    </ul>";
+                    echo"
                 </div>
             </div>
         </nav>   
