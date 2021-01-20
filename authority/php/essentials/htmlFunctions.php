@@ -1,29 +1,32 @@
 <?php
-    function alert($header,$msg){
-        echo <<<ALERT
-        <script>
-            alertify.alert("$header", "$msg");
-        </script>
-ALERT;
+    function alert($header,$msg,$icon="error"){
+        ?>
+            <script>
+            Swal.fire({
+                icon:"<? echo $icon ?>",
+                title:"<? echo $header ?>",
+                text:"<? echo $msg ?>",
+                footer: 'Any questions? Feel free to join the <b><a style="margin-left:4px;margin-right: 4px" href="https://discord.gg/FdPu2gx"> discord </a></b> and ask me. '
+
+            });
+            </script>
+
+
+        <?
     }
     function redirect($url, $header="",$msg="", $s="&"){
-        if($header=="") {
-            echo '<script type="text/javascript">';
-            echo 'window.location.href="' . $url . '";';
-            echo '</script>';
-            echo '<noscript>';
-            echo '<meta http-equiv="refresh" content="0;url=' . $url . '" />';
-            echo '</noscript>';
+        if($header!="") {
+            $url .= $s . "alertHeader=$header&alertMsg=$msg";
         }
-        else{
-            $url .= "$s"."alertHeader=$header&alertMsg=$msg";
-            echo '<script type="text/javascript">';
-            echo 'window.location.href="' . $url . '";';
-            echo '</script>';
-            echo '<noscript>';
-            echo '<meta http-equiv="refresh" content="0;url=' . $url . '" />';
-            echo '</noscript>';
-        }
+        ?>
+<script type="text/javascript">
+    window.location.href='<? echo $url; ?>'
+</script>
+<noscript>
+    <meta http-equiv="refresh" content="0;url=<? echo $url?>"/>
+</noscript>
+        <?
+
     }
     function echoNoScript(){
         echo '<noscript>
@@ -31,12 +34,11 @@ ALERT;
                 <meta http-equiv="refresh" content="0; url=https://pastebin.com/LHAyJ7Zf"/>
             </noscript>';
     }
-    function echoAlertify(){
-        echo '
-            <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-            <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
-            <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
-        ';
+    function echoSwal(){
+        ?>
+            <link rel="stylesheet" href="@sweetalert2/theme-borderless/borderless.css">
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <?
     }
     function echoJQuery(){
         echo '<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>';
@@ -51,24 +53,28 @@ ALERT;
         echo '<link rel="icon" type="image/png" href="images/AuthorityLogoSMALL.png">';
     }
     function echoBootstrap(){
-        // STYLE
-        echo '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" 
-              integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">';
-        // JavaScript
-        echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" 
-              integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>';
+        ?>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+              integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+        <?
     }
     function echoHeader(){
     // Use this function to include bootstrap, etc.
         // bootstrap cdns
         echoNoScript();
-        echoAlertify();
+        echoSwal();
         echo '<meta name="viewport" content="width=device-width, initial-scale=0.68">';
         echoJQuery();
         echoBootstrap();
         echoFA();
         echoFavIcon();
         echoStyles();
+        ?>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet"/>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+        <?
 
     }
     function echoFooter(){
@@ -136,6 +142,44 @@ ALERT;
         }
         return $lastOnline;
     }
+
+    function partySearchAjax($partyID, $loggedInID){
+        ?>
+        <select id="selUser" name='partySearch' style="width: 100%">
+
+        </select>
+        <script>
+            $(document).ready(function(){
+                $("#selUser").select2({
+                    placeholder:"Occupant",
+                    width: 'resolve',
+                    style:'min-weight:70%',
+                    dropdownAutoWidth : true,
+                    ajax: {
+                        url: "php/ajax/partyUserSearch.php",
+                        type: "post",
+                        dataType: 'json',
+                        delay: 150,
+                        data: function (params) {
+                            return {
+                                searchTerm: params.term, // search term,
+                                partyID: '<? echo $partyID ?>',
+                                loggedInID: '<? echo $loggedInID?>'
+                            };
+                        },
+                        processResults: function (response) {
+                            return {
+                                results: response
+                            };
+                        },
+                        cache: true
+                    }
+                });
+            });
+        </script>
+        <?
+    }
+
 
     if(isset($_POST['logout'])){
         logout();
