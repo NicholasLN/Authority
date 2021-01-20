@@ -81,7 +81,7 @@ if(isset($_GET['country'])){
                             // if party has members and mode is not defunct
                             if($members > 0 && !$defunct) {
                                 echo "
-                                <div class='col-sm-6'>
+                                <div style='padding:4px;' class='col-sm-6'>
                                     <div class='card'>
                                         <div class='partyInfo'>
                                             <div class='partyImgContainer'>
