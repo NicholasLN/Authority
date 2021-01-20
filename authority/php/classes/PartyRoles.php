@@ -77,9 +77,15 @@ class PartyRoles
 
         }
     }
+
     public function partyLeaderTitle(){
         return $this->partyLeaderArray()['title'];
     }
+    public function partyLeaderID(){
+        return $this->partyLeaderArray()['occupant'];
+    }
+
+
     public function getUserTitle(int $userID){
         $hasRole = 0;
         foreach($this->partyRoleJson as $roleName=>$roleDetails){
