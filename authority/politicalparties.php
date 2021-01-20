@@ -21,7 +21,7 @@ if(isset($_GET['country'])){
     <meta charset="utf-8"/>
     <title>Parties | AUTHORITY</title>
     <? echoHeader(); ?>
-    <link rel="stylesheet" href="css/partylist.css?id=2"/>
+    <link rel="stylesheet" href="css/partylist.css?id=14"/>
 </head>
 <? echoNavBar() ?>
 <body>
@@ -100,9 +100,7 @@ if(isset($_GET['country'])){
                                                 <span>$leaderName</span>
                                             </a>
                                             <hr/>
-                                            <p class='partyBioContainer'>
-                                            $bio
-                                            </p>
+                                            <pre class='partyBioContainer'>$bio</pre>
                                             <hr/>
                                             <span><b>Members: $members</b></span>
                                             <hr/>
