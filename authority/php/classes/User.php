@@ -6,10 +6,24 @@
 class User
 {
     public $userID;
+    public $isUser;
 
     public function __construct(int $userID)
     {
+        global $db;
         $this->userID = $userID;
+
+
+        $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt->bind_param("i",$userID);
+        $stmt->execute();
+        if($stmt->get_result()->num_rows == 1){
+            $this->isUser = true;
+        }
+        else{
+            $this->isUser = false;
+        }
+
     }
     /**
      * Grabs user object based on their username.
