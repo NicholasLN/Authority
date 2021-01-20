@@ -104,6 +104,10 @@ a{
     background-color: #111111;
     color:white;
 }
+.select2-container {
+    width: auto !important;
+}
+
 @media only screen and (max-width:768px){
     .gameContainer{
         font-family: "Bahnschrift", sans-serif;
@@ -113,5 +117,12 @@ a{
         text-align:center;
         background-color: rgba(255,255,255,0.88);
         margin: auto;
+    }
+    .footerBar{
+        width:100vw;
+    }
+    .table table-striped{
+        padding: 2px;
+
     }
 }
