@@ -183,16 +183,15 @@ function partyControls($partyID){
                         </tr>
                         </thead>
                         <tr>
+                            <? echo $party->partyRoles->getRoleCount() ?>
                             <td><b>Create New Position</b></td>
                             <td>
                                 <div class="row">
                                     <div class="col-sm">
-                                        <input class="form-control" type="input" placeholder="Role Name (25 char. max)"/>
+                                        <input class="form-control" name='roleName' type="input" placeholder="Role Name (25 char. max)"/>
                                     </div>
-                                </div>
-                                <div class="row" style="margin-top:3px;">
                                     <div class="col-sm">
-                                        <? partySearchAjax($partyID,$loggedInUser->userID) ?>
+                                        <?  partySearchAjax($partyID,$loggedInUser->userID) ?>
                                     </div>
                                 </div>
                                 <div class="row" style="margin-top:8px;">
@@ -201,27 +200,39 @@ function partyControls($partyID){
                                     <hr/>
                                     <div class="row" style="text-align: left">
                                         <div class="col-sm-4">
-                                            <input class="form-check-input" name="sendFundsCheck" type="checkbox" value="" id="sendFunds">
+                                            <input class="form-check-input" name="roleCheck[]" type="checkbox" value="sendFundsCheck" id="sendFunds">
                                             <label class="form-check-label" for="sendFunds">
                                                 Send Funds
                                             </label>
                                         </div>
                                         <div class="col-sm-4">
-                                            <input class="form-check-input" name="feeChangeCheck" type="checkbox" value="" id="proposeFeeChange">
+                                            <input class="form-check-input" name="roleCheck[]" type="checkbox" value="feeChangeCheck" id="proposeFeeChange">
                                             <label class="form-check-label" for="proposeFeeChange">
                                                 Fee Change
                                             </label>
                                         </div>
                                         <div class="col-sm-4">
-                                            <input class="form-check-input" name="delayVoteCheck" type="checkbox" value="" id="delayPartyVote">
+                                            <input class="form-check-input" name="roleCheck[]" type="checkbox" value="delayVoteCheck" id="delayPartyVote">
                                             <label class="form-check-label" for="delayPartyVote">
                                                 Delay Party Votes
                                             </label>
                                         </div>
                                         <div class="col-sm-4">
-                                            <input class="form-check-input" name="purgeMemberCheck" type="checkbox" value="" id="purgeMember">
+                                            <input class="form-check-input" name="roleCheck[]" type="checkbox" value="purgeMemberCheck" id="purgeMember">
                                             <label class="form-check-label" for="purgeMember">
                                                 Purge Members
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input class="form-check-input" name="roleCheck[]" type="checkbox" value="fundingReqCheck" id="fundingReq">
+                                            <label class="form-check-label" for="fundingReq">
+                                                Approve Funding Req.
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input class="form-check-input" name="roleCheck[]" type="checkbox" value="partyAnnounceCheck" id="partyAnnounce">
+                                            <label class="form-check-label" for="partyAnnounce">
+                                                Make Party Announcements
                                             </label>
                                         </div>
                                     </div>
@@ -240,14 +251,14 @@ function partyControls($partyID){
                                 <p style="text-align:left;margin-bottom:1px;margin-left:2px;">Accepted File Types:
                                     .png, .jpeg, .gif, .bmp</p>
                             </td>
-                            <td><input class="btn btn-primary" value="Change Party Picture" type="submit"
+                            <td><input class="btn btn-primary" value="Change Picture" type="submit"
                                        name="newPartyPicSubmit"/></td>
                         </tr>
                         <tr>
                             <td><b>Change Party Description</b></td>
                             <td><textarea rows='6' class='form-control'
                                           name="newPartyDesc"><?php echo $party->getPartyBio() ?></textarea></td>
-                            <td><input class="btn btn-primary" value="Change Party Bio" type="submit"
+                            <td><input class="btn btn-primary" value="Change Description" type="submit"
                                        name="newPartyDescSubmit"/></td>
                         </tr>
                         <tr>
@@ -256,7 +267,7 @@ function partyControls($partyID){
                                 <strong style="font-weight:600">Only the code at the end of the link!</strong> Ex: 9v94Fad
                                 <input type='input' class='form-control' name="newPartyDiscord" value='<?php echo $party->getPartyDiscordCode() ?>'>
                             </td>
-                            <td><input class="btn btn-primary" value="Change Party Discord Invite" type="submit"
+                            <td><input class="btn btn-primary" value="Change Discord" type="submit"
                                        name="newPartyDiscordSubmit"/></td>
                         </tr>
                     </table>
