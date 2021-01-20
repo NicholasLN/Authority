@@ -77,15 +77,12 @@ class PartyRoles
 
         }
     }
-
     public function partyLeaderTitle(){
         return $this->partyLeaderArray()['title'];
     }
     public function partyLeaderID(){
         return $this->partyLeaderArray()['occupant'];
     }
-
-
     public function getUserTitle(int $userID){
         $hasRole = 0;
         foreach($this->partyRoleJson as $roleName=>$roleDetails){
@@ -98,9 +95,9 @@ class PartyRoles
             return "Member";
 
         }
-
     }
-    public function getRoleCount(){
+    public function getRoleCount(): int
+    {
         $i = 0;
         foreach($this->partyRoleJson as $roleName=>$roleDetails){
             if($roleName != $this->partyLeaderTitle()) {
@@ -109,6 +106,29 @@ class PartyRoles
         }
         return $i;
     }
+    public function appendPermission($roleName,$arr){
+        foreach($this->partyRoleJson as $key=>&$value){
+            if($key == $roleName){
+                $value['perms']+=$arr;
+            }
+        }
+    }
+    public function createNewRole($roleName, $roleOccupant, $rolePerms){
+        $arr = array(
+            $roleName=>array(
+                "occupant"=>(int)$roleOccupant,
+                "perms"=>array()
+            )
+        );
+        $this->partyRoleJson = array_merge($this->partyRoleJson,$arr);
 
+        foreach($rolePerms as $key=>$value){
+            $permArray = array($value=>1);
+            $this->appendPermission($roleName,$permArray);
+        }
+
+        $this->updateRoles();
+
+    }
 
 }
