@@ -10,8 +10,6 @@ if ($_SESSION['loggedIn']) {
     <meta charset="utf-8"/>
     <title>Register | AUTHORITY</title>
     <? echoHeader(); ?>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 <? echoNavBar() ?>
@@ -122,6 +120,7 @@ if ($_SESSION['loggedIn']) {
         <br/>
         <br/>
         <br/>
+
     </div>
     <? echoFooter() ?>
 </div>
