@@ -74,7 +74,7 @@
         $user = new User($userID);
 
         $user->deleteUser();
-        redirect("admin.php","Success!","Successfully deleted ID: $userID","?");
+        redirect("admin.php","Success!","Successfully deleted ID: $userID","success","?");
     }
     if(isset($_POST['controlUserSubmit'])){
         if($loggedInRow['admin']==1) {
