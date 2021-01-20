@@ -128,4 +128,18 @@ class User
         $query = "DELETE FROM users WHERE id=".$this->userID;
         $db->query($query);
     }
+    public function leaveCurrentParty(){
+        $party = new Party($this->getUserRow()['party']);
+        $party->partyRoles->userLeave($this->userID);
+
+        $this->updateVariable("party",0);
+        $this->updateVariable("partyInfluence",0);
+        $this->updateVariable("partyVotingFor",0);
+        $this->updateSI($this->getUserRow()['hsi'] * .50);
+
+        global $db;
+        $query = "UPDATE users SET partyVotingFor = 0 WHERE partyVotingFor=".$this->userID;
+        $db->query($query);
+
+    }
 }
