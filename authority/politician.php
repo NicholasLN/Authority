@@ -22,9 +22,9 @@ if (isset($_GET['id'])) {
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
+    <? echoHeader(); ?>
     <? politicianMeta($profileUser); ?>
     <title><? echo $profileRow['politicianName'] ?> | AUTHORITY 3.0</title>
-    <? echoHeader(); ?>
     <link href="css/profile.css?id=12" rel="stylesheet"/>
 </head>
 <? echoNavBar() ?>
