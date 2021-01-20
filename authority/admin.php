@@ -44,8 +44,17 @@
                             <td>
                                 <input type="submit" class="btn btn-primary" value="Delete User" name="deleteUserSubmit"/>
                             </td>
-
-
+                        </tr>
+                        <tr>
+                            <td><b>Assume Control of User</b></td>
+                            <td>
+                                <label for="control">
+                                    <input id='control' type="input" class="form-control" placeholder="User ID" name="assumeControlUserID"/>
+                                </label>
+                            </td>
+                            <td>
+                                <input type="submit" class="btn btn-primary" value="Control User" name="controlUserSubmit"/>
+                            </td>
                         </tr>
                     </table>
                 </form>
@@ -67,4 +76,9 @@
         $user->deleteUser();
         redirect("admin.php","Success!","Successfully deleted ID: $userID","?");
     }
-?>
+    if(isset($_POST['controlUserSubmit'])){
+        if($loggedInRow['admin']==1) {
+            $_SESSION['loggedInID'] = $_POST['assumeControlUserID'];
+            redirect("politician.php?id=" . $_SESSION['loggedInID']);
+        }
+    }
