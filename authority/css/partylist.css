@@ -16,8 +16,15 @@
     max-height:12%;
 }
 .partyBioContainer{
-    max-height:55%;
+    font-family: Bahnschrift,"sans-serif";
     text-align: left;
+    font-size: 16px;
+    background-color: rgba(224,224,224,0.88);
+    height:200px;
+    max-height: 25vh;
+    vertical-align: center;
+    white-space: pre-wrap;
+    padding: 15px;
     overflow: auto;
 }
 .partyImgLogo{
