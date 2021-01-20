@@ -4,18 +4,17 @@ function partyRoles($partyID)
 {
     $party = new Party($partyID);
 
-    echo "
+    ?>
         <div class='row justify-content-center'>
-    ";
+    <?
     $party->partyRoles->echoRoleCard();
-
-    echo "
+    ?>
         </div>
-    ";
-
+    <?
 }
 
 
+//TODO: This should become ajax as well. Datatables has an ajax ability.
 function partyMembersTable($partyID)
 {
     global $db;
@@ -23,20 +22,21 @@ function partyMembersTable($partyID)
     global $loggedInUser;
     $party = new Party($partyID);
 
-    echo "
-            <br/>   
-            <table class='table table-striped table-responsive' id='members' style='vertical-align: center'>
-                <thead>
+    ?>
+            <br/>
+            <div class="table-responsive">
+            <table class='table table-striped' id='members' style='vertical-align: center'>
+                <thead class="dark">
                     <tr>
-                        <td>Politician</td>
-                        <td>Party Role</td>
-                        <td>Region</td>
-                        <td>Party Influence</td>
-                        <td>Votes</td>
-                        <td>Voting For</td>
+                        <th style="width:22%">Politician</th>
+                        <th style="width:16%">Party Role</th>
+                        <th style="width:16%">Region</th>
+                        <th style="width:16%">Party Influence</th>
+                        <th style="width:10%">Votes</th>
+                        <th style="width:16%">Voting For</th>
                     </tr>
                 </thead>
-            ";
+    <?
     $query = "SELECT * FROM users WHERE party='$partyID' and lastOnline > '$onlineThreshold'";
     if ($result = $db->query($query)) {
         while ($row = $result->fetch_assoc()) {
@@ -59,50 +59,56 @@ function partyMembersTable($partyID)
 
             $totalInfluence = $party->getTotalPartyInfluence();
             $percentage = round($user->getVariable("partyInfluence") / $totalInfluence * 100,2) . "%";
-            echo "
+            ?>
                 <tr>
                     <td>
-                        <a href='politician.php?id=$userID'>
-                            <img style='max-width:40px;max-height:40px;' src='$userPic'/>
+                        <a href='politician.php?id=<? echo $userID ?>'>
+                            <img style='max-width:40px;max-height:40px;' src='<? echo $userPic ?>' alt=''/>
         
-                            <p style='margin: 0'>$userName</p>
+                            <p style='margin: 0'><? echo $userName ?></p>
                         </a>
                     </td>
                     <td>
-                        <p style='margin-bottom:0px'>$userRole</p>
+                        <p style='margin-bottom:0'><? echo $userRole ?></p>
                     </td>
                     <td>
-                        <p style='vertical-align: center'>$userRegion</p>
+                        <p style='vertical-align: center'><? echo $userRegion ?></p>
                     </td>
                     <td>
-                        <span>$percentage</span>
+                        <span><? echo $percentage ?></span>
                     </td>
                     <td>
-                        <span>$votes</span>      
-                        ";
+                        <span><? echo $votes ?></span>
+            <?
             if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true) {
                 if ($loggedInUser->getVariable("party") == $partyID) {
-                    echo "                  
+                    ?>
                         <form method='POST'>
                             <input type='submit' class='btn btn-primary' value='Vote For' name='voteFor'/>
-                            <input type='hidden' name='voteForID' value='$userID'/>
-                        </form>";
+                            <input type='hidden' name='voteForID' value='<? echo $userID ?>'/>
+                        </form>
+                    <?
                 }
             }
-            echo "
+            ?>
                     </td>
                     <td>
-                        <a href='politician.php?id=$votingForID'>
-                            <img style='max-width:30px;max-height:30px;' src='$votingForPic'/>
-        
-                            $votingForName
-                        </a>
+                        <div style='text-align: left'>
+                            <a href='politician.php?id=<? echo $votingForID ?>'>
+                                <img style='max-width:30px;max-height:30px;' src='<? echo $votingForPic ?>'/>
+            
+                                <? echo $votingForName ?>
+                            </a>
+                        </div>
                     </td>
                 </tr>
-            ";
+            <?
         }
     }
-    echo "</table>";
+    ?>
+        </table>
+        </div>
+    <?
     echo '<a href="#" title="Header" data-toggle="popover" data-placement="top" data-content="Content">Click</a>';
 
 }
@@ -112,11 +118,7 @@ function partyOverview($partyID)
     global $loggedInRow;
     $party = new Party($partyID);
 
-    echo "
-    ";
-
     $leader = $party->getPartyLeader();
-
     $leaderPic = $leader->pictureArray()['picture'];
     $leaderName = $leader->pictureArray()['name'];
     $leaderID = $leader->pictureArray()['id'];
@@ -132,7 +134,7 @@ function partyOverview($partyID)
     ";
     if ($_SESSION['loggedIn'] == true) {
         if ($leaderID == 0 && $loggedInRow['party'] == $partyID) {
-            echo "
+            ?>
             <div style='margin-top: 8px' class='row justify-content-center'>
                 <div class='col'>
                     <form method='post'>
@@ -140,14 +142,14 @@ function partyOverview($partyID)
                     </form>
                 </div>
             </div>
-            ";
+            <?
 
         }
     }
-    echo "
+    ?>
     <br/>
     <hr/>
-    ";
+    <?
 
     if ($party->partyRoles->getRoleCount() > 0) {
         echo "<h4>Party Roles</h4>";
@@ -158,13 +160,120 @@ function partyOverview($partyID)
     $party = new Party($partyID);
     $bio = $party->getPartyBio();
 
-    echo "
-        <pre class='partyBioBox'>$bio</pre>
-    ";
+    ?>
+        <pre class='partyBioBox'><? echo $bio ?></pre>
+    <?
 
 }
 
+function partyControls($partyID){
+    global $loggedInUser;
+    if(isset($loggedInUser)){
+        $party = new Party($partyID);
+        if($party->partyRoles->partyLeaderID() == $loggedInUser->userID){
+            ?>
+                <br/>
+                <form method="POST" enctype="multipart/form-data">
+                    <table class="table table-striped table-responsive">
+                        <thead class="dark">
+                        <tr>
+                            <th scope="col">Action</th>
+                            <th scope="col">Input</th>
+                            <th scope="col">Submit</th>
+                        </tr>
+                        </thead>
+                        <tr>
+                            <td><b>Create New Position</b></td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <input class="form-control" type="input" placeholder="Role Name (25 char. max)"/>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:3px;">
+                                    <div class="col-sm">
+                                        <? partySearchAjax($partyID,$loggedInUser->userID) ?>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:8px;">
+                                    <hr style="margin-bottom: 0"/>
+                                    <h6 style="margin: 8px 0px 8px 0px">Role Permissions (can only choose 3)</h6>
+                                    <hr/>
+                                    <div class="row" style="text-align: left">
+                                        <div class="col-sm-4">
+                                            <input class="form-check-input" name="sendFundsCheck" type="checkbox" value="" id="sendFunds">
+                                            <label class="form-check-label" for="sendFunds">
+                                                Send Funds
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input class="form-check-input" name="feeChangeCheck" type="checkbox" value="" id="proposeFeeChange">
+                                            <label class="form-check-label" for="proposeFeeChange">
+                                                Fee Change
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input class="form-check-input" name="delayVoteCheck" type="checkbox" value="" id="delayPartyVote">
+                                            <label class="form-check-label" for="delayPartyVote">
+                                                Delay Party Votes
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input class="form-check-input" name="purgeMemberCheck" type="checkbox" value="" id="purgeMember">
+                                            <label class="form-check-label" for="purgeMember">
+                                                Purge Members
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br/>
+                            </td>
+                            <td>
+                                <input type="submit" class="btn btn-primary" value="Create Position" name="createPosSubmit">
+                            </td>
 
+                        </tr>
+                        <tr>
+                            <td><b>Change Party Picture</b></td>
+                            <td>
+                                <input class="form-control" type="file" name="newPartyPicture" accept="image/*"/>
+                                <p style="text-align:left;margin-bottom:1px;margin-left:2px;">Accepted File Types:
+                                    .png, .jpeg, .gif, .bmp</p>
+                            </td>
+                            <td><input class="btn btn-primary" value="Change Party Picture" type="submit"
+                                       name="newPartyPicSubmit"/></td>
+                        </tr>
+                        <tr>
+                            <td><b>Change Party Description</b></td>
+                            <td><textarea rows='6' class='form-control'
+                                          name="newPartyDesc"><?php echo $party->getPartyBio() ?></textarea></td>
+                            <td><input class="btn btn-primary" value="Change Party Bio" type="submit"
+                                       name="newPartyDescSubmit"/></td>
+                        </tr>
+                        <tr>
+                            <td><b>Change Party Discord Code</b></td>
+                            <td>
+                                <strong style="font-weight:600">Only the code at the end of the link!</strong> Ex: 9v94Fad
+                                <input type='input' class='form-control' name="newPartyDiscord" value='<?php echo $party->getPartyDiscordCode() ?>'>
+                            </td>
+                            <td><input class="btn btn-primary" value="Change Party Discord Invite" type="submit"
+                                       name="newPartyDiscordSubmit"/></td>
+                        </tr>
+                    </table>
+                </form>
+
+            <?
+
+        }
+        else{
+            redirect("party.php?id=$partyID&mode=overview","Error","You do not have the appropriate permissions to be here.");
+        }
+    }
+    else{
+        redirect("party.php?id=$partyID&mode=overview","Error","You do not have the appropriate permissions to be here.");
+    }
+
+}
 
 
 
