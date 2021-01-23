@@ -1,5 +1,5 @@
 <?php
-function alert($header,$msg,$icon="error"){
+function alert($header,$msg,$icon="error",$changeGet=false){
     ?>
     <script>
         Swal.fire({
@@ -7,8 +7,16 @@ function alert($header,$msg,$icon="error"){
             title:"<? echo $header ?>",
             text:"<? echo $msg ?>",
             footer: 'Any questions? Feel free to join the <b><a style="margin-left:4px;margin-right: 4px" href="https://discord.gg/FdPu2gx"> discord </a></b> and ask me. '
-
         });
+        <?
+        if($changeGet){
+        ?>
+        var queryParams = new URLSearchParams(window.location.search);
+        queryParams.set("noAlert", "true");
+        history.replaceState(null, null, "?"+queryParams.toString());
+        <?
+        }
+        ?>
     </script>
 
 
@@ -16,7 +24,7 @@ function alert($header,$msg,$icon="error"){
 }
 function redirect($url, $header="",$msg="", $icon="success",$s="&"){
     if($header!="") {
-        $url .= $s . "alertHeader=$header&alertMsg=$msg&alertIcon=$icon";
+        $url .= $s . "alertHeader=$header&alertMsg=$msg&alertIcon=$icon&noAlert=false";
     }
     ?>
     <script type="text/javascript">
@@ -47,7 +55,7 @@ function echoFA(){
     echo '<script src="https://kit.fontawesome.com/e317ab0c61.js" crossorigin="anonymous"></script>';
 }
 function echoStyles(){
-    echo '<link href="css/main.css?id=102" rel="stylesheet">';
+    echo '<link href="css/main.css?id=104" rel="stylesheet">';
 }
 function echoFavIcon(){
     echo '<link rel="icon" type="image/png" href="images/AuthorityLogoSMALL.png">';
@@ -98,11 +106,12 @@ function echoFooter(){
     }
     // Alert Redirect Handling
     if (isset($_GET['alertHeader']) && isset($_GET['alertMsg'])) {
-        if(isset($_GET['alertIcon'])){
-            alert($_GET['alertHeader'],$_GET['alertMsg'],$_GET['alertIcon']);
-        }
-        else {
-            alert($_GET['alertHeader'], $_GET['alertMsg']);
+        if(isset($_GET['noAlert']) && $_GET['noAlert'] != "true") {
+            if (isset($_GET['alertIcon'])) {
+                alert($_GET['alertHeader'], $_GET['alertMsg'], $_GET['alertIcon'], true);
+            } else {
+                alert($_GET['alertHeader'], $_GET['alertMsg'], "error", true);
+            }
         }
 
     }
@@ -148,6 +157,41 @@ function lastOnlineString($time): string
     return $lastOnline;
 }
 
+function partyRoleSearchAjax($partyID, $loggedInID){
+    ?>
+    <select id="selUser" name='partySearch' style="width: 100%">
+
+    </select>
+    <script>
+        $(document).ready(function(){
+            $("#selUser").select2({
+                placeholder:"Occupant",
+                dropdownAutoWidth : true,
+                ajax: {
+                    url: "php/ajax/partyRoleUserSearch.php",
+                    type: "post",
+                    dataType: 'json',
+                    delay: 150,
+                    data: function (params) {
+                        return {
+                            searchTerm: params.term, // search term,
+                            partyID: '<? echo $partyID ?>',
+                            loggedInID: '<? echo $loggedInID?>'
+                        };
+                    },
+                    processResults: function (response) {
+                        return {
+                            results: response
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+    <?
+}
+
 function partySearchAjax($partyID, $loggedInID){
     ?>
     <select id="selUser" name='partySearch' style="width: 100%">
@@ -182,6 +226,7 @@ function partySearchAjax($partyID, $loggedInID){
     </script>
     <?
 }
+
 
 
 if(isset($_POST['logout'])){
