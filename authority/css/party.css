@@ -8,6 +8,8 @@
     margin:auto;
     white-space: pre-wrap;
     padding: 15px;
-
     width:50%;
+}
+#fundRequestTable_filter{
+    display: none;
 }
