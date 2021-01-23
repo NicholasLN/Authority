@@ -29,7 +29,7 @@ if(isset($_GET['country'])){
     <div class="gameContainer">
         <div class="row">
             <div class="col-sm"></div>
-            <div class="col-sm-8">
+            <div class="col-sm-10">
                 <br/>
                 <h2>Political Parties</h2>
                 <? if(!$defunct){
@@ -81,7 +81,7 @@ if(isset($_GET['country'])){
                             // if party has members and mode is not defunct
                             if($members > 0 && !$defunct) {
                                 echo "
-                                <div style='padding:4px;' class='col-sm-6'>
+                                <div style='padding:4px;' class='col-sm-4'>
                                     <div class='card'>
                                         <div class='partyInfo'>
                                             <div class='partyImgContainer'>
