@@ -21,7 +21,8 @@ if (isset($_GET['id'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
     <? echoHeader(); ?>
     <? politicianMeta($profileUser); ?>
     <title><? echo $profileRow['politicianName'] ?> | AUTHORITY 3.0</title>
