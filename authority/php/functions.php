@@ -3,7 +3,6 @@ session_start();
 $onlineThreshold = time() - 259200;
 $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
 
-
 $serverConfigFile = file_get_contents('./config/server.json');
 // If there is an error in opening the config for the DB
 if($serverConfigFile == false){
@@ -19,6 +18,8 @@ else{
     $port = $serverConfig['port'];
 
     $db = mysqli_connect($dbHost, $dbUser, $dbPassword, $dbDB, $port);
+    mysqli_set_charset($db, "utf8");
+
 }
 
 include 'functions/queryFunctions.php';
