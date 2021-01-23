@@ -4,12 +4,13 @@ function echoNavBar(): void
 {
     global $loggedInRow;
     global $loggedInID;
+    global $loggedInUser;
 
     if ($_SESSION['loggedIn'] == False) {
         ?>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class='navbar-brand' href='index.php' style='margin-left:15px'>
-                <b>AUTHORITY<small>Glorified Profile Sim™</small></b>
+                <b>AUTHORITY<small>It's Not POWER, I Swear!</small></b>
             </a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#myNavbar">
                 <span class="sr-only"></span>
@@ -31,7 +32,7 @@ function echoNavBar(): void
     
         <nav class='navbar navbar-expand-lg navbar-dark bg-dark'>
             <a class='navbar-brand' href='index.php' style='margin-left:15px'>
-                <b>AUTHORITY<small>Glorified Profile Sim™</small></b>
+                <b>AUTHORITY<small>It's Not POWER, I Swear!</small></b>
             </a>
             <button type='button' class='navbar-toggler' data-toggle='collapse' data-target='#myNavbar'>
                 <span class='sr-only'></span>
@@ -74,6 +75,13 @@ function echoNavBar(): void
                             <ul class='dropdown-menu'>
                                 <a class='dropdown-item' href='party.php?id=<? echo $partyID ?>#overview'>Party Overview</a>
                                 <a class='dropdown-item' href='party.php?id=<? echo $partyID ?>&mode=members#members'>Party Members</a>
+                                <a class='dropdown-item' href='party.php?id=<? echo $partyID ?>&mode=partyBank'>Party Treasury</a>
+                                <?
+                                if($loggedInUser->hasPartyPerm("leader")){
+                                echo "                                
+                                <a class='dropdown-item' href='party.php?id=$partyID&mode=partyControls'>Party Management</a>";
+                                }
+                                ?>
                             </ul>
                         </li>
                         <?
