@@ -47,6 +47,9 @@ function getEcoPositionName($position){
     $str = "";
 
     switch(true){
+        case $position <= -10:
+            $str = "<u><i>P̴͔̤̻̟͖̳͇̮̱̑̿͑̂̉͛̅̓̆́͘͘ö̷̧̯̱͚͕̪̗͎͓̠͙͕̗̙̜͈͆̊́̽͊́̐̊̕͝͠s̵̹̹̬̖͒̽͛̔͌͊͐̃͂̒̌͘̕̕â̵̧̨̡͉̹̹̯͓̱̤̦̭͎̠͙̲͑͑̊̿̕͘͜͝͝d̵̡̛̯̻̑͗͋̈́̕͘͠͠i̸͕̭̗͖̺͓͙͍͈̘͊̃̋̆͌̏̕͜s̵̨̝̝͖͖͌͐̐̃̇m̵̘̩̳͉͙͎̲̯͖͓̳̫̹̬̥̯̭̝̾̓́̒͑̐̋̋̉̀͌͛̄̚͝</i></u>";
+            break;
         case $position <= -5 && $position< -4.5:
             $str = "Collectivism";
             break;
@@ -95,6 +98,7 @@ function getEcoPositionName($position){
 function getSocPositionName($position){
     $str = "";
     switch(true){
+
         case $position <= -5 && $position< -4.5:
             $str = "Anarchism";
             break;
