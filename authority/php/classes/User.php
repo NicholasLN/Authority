@@ -25,13 +25,6 @@ class User
         }
 
     }
-    /**
-     * Grabs user object based on their username.
-     * Primarily used for registration.
-     *
-     * @param string username
-     * @return User
-     */
     public static function withUsername(string $username): User
     {
         global $db;
@@ -42,7 +35,6 @@ class User
         $id = $stmt->get_result()->fetch_assoc()['id'];
         return new self($id);
     }
-
     public function getUserRow()
     {
         global $db;
@@ -51,13 +43,11 @@ class User
         $st->execute();
         return $st->get_result()->fetch_assoc();
     }
-
     public function updateTime()
     {
         global $db;
         $this->updateVariable("lastOnline", time());
     }
-
     public function updateVariable($variable, $to)
     {
         global $db;
@@ -67,14 +57,17 @@ class User
     }
     public function getVariable($variable)
     {
-        if(array_key_exists($variable,$this->getUserRow())){
-            return $this->getUserRow()[$variable];
+        if($this->isUser) {
+            if (array_key_exists($variable, $this->getUserRow())) {
+                return $this->getUserRow()[$variable];
+            } else {
+                return null;
+            }
         }
         else{
             return null;
         }
     }
-
     private function type($var): string
     {
         if ($var == "string") {
@@ -87,7 +80,6 @@ class User
             return "di";
         }
     }
-
     public function updateSI($newSI)
     {
         if($newSI < 1){
@@ -111,6 +103,9 @@ class User
     public function updateAuthority(int $authority)
     {
         $this->updateVariable("authority", $authority);
+    }
+    public function addCampaignFinance(int $funding){
+        $this->updateVariable("campaignFinance", ($this->getVariable("campaignFinance") +$funding ));
     }
     public function pictureArray(): array
     {
@@ -156,4 +151,11 @@ class User
         $db->query($query);
 
     }
+    public function hasPartyPerm($permission){
+        $party = new Party($this->getVariable("party"));
+        return $party->partyRoles->hasPermission($permission,$this->userID);
+
+
+    }
+
 }
