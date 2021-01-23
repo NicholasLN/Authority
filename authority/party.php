@@ -7,7 +7,7 @@ if (isset($_GET['id'])) {
         $party = new Party($partyID);
         if (isset($_GET['mode'])) {
             $mode = $_GET['mode'];
-            if ($mode != "members" && $mode != "partylegislature" && $mode != "partyControls" && $mode != "overview") {
+            if ($mode != "members" && $mode != "partylegislature" && $mode != "partyControls" && $mode != "overview" && $mode!="partyBank") {
                 $mode = "overview";
             }
         } else {
@@ -19,6 +19,16 @@ if (isset($_GET['id'])) {
 } else {
     invalidPage("Not a party.", "Invalid party page.");
 }
+if(isset($mode) && $mode=="partyBank"){
+    if(!isset($loggedInUser)){
+        redirect("index.php","No.","Log in first.","error","?");
+    }
+    else{
+        if(isset($loggedInUser) && $loggedInUser->getVariable("party") != $partyID){
+            redirect("index.php","No.","You know you should not have gone there..","error","?");
+        }
+    }
+}
 ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -28,9 +38,8 @@ if (isset($_GET['id'])) {
         <? echoHeader(); ?>
         <link rel="stylesheet" type="text/css"
               href="https://cdn.datatables.net/v/bs4/dt-1.10.23/b-1.6.5/datatables.min.css"/>
-        <link rel="stylesheet" href="css/party.css?id=5"/>
-        <script type="text/javascript"
-                src="https://cdn.datatables.net/v/bs4/dt-1.10.23/b-1.6.5/datatables.min.js"></script>
+        <link rel="stylesheet" href="css/party.css?id=6"/>
+        <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.23/r-2.2.7/datatables.min.js"></script>
         <script src='https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js'></script>
         <script src='https://cdn.datatables.net/plug-ins/1.10.22/sorting/natural.js'></script>
 
@@ -41,7 +50,7 @@ if (isset($_GET['id'])) {
         <div class="gameContainer">
             <div class="row">
                 <div class="col-sm"></div>
-                <div class="col-sm-9">
+                <div class="col-sm-11">
                     <br/>
                     <h2><? echo $party->getPartyName() ?> </h2>
                     <img style="max-width:150px;max-height:150px;" src="<? echo $party->getPartyLogo() ?>"
@@ -89,13 +98,16 @@ if (isset($_GET['id'])) {
                             <a href="party.php?id=<? echo $partyID ?>&mode=overview"
                                class="btn btn-primary">Overview</a>
                             <?
+                            if(isset($loggedInUser) && $loggedInUser->getVariable("party") == $partyID){
+                                echo "<a style='margin-right:3px' class='btn btn-primary' href='party.php?id=$partyID&mode=partyBank'>Party Bank</a>";
+
+                            }
                             if(isset($loggedInID) && $loggedInID == $party->partyRoles->partyLeaderID()){
                                 echo "<a style='margin-right: 3px' class='btn btn-primary' href='party.php?id=$partyID&mode=partyControls'>Management</a>";
                             }
                             if ($party->getPartyDiscordCode() != "0") {
                                 $code = $party->getPartyDiscordCode();
                                 echo "<a class='btn btn-danger' href='https://discord.gg/$code' target='_BLANK'>Discord</a>";
-
                             }
                             ?>
                         </div>
@@ -112,6 +124,10 @@ if (isset($_GET['id'])) {
                         case ($mode=="partyControls"):
                             partyControls($partyID);
                             break;
+                        case ($mode=="partyBank"):
+                            bankView($partyID);
+                            break;
+
                     }
                     ?>
                     <br/>
@@ -133,6 +149,19 @@ if (isset($_GET['id'])) {
 
                 });
             });
+            table = $('#fundRequestTable').DataTable({
+                "responsive": true,
+                "autoWidth": false,
+                "order": [[1, "desc"]],
+                "bLengthChange": false,
+                "language": {
+                    "emptyTable": "No current requests.",
+                    "zeroRecords": "No funding requests with this filter."
+                }
+            });
+            $('#searchBoxFunds').on( 'keyup', function () {
+                table.search( this.value ).draw();
+            } );
             function defectConfirm(){
                 Swal.fire({
                     showCancelButton: false,
@@ -167,6 +196,7 @@ if (isset($_GET['id'])) {
 <?php
 echo getcwd();
 if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
+    // Join Party
     if (isset($_POST['joinPartySubmit'])) {
         // validate that user isn't already in a party in post
         if ($loggedInRow['party'] == 0) {
@@ -174,6 +204,7 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
             redirect("party.php?id=$partyID");
         }
     }
+    // Leave Party
     if (isset($_POST['leavePartySubmit'])) {
         // validate that user is actually in the party
         if ($loggedInRow['party'] == $partyID) {
@@ -183,6 +214,7 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
 
         }
     }
+    // Defect to Party
     if (isset($_POST['defectPartySubmit'])) {
         if ($partyID != $loggedInRow['party'] && $loggedInRow['party'] != 0) {
 
@@ -192,6 +224,7 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
 
         }
     }
+    // Claim party leadership
     if (isset($_POST['claimLeaderSubmit'])) {
         if ($loggedInRow['party'] == $partyID && $leaderID == 0) {
             $party->partyRoles->changeLeader($loggedInID);
@@ -201,6 +234,8 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
         }
     }
     //TODO: Turn this into an Ajax form request instead of a PHP Submit.
+
+    // Vote for user in party.
     if (isset($_POST['voteFor'])) {
         if (isset($_POST['voteForID']) && $_POST['voteForID'] != 0) {
             $votingFor = new User(numFilter($_POST['voteForID']));
@@ -212,18 +247,19 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
             }
         }
     }
+    // Create position
     if (isset($_POST['createPosSubmit'])){
         //var_dump($_POST);
         if(isset($_POST['roleCheck']) && sizeof($_POST['roleCheck']) <= 3){
             $illegitimate = 0;
             foreach ($_POST['roleCheck'] as $key=>$value){
                 switch ($value) {
-                    case "delayVoteCheck":
-                    case "feeChangeCheck":
-                    case "purgeMemberCheck":
-                    case "sendFundsCheck":
-                    case "fundingReqCheck":
-                    case "partyAnnounceCheck":
+                    case "sendFunds":
+                    case "proposeFees":
+                    case "purgeMember":
+                    case "delayVote":
+                    case "fundingReq":
+                    case "sendAnnouncement":
                         break;
                     default:
                         $illegitimate = 1;
@@ -259,6 +295,7 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
             }
         }
     }
+    // Submit new party description
     if (isset($_POST['newPartyDescSubmit'])){
         if(!isset($_POST['newPartyDesc'])){
             $newDesc = "";
@@ -272,7 +309,8 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
         redirect("party.php?id=$partyID","Success!","Changed Party Bio");
 
     }
-    if(isset($_POST['newPartyPicSubmit'])){
+    // Submit new party picture
+    if (isset($_POST['newPartyPicSubmit'])){
         $directory = "images/partyPics";
         $file = $directory . basename($_FILES['newPartyPicture']["name"]);
         $imageFileType = pathinfo($file, PATHINFO_EXTENSION);
@@ -308,6 +346,104 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
             }
         } else {
             alert("h", print_r($check));
+        }
+    }
+    // Accept Fund Request
+    if(isset($_POST['acceptFundRequest'])){
+        if(isset($_POST['secretValue'])){
+            $secret = numFilter($_POST['secretValue']);
+            $stmt = $db->prepare("SELECT * FROM fundRequests WHERE secret = ? AND fulfilled = 0");
+            $stmt->bind_param("i",$secret);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if($result->num_rows == 1){
+                $request = $result->fetch_array(MYSQLI_ASSOC);
+                $requestingUser = new User($request['requester']);
+                $requestAmount = $request['requesting'];
+
+                if($party->getVariable("partyTreasury") >= $requestAmount){
+                    $requestingUser->addCampaignFinance($requestAmount);
+                    $party->updateVariable("partyTreasury",$party->getVariable("partyTreasury")-$requestAmount);
+
+                    $query = "UPDATE fundRequests SET fulfilled = 1 WHERE secret=$secret";
+                    $db->query($query);
+
+                    redirect("party.php?id=$partyID&mode=partyBank","Success!","Fulfilled request!","success");
+                }
+                else{
+                    alert("Not enough money!","Get more money, nerd.");
+                }
+            }
+            else{
+                alert("Error!","Invalid Secret!","error");
+
+            }
+        }
+        else{
+            alert("Error!","No secret.","error");
+        }
+
+    }
+    // Deny Fund Request
+    if(isset($_POST['denyFundRequest'])){
+        if(isset($_POST['secretValue'])){
+            $secret = numFilter($_POST['secretValue']);
+            $stmt = $db->prepare("SELECT * FROM fundRequests WHERE secret = ? AND fulfilled = 0");
+            $stmt->bind_param("i",$secret);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if($result->num_rows == 1){
+                $query = "UPDATE fundRequests SET fulfilled=1 WHERE secret=$secret";
+                $db->query($query);
+
+                redirect("party.php?id=$partyID&mode=partyBank","Dismissed.","Request dismissed. Good riddance!","success");
+
+            }
+            else{
+                alert("Error!","Invalid Secret!","error");
+
+            }
+        }
+        else{
+            alert("Error!","No secret.","error");
+        }
+    }
+    if(isset($_POST['requestSubmit'])){
+        if(isset($_POST['requestAmount'])){
+            $amount = numFilter($_POST['requestAmount']);
+            if(isset($_POST['requestReason'])){
+                $requestReason = strip_tags($_POST['requestReason']);
+            }
+            else{
+                $requestReason = "Need funds!";
+            }
+            $stmt = $db->prepare("SELECT * FROM fundRequests WHERE requester = ? AND party = ? AND fulfilled=0");
+            $stmt->bind_param("is",$loggedInID,$partyID);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if($result->num_rows >= 1){
+                $newRequesting = $result->fetch_array(MYSQLI_ASSOC)['requesting'] + $amount;
+                $newStmt = $db->prepare("UPDATE fundRequests SET requesting = ?, reason=? WHERE requester=? AND party=? AND fulfilled=0");
+                $newStmt->bind_param("isii",$newRequesting,$requestReason,$loggedInID,$partyID);
+                $newStmt->execute();
+
+                redirect("party.php?id=$partyID&mode=partyBank","Success!","Request made. Let us hope they accept it!");
+            }
+            else{
+                $rand = random_int(-99999999,999999999);
+                $newStmt = $db->prepare("INSERT INTO fundRequests (party, requester, requesting, reason, secret) VALUES(?,?,?,?, ?) ");
+                $newStmt->bind_param("iiisi",$partyID,$loggedInID,$amount,$requestReason,$rand);
+                $newStmt->execute();
+
+                redirect("party.php?id=$partyID&mode=partyBank","Success!","Request made. Let us hope they accept it!");
+
+            }
+        }
+        else{
+            alert("Error","Must put in an amount!");
         }
     }
 }
