@@ -9,7 +9,7 @@ if($serverConfigFile == false){
     echo "There was an error opening the server configuration required for the database.";
 }
 else{
-    $serverConfig = json_decode($serverConfigFile,true);
+    $serverConfig = json_decode($serverConfigFile, true);
 
     $dbUser = $serverConfig['user'];
     $dbPassword = $serverConfig['password'];
@@ -17,8 +17,9 @@ else{
     $dbDB = $serverConfig['database'];
     $port = $serverConfig['port'];
 
-    $db = mysqli_connect($dbHost, $dbUser, $dbPassword, $dbDB, $port);
-    mysqli_set_charset($db, "utf8");
+    $db = @mysqli_connect($dbHost, $dbUser, $dbPassword, $dbDB, $port);
+    @mysqli_set_charset($db, "utf8");
+
 
 }
 
