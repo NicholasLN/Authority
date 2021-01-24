@@ -24,8 +24,8 @@ if(isset($mode) && $mode=="partyBank"){
         redirect("index.php","No.","Log in first.","error","?");
     }
     else{
-        if(isset($loggedInUser) && $loggedInUser->getVariable("party") != $partyID){
-            redirect("index.php","No.","You know you should not have gone there..","error","?");
+        if ($loggedInUser->getVariable("party") != $partyID) {
+            redirect("index.php", "No.", "You know you should not have gone there..", "error", "?");
         }
     }
 }
@@ -351,9 +351,9 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
     // Accept Fund Request
     if(isset($_POST['acceptFundRequest'])){
         if(isset($_POST['secretValue'])){
-            $secret = numFilter($_POST['secretValue']);
+            $secret = numFilterNeg($_POST['secretValue']);
             $stmt = $db->prepare("SELECT * FROM fundRequests WHERE secret = ? AND fulfilled = 0");
-            $stmt->bind_param("i",$secret);
+            $stmt->bind_param("d", $secret);
             $stmt->execute();
             $result = $stmt->get_result();
 
@@ -410,6 +410,7 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
             alert("Error!","No secret.","error");
         }
     }
+    // Make a request
     if(isset($_POST['requestSubmit'])){
         if(isset($_POST['requestAmount'])){
             $amount = numFilter($_POST['requestAmount']);
@@ -438,14 +439,49 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
                 $newStmt->bind_param("iiisi",$partyID,$loggedInID,$amount,$requestReason,$rand);
                 $newStmt->execute();
 
-                redirect("party.php?id=$partyID&mode=partyBank","Success!","Request made. Let us hope they accept it!");
+                redirect("party.php?id=$partyID&mode=partyBank", "Success!", "Request made. Let us hope they accept it!");
+
+            }
+        } else {
+            alert("Error", "Must put in an amount!");
+        }
+    }
+    // Send out money from the treasury
+    if (isset($_POST['sendFundSubmit'])) {
+        if (isset($_POST['sendFundsAmount'])) {
+            $amount = numFilter($_POST['sendFundsAmount']);
+            if (isset($_POST['partySearch'])) {
+                $user = new User(numFilter($_POST['partySearch']));
+                if ($user->isUser && $user->getVariable("party") == $partyID) {
+                    if ($amount <= $party->getVariable("partyTreasury")) {
+                        $party->updateVariable("partyTreasury", $party->getVariable("partyTreasury") - $amount);
+                        $user->addCampaignFinance($amount);
+                        redirect("party.php?id=$partyID&mode=partyBank", "Success!", "Sent out $" . number_format($amount) . " to " . $user->getVariable("politicianName") . "!");
+                    } else {
+                        alert("Error!", "Not enough money, dipshitfucklord..", "error");
+                    }
+                } else {
+                    alert("Error!", "Can not find that user within your party.", "error");
+                }
 
             }
         }
-        else{
-            alert("Error","Must put in an amount!");
+    }
+    // Send out money to the treasury
+    if (isset($_POST['donateFundSubmit'])) {
+        if (isset($_POST['donateFundsAmount'])) {
+
+            $amount = numFilter($_POST['donateFundsAmount']);
+            if ($amount <= $loggedInUser->getVariable("campaignFinance")) {
+                $party->updateVariable("partyTreasury", $party->getVariable("partyTreasury") + $amount);
+                $loggedInUser->addCampaignFinance(-$amount);
+                redirect("party.php?id=$partyID&mode=partyBank", "Success!", "Sent out $" . number_format($amount) . " to the party!");
+            } else {
+                alert("Error!", "Not enough money, fuckwad.", "error");
+            }
         }
     }
+
 }
 
 
