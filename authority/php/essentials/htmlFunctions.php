@@ -194,13 +194,13 @@ function partyRoleSearchAjax($partyID, $loggedInID){
 
 function partySearchAjax($partyID, $loggedInID){
     ?>
-    <select id="selUser" name='partySearch' style="width: 100%">
+    <select id="selUser" name='partySearch' style="width: 100%;margin-top:3px;">
 
     </select>
     <script>
         $(document).ready(function(){
             $("#selUser").select2({
-                placeholder:"Occupant",
+                placeholder:"Member",
                 dropdownAutoWidth : true,
                 ajax: {
                     url: "php/ajax/partyUserSearch.php",
