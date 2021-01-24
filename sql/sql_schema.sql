@@ -1,65 +1,91 @@
-CREATE TABLE `countries` (
-	`id` INT NOT NULL AUTO_INCREMENT,
-	`name` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8mb4_0900_ai_ci',
-	PRIMARY KEY (`id`) USING BTREE
+create table countries
+(
+    id   int auto_increment
+        primary key,
+    name varchar(255) default '' not null
 )
-COLLATE='utf8mb4_0900_ai_ci'
-;
-CREATE TABLE `parties` (
-                           `id` INT(11) NOT NULL AUTO_INCREMENT,
-                           `partyBio` VARCHAR(500) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
-                           `partyPic` VARCHAR(900) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
-                           `nation` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
-                           `name` VARCHAR(60) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
-                           `ecoPos` DOUBLE NULL DEFAULT NULL,
-                           `socPos` DOUBLE NULL DEFAULT NULL,
-                           `partyRoles` MEDIUMTEXT NULL DEFAULT NULL COLLATE 'utf8_general_ci',
-                           `discord` VARCHAR(16) NULL DEFAULT '0' COLLATE 'utf8_general_ci',
-                           PRIMARY KEY (`id`) USING BTREE
-)
-    COMMENT='table for political parties'
-    COLLATE='utf8_general_ci'
-    ENGINE=InnoDB
-    AUTO_INCREMENT=3
-;
-CREATE TABLE `states` (
-	`id` INT NOT NULL AUTO_INCREMENT,
-	`name` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`abbreviation` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`active` INT NULL DEFAULT '0',
-	`country` VARCHAR(255) NULL COLLATE 'utf8mb4_0900_ai_ci',
-	`flag` TEXT NULL COLLATE 'utf8mb4_0900_ai_ci',
-	PRIMARY KEY (`id`) USING BTREE
-)
-COLLATE='utf8mb4_0900_ai_ci'
-;
-CREATE TABLE `users` (
-                         `id` INT(11) NOT NULL AUTO_INCREMENT,
-                         `username` TEXT NOT NULL COLLATE 'utf8_general_ci',
-                         `password` TEXT NOT NULL COLLATE 'utf8_general_ci',
-                         `regCookie` VARCHAR(255) NOT NULL COLLATE 'utf8_general_ci',
-                         `currentCookie` VARCHAR(255) NOT NULL COLLATE 'utf8_general_ci',
-                         `regIP` TEXT NOT NULL COLLATE 'utf8_general_ci',
-                         `currentIP` TEXT NOT NULL COLLATE 'utf8_general_ci',
-                         `hsi` DOUBLE NOT NULL DEFAULT '10',
-                         `politicianName` VARCHAR(55) NOT NULL COLLATE 'utf8_general_ci',
-                         `lastOnline` VARCHAR(500) NOT NULL DEFAULT '0' COLLATE 'utf8_general_ci',
-                         `profilePic` VARCHAR(2500) NULL DEFAULT 'images/userPics/default.jpg' COLLATE 'utf8_general_ci',
-                         `bio` VARCHAR(2500) NOT NULL DEFAULT 'I am gay!' COLLATE 'utf8_general_ci',
-                         `state` VARCHAR(255) NOT NULL COLLATE 'utf8_general_ci',
-                         `nation` VARCHAR(255) NOT NULL COLLATE 'utf8_general_ci',
-                         `ecoPos` DOUBLE NOT NULL DEFAULT '0',
-                         `socPos` DOUBLE NOT NULL DEFAULT '0',
-                         `authority` DOUBLE NULL DEFAULT '50',
-                         `campaignFinance` BIGINT(20) NULL DEFAULT '50000',
-                         `party` INT(11) NULL DEFAULT '0',
-                         `partyInfluence` DOUBLE NULL DEFAULT '0',
-                         PRIMARY KEY (`id`) USING BTREE
-)
-    COLLATE='utf8_general_ci'
-    ENGINE=InnoDB
-    AUTO_INCREMENT=55
-;
+    charset = utf8;
 
-COLLATE='utf8mb4_0900_ai_ci'
-;
+create table demodata
+(
+    id         int auto_increment
+        primary key,
+    state      varchar(255) null,
+    genderName text         null,
+    gender     int          null,
+    age        varchar(255) null,
+    raceName   text         null,
+    race       int          null,
+    pop        int          null
+);
+
+create table fundRequests
+(
+    id         int auto_increment
+        primary key,
+    party      int         default 0  not null,
+    requester  int         default 0  not null,
+    requesting double      default 0  not null,
+    reason     varchar(50) default '' not null,
+    fulfilled  int         default 0  null,
+    secret     varchar(50)            null
+);
+
+create table parties
+(
+    id            int auto_increment
+        primary key,
+    partyBio      varchar(1000)           null,
+    partyPic      varchar(900)            null,
+    nation        varchar(50)             null,
+    name          varchar(60)             null,
+    initialEcoPos double                  null,
+    initialSocPos double                  null,
+    ecoPos        double                  null,
+    socPos        double                  null,
+    partyRoles    mediumtext              null,
+    discord       varchar(16) default '0' null,
+    partyTreasury double      default 0   null
+)
+    comment 'table for political parties' charset = utf8;
+
+create table states
+(
+    id           int auto_increment
+        primary key,
+    name         varchar(255)  not null,
+    abbreviation varchar(255)  not null,
+    active       int default 0 null,
+    country      varchar(255)  null,
+    flag         text          null
+)
+    charset = utf8;
+
+create table users
+(
+    id              int auto_increment
+        primary key,
+    admin           int           default 0                             null,
+    username        text                                                not null,
+    password        text                                                not null,
+    regCookie       varchar(255)                                        not null,
+    currentCookie   varchar(255)                                        not null,
+    regIP           text                                                not null,
+    currentIP       text                                                not null,
+    hsi             double        default 10                            not null,
+    politicianName  varchar(55) collate utf8_unicode_ci                 not null,
+    lastOnline      varchar(500)  default '0'                           not null,
+    profilePic      varchar(2500) default 'images/userPics/default.jpg' null,
+    bio             varchar(2500) default 'I am gay!'                   not null,
+    state           varchar(255)                                        not null,
+    nation          varchar(255)                                        not null,
+    ecoPos          double        default 0                             not null,
+    socPos          double        default 0                             not null,
+    authority       double        default 50                            null,
+    campaignFinance bigint        default 50000                         null,
+    party           int           default 0                             null,
+    partyInfluence  double        default 0                             null,
+    partyVotingFor  int           default 0                             null
+)
+    charset = utf8;
+
