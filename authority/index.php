@@ -23,7 +23,8 @@ include 'php/functions.php';
                     <h1>Authority 3.0</h1>
                     <p>Authority is a WIP political game in which users can register as a politician, run for offices,
                         run countries, play a vital part in the economic system within their countries (and others), and
-                        seize power through a variety of methods--legal, or illegal.</p>
+                        seize power through a variety of methods--legal, or illegal.
+                    </p>
 
                     <? if(!$_SESSION['loggedIn']){
                         echo '
