@@ -302,20 +302,46 @@ function bankView($partyID)
         <div class="col-sm">
             <img style='max-width:150px;max-height: 150px;' src='images/otherPics/bankLogo.png'/>
             <h4 style='margin-top:4px'>Party Treasury</h4>
-            <table class="table table-striped">
-                <thead class="dark">
-                <tr>
-                    <th colspan="2">&nbsp</th>
+            <form method="post">
+                <table class="table table-striped">
+                    <thead class="dark">
+                    <tr>
+                        <th colspan="3">&nbsp</th>
 
-                </tr>
-                </thead>
-                <tr>
-                    <td><b>Available Funds</b></td>
-                    <td>
-                        <b>$<span class="greenFont"><? echo number_format($party->getVariable("partyTreasury")) ?></span></b>
-                    </td>
-                </tr>
-            </table>
+                    </tr>
+                    </thead>
+                    <tr>
+                        <td><b>Available Funds</b></td>
+                        <td colspan="2">
+                            <b>$<span class="greenFont"><? echo number_format($party->getVariable("partyTreasury")) ?></span></b>
+                        </td>
+                    </tr>
+                    <? if ($loggedInUser->hasPartyPerm("sendFunds") == 1) { ?>
+                        <tr>
+                            <td><b>Send Funds</b></td>
+                            <td>
+                                <input class="form-control" type="number" placeholder="Amount" name="sendFundsAmount"/>
+                                <? partySearchAjax($partyID, $loggedInID); ?>
+                            </td>
+                            <td>
+                                <input class="btn btn-primary" name="sendFundSubmit" value="Send Funds" type="submit"/>
+                            </td>
+                        </tr>
+                    <?
+                    } ?>
+                    <tr>
+                        <td><b>Send Funds</b></td>
+                        <td>
+                            <input class="form-control" type="number"
+                                   placeholder="Amount (you have $<? echo number_format($loggedInUser->getVariable("campaignFinance")) ?>)"
+                                   name="donateFundsAmount"/>
+                        </td>
+                        <td>
+                            <input class="btn btn-primary" name="donateFundSubmit" value="Donate Funds" type="submit"/>
+                        </td>
+                    </tr>
+                </table>
+            </form>
         </div>
         <div class="col-sm">
             <img style='max-width:150px;max-height: 150px;' src='images/otherPics/cashLogo.png'/>
