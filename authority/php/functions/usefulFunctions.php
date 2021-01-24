@@ -12,16 +12,23 @@ function in_range($number, $min, $max, $inclusive = FALSE): bool
     }
     return FALSE;
 }
-function numFilter($number){
-    return preg_replace("/[^0-9.]/","",$number);
+function numFilter($number)
+{
+    return preg_replace("/[^0-9.]/", "", $number);
 }
-function invalidPage($alertHeader="Invalid Page",$alertMsg=""){
+
+function numFilterNeg($number)
+{
+    return preg_replace("/[^0-9\-]/", "", $number);
+}
+
+function invalidPage($alertHeader = "Invalid Page", $alertMsg = "")
+{
     global $loggedInID;
-    if($_SESSION['loggedIn']){
-        alert("Error","Profile doesn't exist");
+    if ($_SESSION['loggedIn']) {
+        alert("Error", "Profile doesn't exist");
         redirect("politician.php?id=$loggedInID&alertHeader=$alertHeader&alertMsg=$alertMsg");
-    }
-    else{
+    } else {
         redirect("index.php?alertHeader=$alertHeader&alertMsg=$alertMsg");
     }
 
