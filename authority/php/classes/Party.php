@@ -145,5 +145,44 @@ class Party
             return null;
         }
     }
+
+    public function getCommitteeData()
+    {
+        global $db;
+        global $onlineThreshold;
+        $query = "SELECT * FROM users WHERE party=" . $this->partyID . " AND lastOnline>=$onlineThreshold ORDER BY partyInfluence DESC";
+        $result = $db->query($query);
+
+        $committeeSeats = 250;
+        $arr = array();
+        while ($urow = $result->fetch_assoc()) {
+            $userShare = $urow['partyInfluence'] / $this->getTotalPartyInfluence();
+            $userVotes = round($userShare * $committeeSeats);
+            if ($userVotes > 0) {
+                $arr2 = array("y" => $userVotes, "label" => $urow['politicianName']);
+                array_push($arr, $arr2);
+            }
+        }
+        return json_encode($arr);
+    }
+
+    public function getActiveVotes(): array
+    {
+        global $db;
+        $statement = $db->prepare("SELECT * FROM partyVotes WHERE party=?");
+        $statement->bind_param("i", $this->partyID);
+
+        $statement->execute();
+        $result = $statement->get_result();
+        $assoc = $result->fetch_all(MYSQLI_ASSOC);
+
+        $voteArray = array();
+        foreach ($assoc as $vote) {
+            $voteClass = new PartyVote($vote['id']);
+            array_push($voteArray, $voteClass);
+        }
+        return $voteArray;
+
+    }
 }
 
