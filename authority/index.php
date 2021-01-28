@@ -1,8 +1,4 @@
-<?
-//echo getcwd();
-include 'php/functions.php';
-
-?>
+<? include 'php/functions.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
