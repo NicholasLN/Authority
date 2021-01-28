@@ -27,7 +27,7 @@ function invalidPage($alertHeader = "Invalid Page", $alertMsg = "")
     global $loggedInID;
     if ($_SESSION['loggedIn']) {
         alert("Error", "Profile doesn't exist");
-        redirect("politician.php?id=$loggedInID&alertHeader=$alertHeader&alertMsg=$alertMsg");
+        redirect("politician.php?id=$loggedInID&alertHeader=$alertHeader&alertMsg=$alertMsg&noAlert=false");
     } else {
         redirect("index.php?alertHeader=$alertHeader&alertMsg=$alertMsg");
     }
@@ -44,7 +44,20 @@ function getHourDifference($time1,$time2){
     return $mins/60;
 
 }
-function getDayDifference($time1,$time2){
-    $hours = getHourDifference($time1,$time2);
-    return  $hours/24;
+
+function getDayDifference($time1, $time2)
+{
+    $hours = getHourDifference($time1, $time2);
+    return $hours / 24;
+}
+
+function numHash($str, $len = null)
+{
+    $binhash = md5($str, true);
+    $numhash = unpack('N2', $binhash);
+    $hash = $numhash[1] . $numhash[2];
+    if ($len && is_int($len)) {
+        $hash = substr($hash, 0, $len);
+    }
+    return $hash;
 }
