@@ -56,6 +56,7 @@ class PartyRoles
                 $roleDetails['occupant'] = 0;
             }
         }
+        $this->updateRoles();
     }
 
     public function echoRoleCard()
