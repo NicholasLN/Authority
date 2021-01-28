@@ -48,6 +48,12 @@ function echoSwal(){
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <?
 }
+function echoPace(){
+    echo '
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.3/pace.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.3/pace-theme-default.min.css" rel="stylesheet" />
+    ';
+}
 function echoJQuery(){
     echo '<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>';
 }
@@ -55,7 +61,7 @@ function echoFA(){
     echo '<script src="https://kit.fontawesome.com/e317ab0c61.js" crossorigin="anonymous"></script>';
 }
 function echoStyles(){
-    echo '<link href="css/main.css?id=104" rel="stylesheet">';
+    echo '<link href="css/main.css?id=115" rel="stylesheet">';
 }
 function echoFavIcon(){
     echo '<link rel="icon" type="image/png" href="images/AuthorityLogoSMALL.png">';
@@ -76,6 +82,7 @@ function echoHeader(){
     echo '<meta name="viewport" content="width=device-width, initial-scale=0.68">';
     echoJQuery();
     echoBootstrap();
+    echoPace();
     echoFA();
     echoFavIcon();
     echoStyles();
