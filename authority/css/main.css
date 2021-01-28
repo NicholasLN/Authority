@@ -74,6 +74,9 @@ a{
     font-weight:bold;
     color: #ff0000;
 }
+.bold{
+    font-weight: bold;
+}
 
 .tableForm table>tbody>tr>td{
     text-align:left;
@@ -113,6 +116,38 @@ a{
     background-color: white;
     margin-bottom:80px;
 }
+::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar
+{
+    width: 6px;
+    background-color: #F5F5F5;
+}
+::-webkit-scrollbar-thumb
+{
+    background-color: #000000;
+    border: 1px solid #555555;
+}
+
+a .morelink:visited {
+    color: #0254EB
+}
+a .morelink {
+    text-decoration:none;
+    outline: none;
+}
+.morecontent .content{
+    display: none;
+}
+.chart{
+    margin:auto;
+    height:40vh;
+    width:30vw
+}
 /*.select2-container {*/
 /*    width: auto !important;*/
 /*}*/
@@ -132,6 +167,10 @@ a{
     }
     .table table-striped{
         padding: 2px;
-
+    }
+    .chart{
+        margin:auto;
+        height:40vh;
+        width:66vw
     }
 }
