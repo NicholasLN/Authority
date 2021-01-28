@@ -59,3 +59,4 @@ include 'functions/usefulFunctions.php';
 include 'functions/discordMeta.php';
 
 include 'views/party.php';
+include 'views/partycommittee.php';
