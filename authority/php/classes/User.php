@@ -25,6 +25,7 @@ class User
         }
 
     }
+
     public static function withUsername(string $username): User
     {
         global $db;
@@ -35,6 +36,17 @@ class User
         $id = $stmt->get_result()->fetch_assoc()['id'];
         return new self($id);
     }
+
+    public static function withPoliticianName(string $politicianName): User
+    {
+        global $db;
+        $stmt = $db->prepare("SELECT * FROM users WHERE politicianName = ?");
+        $stmt->bind_param("s", $politicianName);
+        $stmt->execute();
+        $id = $stmt->get_result()->fetch_assoc()['id'];
+        return new self($id);
+    }
+
     public function getUserRow()
     {
         global $db;
@@ -43,6 +55,7 @@ class User
         $st->execute();
         return $st->get_result()->fetch_assoc();
     }
+
     public function updateTime()
     {
         global $db;
@@ -147,14 +160,28 @@ class User
         $this->updateSI($this->getUserRow()['hsi'] * .50);
 
         global $db;
-        $query = "UPDATE users SET partyVotingFor = 0 WHERE partyVotingFor=".$this->userID;
+        $query = "UPDATE users SET partyVotingFor = 0 WHERE partyVotingFor=" . $this->userID;
         $db->query($query);
 
     }
-    public function hasPartyPerm($permission){
-        $party = new Party($this->getVariable("party"));
-        return $party->partyRoles->hasPermission($permission,$this->userID);
 
+    public function hasPartyPerm($permission)
+    {
+        $party = new Party($this->getVariable("party"));
+        return $party->partyRoles->hasPermission($permission, $this->userID);
+
+
+    }
+
+    public function getCommitteeVotes()
+    {
+        $party = new Party($this->getUserRow()['party']);
+        $data = json_decode($party->getCommitteeData(), true);
+        foreach ($data as $arr) {
+            if ($arr['label'] == $this->getUserRow()['politicianName']) {
+                return $arr['y'];
+            }
+        }
 
     }
 
