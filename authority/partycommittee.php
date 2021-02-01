@@ -64,6 +64,9 @@ if (isset($_GET['id'])) {
                 if (isset($mode) && $mode == "votes") {
                     partyVotesTableView($partyID);
                 }
+                if (isset($mode) && $mode == "proposeVote") {
+                    proposePartyVoteView($partyID);
+                }
                 ?>
                 <hr/>
             </div>
@@ -73,3 +76,159 @@ if (isset($_GET['id'])) {
     <? echoFooter() ?>
 </div>
 </html>
+<?php
+if (isset($_POST['proposeVoteSubmit'])) {
+    var_dump($_POST);
+    $voteActionArray = array();
+    if (isset($loggedInUser)) {
+        $voteName = $_POST['partyVoteName'];
+        $voteType = $_POST['proposePartyVoteType'];
+        switch ($voteType) {
+            case $voteType == "New Chair":
+                if (isset($_POST['newChairSearch'])) {
+                    $newChair = new User(numFilter($_POST['newChairSearch']));
+                    if ($newChair->isUser && $newChair->getVariable("party") == $partyID) {
+                        $newArr = array("actionType" => "New Chair", "newChair" => $newChair->userID);
+                        array_push($voteActionArray, $newArr);
+                    } else {
+                        alert("Error!", "They do not exist, or they are not in your party.");
+                    }
+                }
+                break;
+            case $voteType == "Rename Party":
+                $renamePartyTo = strip_tags(trim($_POST['renamePartyTo']));
+                if (strlen($renamePartyTo) > 5) {
+                    $oldName = $party->getPartyName();
+                    $newArr = array("actionType" => "Rename Party", "renameTo" => $renamePartyTo, "oldName" => $oldName);
+                    array_push($voteActionArray, $newArr);
+                } else {
+                    alert("Error", "New name is too short.");
+                }
+                break;
+            case($voteType == "Change Fees"):
+                $fees = numFilter($_POST['newFees']);
+                if (isset($_POST['fees']) && $fees >= 0 && $fees <= 100) {
+                    $newArr = array("actionType" => "Change Fees", "newFees" => $fees);
+                    array_push($voteActionArray, $newArr);
+                }
+                break;
+            case($voteType == "Change Number of Party Votes"):
+                if (isset($_POST['changePartyVotesTo'])) {
+                    $votes = numFilter($_POST['changePartyVotesTo']);
+                    if ($votes >= 5 && $votes <= 1000) {
+                        $newArr = array("actionType" => "Change Number of Party Votes", "oldVotes" => $party->getVariable("votes"), "votes" => $votes);
+                        array_push($voteActionArray, $newArr);
+                    }
+                }
+                break;
+            case($voteType == "Grant Permission"):
+                $grantPermission = $_POST['grantPermissionSelect'];
+                $roleID = $_POST['grantPermissionRoleSelect'];
+                if ($roleID != 0) {
+                    if ($party->partyRoles->isRole($roleID)) {
+                        $isPermission = 0;
+                        foreach (roleOptions("yes") as $key => $value) {
+                            if ($grantPermission == $value) {
+                                $isPermission = 1;
+                            }
+                        }
+                        if ($isPermission == 1) {
+                            $newArr =
+                                array(
+                                    "actionType" => "Grant Permission",
+                                    "roleID" => $roleID,
+                                    "roleName" => $party->partyRoles->getRoleName($roleID),
+                                    "permission" => $grantPermission
+                                );
+                            array_push($voteActionArray, $newArr);
+                        }
+                    } else {
+                        alert("Error!", "Not a role. Stop spoofin, yee yee ass mfer. I told a mod.");
+                    }
+                }
+                break;
+            case($voteType == "Remove Permission"):
+                $removePermission = $_POST['removePermissionSelect'];
+                $roleID = $_POST['removePermissionRoleSelect'];
+                if ($roleID != 0) {
+                    if ($party->partyRoles->isRole($roleID)) {
+                        $isPermission = 0;
+                        foreach (roleOptions("yes") as $key => $value) {
+                            if ($removePermission == $value) {
+                                $isPermission = 1;
+                            }
+                        }
+                        if ($isPermission == 1) {
+                            $newArr =
+                                array(
+                                    "actionType" => "Remove Permission",
+                                    "roleID" => $roleID,
+                                    "roleName" => $party->partyRoles->getRoleName($roleID),
+                                    "permission" => $removePermission
+                                );
+                            array_push($voteActionArray, $newArr);
+                        }
+                    } else {
+                        alert("Error!", "Not a role. Stop spoofin, yee yee ass mfer. I told a mod.");
+                    }
+                }
+                break;
+            case($voteType == "Delete Role"):
+                $roleID = $_POST['deleteRoleSelect'];
+                if ($roleID != 0) {
+                    if ($party->partyRoles->isRole($roleID)) {
+                        $newArr = array("actionType" => "Delete Role", "roleID" => $roleID, "roleName" => $party->partyRoles->getRoleName($roleID));
+                        array_push($voteActionArray, $newArr);
+                    }
+                }
+                break;
+            case($voteType == "Rename Role"):
+                $roleID = $_POST['renameRoleSelect'];
+                $renameTo = strip_tags(trim($_POST['renameRoleTo']));
+                if (strlen($renameTo) > 0) {
+                    if ($party->partyRoles->isRole($roleID)) {
+                        $newArr = array(
+                            "actionType" => "Rename Role",
+                            "roleToRename" => $party->partyRoles->getRoleName($roleID),
+                            "roleID" => $roleID,
+                            "renameTo" => $renameTo
+                        );
+                        array_push($voteActionArray, $newArr);
+                    }
+                }
+                break;
+            case($voteType == "Change Role Occupant"):
+                if (isset($_POST['changeOccupantSearch'])) {
+                    $newOccupant = new User(numFilter($_POST['changeOccupantSearch']));
+                    if (isset($_POST['changeOccupantSelect'])) {
+                        $roleID = numFilter($_POST['changeOccupantSelect']);
+                        if ($newOccupant->isUser && $newOccupant->getVariable("party") == $partyID) {
+                            $newArr = array(
+                                "actionType" => "Change Role Occupant",
+                                "roleName" => $party->partyRoles->getRoleName($roleID),
+                                "roleID" => $roleID,
+                                "newUser" => $newOccupant->getVariable("id")
+                            );
+                            array_push($voteActionArray, $newArr);
+                        } else {
+                            alert("Error!", "They are either not in your party or do not exist.");
+                        }
+                    }
+                }
+                break;
+        }
+        if (sizeof($voteActionArray) > 0) {
+            if (getNumRows("SELECT * FROM partyVotes WHERE passed=0 AND author=$loggedInID") < 1) {
+                $voteActionArray = json_encode($voteActionArray, JSON_FORCE_OBJECT);
+                $expiresAt = time() + (60 * 60 * 24);
+                $stmt = $db->prepare("INSERT INTO partyVotes (author,party,name,actions,expiresAt) VALUES (?, ?, ?, ?, ?)");
+                $stmt->bind_param("iissi", $loggedInID, $partyID, $voteName, $voteActionArray, $expiresAt);
+                $stmt->execute();
+            } else {
+                alert("Error!", "You already have an ongoing vote. Wait!");
+            }
+        } else {
+            alert("Error!", "No action!");
+        }
+    }
+}

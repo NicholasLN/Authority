@@ -1,6 +1,6 @@
 <?php
 
-$serverConfigFile = file_get_contents('../../config/server.json');
+$serverConfigFile = file_get_contents('../../../config/server.json');
 // If there is an error in opening the config for the DB
 if($serverConfigFile == false){
     echo "There was an error opening the server configuration required for the database.";
@@ -17,7 +17,7 @@ else{
     $db = mysqli_connect($dbHost, $dbUser, $dbPassword, $dbDB, $port);
 }
 
-include '../functionsOnly.php';
+include '../../functionsOnly.php';
 
 
 // Party Position Drift script

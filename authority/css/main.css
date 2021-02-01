@@ -113,8 +113,11 @@ a{
     color:white;
 }
 .xdebug-var-dump{
+    text-align: left;
+    margin: auto;
+    width: 75%;
     background-color: white;
-    margin-bottom:80px;
+    margin-bottom: 80px;
 }
 ::-webkit-scrollbar-track
 {
@@ -122,9 +125,9 @@ a{
     background-color: #F5F5F5;
 }
 
-::-webkit-scrollbar
-{
-    width: 6px;
+::-webkit-scrollbar {
+    width: 8px;
+    height: 6px;
     background-color: #F5F5F5;
 }
 ::-webkit-scrollbar-thumb
@@ -143,10 +146,15 @@ a .morelink {
 .morecontent .content{
     display: none;
 }
-.chart{
-    margin:auto;
-    height:40vh;
-    width:30vw
+
+.chart {
+    margin: auto;
+    height: 40vh;
+    width: 30vw
+}
+
+.box input, select {
+    margin-top: 8px
 }
 /*.select2-container {*/
 /*    width: auto !important;*/

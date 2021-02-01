@@ -39,12 +39,15 @@ if (isset($_GET['id'])) {
                         <br/>
                         <h5><? echo $name ?></h5>
                     </a>
+                    <a href="partycommittee.php?id=<? echo $partyID ?>">
+                        <button style="margin-bottom: 6px" class="btn btn-primary btn-sm">Back to Committee</button>
+                    </a>
                     <h3>Party Vote</h3>
                     <hr>
                     <h4><? echo $vote->getBillTitle() ?></h4>
                     <?
                     if (isset($loggedInUser)) {
-                        if ($loggedInUser->hasPartyPerm("delayVote") && !$vote->isDelayed) {
+                        if ($loggedInUser->hasPartyPerm("delayVote") && $loggedInUser->getVariable("party") == $partyID && !$vote->isDelayed && !$vote->votingEnded) {
                             ?>
                             <form method="post">
                                 <input type="submit" class="btn btn-danger"
@@ -53,8 +56,15 @@ if (isset($_GET['id'])) {
                             </form>
                             <?
                         }
-                        if ($vote->isDelayed) {
+                        if ($vote->isDelayed && !$vote->votingEnded) {
                             echo "<span class='redFont'>Delayed! (+12 hours)</span><br/>";
+                        } else if ($vote->votingEnded) {
+                            if ($vote->hasPassed) {
+                                echo "<span class='greenFont'>This vote has passed through the party committee.</span>";
+                            } else {
+                                echo "<span class='redFont'>This vote has failed to pass through the party committee.</span>";
+                            }
+
                         }
 
                     }
@@ -68,7 +78,7 @@ if (isset($_GET['id'])) {
                         <div class="col" style="height:30vh; border-right:1px solid black;">
                             <h5>Ayes</h5>
                             <?
-                            if (isset($loggedInUser) && $loggedInUser->getVariable("party") == $partyID) {
+                            if (isset($loggedInUser) && $loggedInUser->getVariable("party") == $partyID && !$vote->votingEnded) {
                                 echo "
                                 <form method='post'>
                                     <input type='submit' class='btn btn-primary' value='Vote Aye' name='voteAyeSubmit'>
@@ -84,16 +94,18 @@ if (isset($_GET['id'])) {
                                 $user = User::withPoliticianName($politician);
                                 $userID = $user->getVariable("id");
                                 $state = $user->getVariable("state");
-                                ?>
-                                <div style="margin-top:3px">
-                                    <b class="bold">
-                                        <a href="politician.php?id=<? echo $userID ?>">
-                                            <? echo $politician . " [$state]" ?>
-                                        </a>:
-                                    </b>
-                                    <? echo $votes ?> Votes
-                                </div>
-                                <?
+                                if ($votes >= 1) {
+                                    ?>
+                                    <div style="margin-top:3px">
+                                        <b class="bold">
+                                            <a href="politician.php?id=<? echo $userID ?>">
+                                                <? echo $politician . " [$state]" ?>
+                                            </a>:
+                                        </b>
+                                        <? echo $votes ?> Votes
+                                    </div>
+                                    <?
+                                }
                             }
 
                             ?>
@@ -102,7 +114,7 @@ if (isset($_GET['id'])) {
                             <h5>Nays</h5>
 
                             <?
-                            if (isset($loggedInUser) && $loggedInUser->getVariable("party") == $partyID) {
+                            if (isset($loggedInUser) && $loggedInUser->getVariable("party") == $partyID && !$vote->votingEnded) {
                                 echo "
                                 <form method='post'>
                                     <input type='submit' class='btn btn-danger' value='Vote Nay' name='voteNaySubmit'>
@@ -118,16 +130,18 @@ if (isset($_GET['id'])) {
                                 $user = User::withPoliticianName($politician);
                                 $userID = $user->getVariable("id");
                                 $state = $user->getVariable("state");
-                                ?>
-                                <div style="margin-top:3px">
-                                    <b class="bold">
-                                        <a href="politician.php?id=<? echo $userID ?>">
-                                            <? echo $politician . " [$state]" ?>
-                                        </a>:
-                                    </b>
-                                    <? echo $votes ?> Votes
-                                </div>
-                                <?
+                                if ($votes >= 1) {
+                                    ?>
+                                    <div style="margin-top:3px">
+                                        <b class="bold">
+                                            <a href="politician.php?id=<? echo $userID ?>">
+                                                <? echo $politician . " [$state]" ?>
+                                            </a>:
+                                        </b>
+                                        <? echo $votes ?> Votes
+                                    </div>
+                                    <?
+                                }
                             }
 
                             ?>
@@ -138,12 +152,42 @@ if (isset($_GET['id'])) {
                         <div class="col">
                             <b class="bold">TOTAL AYES</b>
                             <br/>
-                            <span class="greenFont"><? echo $vote->getAyes() ?></span>
+                            <span class="greenFont"><? echo $vote->ayes ?></span>
                         </div>
                         <div class="col">
                             <b class="bold">TOTAL NAYS</b>
                             <br/>
-                            <span class="redFont"><? echo $vote->getNays() ?></span>
+                            <span class="redFont"><? echo $vote->nays ?></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <b class="bold">PERCENTAGE (51% to pass)</b>
+                            <br/>
+                            <?
+                            if ($vote->ayes > 0 || $vote->nays > 0) {
+                                $percent = round(($vote->ayes / $vote->totalVotes) * 100, 2);
+                            } else {
+                                $percent = 0;
+                            }
+                            if ($percent < 51) {
+                                echo "<span class='redFont'><b>$percent% of existing votes (not enough to pass)</b></span>";
+                            } else {
+                                echo "<span class='greenFont'><b class='bold'>$percent% of existing votes</b></span>";
+                            }
+                            ?>
+                            <br/>
+                            <br/>
+                            <b class="bold">AUTO-PASS PERCENTAGE (51% of all party votes)</b>
+                            <br/>
+                            <?
+                            $autoPassPercent = $vote->totalVotesPartyPercentage * 100;
+                            if ($autoPassPercent < 51) {
+                                echo "<span class='redFont'><b>$autoPassPercent% of party votes (not enough to instapass)</b></span>";
+                            } else {
+                                echo "<span class='greenFont'><b class='bold'>$autoPassPercent% of party votes</b></span>";
+                            }
+                            ?>
                         </div>
                     </div>
                     <br/>

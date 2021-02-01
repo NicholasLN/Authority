@@ -61,3 +61,19 @@ function numHash($str, $len = null)
     }
     return $hash;
 }
+
+function roleOptions($arr = "no")
+{
+    if ($arr == "no") {
+        echo
+        '<option value = "sendFunds" selected > Send Funds </option>
+        <option value = "proposeFees" > Propose Fee Change </option>
+        <option value = "delayVote" > Delay Vote </option>
+        <option value = "purgeMember" > Purge Member </option >
+        <option value = "fundingReq" > Fulfill Funding Requests </option>
+        <option value = "sendAnnouncement" > Send Party Announcements </option>';
+    }
+    if ($arr == "yes") {
+        return array("sendFunds", "proposeFees", "delayVote", "purgeMember", "fundingReq", "sendAnnouncement");
+    }
+}

@@ -5,7 +5,6 @@ $searchLimit = 10;
 mysqli_set_charset($db,"utf8");
 $party = $_POST['partyID'];
 $pClass = new Party($party);
-$loggedInID = $_POST['loggedInID'];
 
 if(!isset($_POST['searchTerm'])){
     $stmt = $db->prepare("SELECT id, politicianName as `text` FROM users WHERE party = ? AND lastOnline > ? ORDER BY partyInfluence LIMIT ?");
