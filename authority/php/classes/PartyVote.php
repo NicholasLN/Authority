@@ -7,7 +7,15 @@ class partyVote
     public $voteActions;
     public $party;
     private $voteRow;
+
+    public $ayes;
+    public $nays;
+    public $totalVotes;
+    public $totalVotesPartyPercentage;
+
     public $isDelayed;
+    public $votingEnded = false;
+    public $hasPassed = false;
 
     public function __construct($voteID)
     {
@@ -27,6 +35,14 @@ class partyVote
             } else {
                 $this->isDelayed = true;
             }
+            if ($this->voteRow['passed'] == 1 || $this->voteRow['passed'] == 2) {
+                $this->votingEnded = true;
+                if ($this->voteRow['passed'] == 1) {
+                    $this->hasPassed = true;
+                } else {
+                    $this->hasPassed = false;
+                }
+            }
         } else {
             $this->party = null;
             $this->voteExists = false;
@@ -35,6 +51,10 @@ class partyVote
         if ($this->voteExists) {
             $array = json_decode($this->voteRow['actions'], true);
             $this->voteActions = $array;
+            $this->ayes = $this->getAyes();
+            $this->nays = $this->getNays();
+            $this->totalVotes = $this->ayes + $this->nays;
+            $this->totalVotesPartyPercentage = round($this->ayes / $this->party->getVariable("votes"), 2);
         }
     }
 
@@ -45,11 +65,33 @@ class partyVote
             case($actionType == "New Chair"):
                 $partyTitle = $this->party->partyRoles->partyLeaderTitle();
                 $user = new User($action['newChair']);
-                $str = "<span class='redFont'>New $partyTitle:</span> " . $user->getVariable("politicianName");
+                $str = "<span class='redFont'>New $partyTitle:</span> <u>" . $user->getVariable("politicianName") . "</u>";
                 break;
             case($actionType == "Grant Permission"):
-                $str = "<span class='redFont'>Grant Permission:</span> " . $action['permission'] . " <span class='bold'>to </span>" . $action['roleName'];
+                $str = "<span class='redFont'>Grant Permission:</span> <u>" . $action['permission'] . "</u> <span class='bold'>to <u></span>" . $action['roleName'] . "</u>";
                 break;
+            case($actionType == "Remove Permission"):
+                $str = "<span class='redFont'>Remove Permission:</span> <u>" . $action['permission'] . "</u> <span class='bold'>from </span><u>" . $action['roleName'] . "</u>";
+                break;
+            case($actionType == "Rename Role"):
+                $str = "<span class='redFont'>Rename Role:</span> <u>" . $action['roleToRename'] . "</u> <b class='bold'>to</b> <u>" . $action['renameTo'] . "</u>";
+                break;
+            case($actionType == "Delete Role"):
+                $str = "<span class='redFont'>Delete Role:</span> <u>" . $action['roleName'] . "</u>";
+                break;
+            case($actionType == "Change Role Occupant"):
+                $user = new User($action['newUser']);
+                $userName = $user->getVariable("politicianName");
+                $str = "<span class='redFont'>Change " . $action['roleName'] . " Occupant</span> <b class='bold'>to</b> <u>$userName</u>";
+                break;
+            case($actionType == "Change Fees"):
+                $str = "<span class='redFont'>Change Fees</span> <b class='bold'>to</b> <u>" . $action['newFees'] . "%</u>";
+                break;
+            case($actionType == "Rename Party"):
+                $str = "<span class='redFont'>Change Party Name</span><b class='bold'> from </b><u>" . $action['oldName'] . "</u><b class='bold'> to </b><u>" . $action['renameTo'] . "</u>";
+                break;
+            case($actionType == "Change Number of Party Votes"):
+                $str = "<span class='redFont'>Change # of Party Votes</span> <b class='bold'> from </b><u>" . $action['oldVotes'] . "</u><b class='bold'> to </b><u>" . $action['votes'] . "</u>";
         }
         return $str;
     }
@@ -90,14 +132,25 @@ class partyVote
     {
         $ayesJSON = json_decode($this->voteRow['ayes']);
         $arr2 = array();
+        $invalid = 0;
         foreach ($ayesJSON as $key => $value) {
             $user = new User($value);
-            $userName = $user->getVariable("politicianName");
-            $userVotes = $user->getCommitteeVotes();
+            if ($user->getVariable("party") == $this->party->getVariable("id")) {
+                $userName = $user->getVariable("politicianName");
+                $userVotes = $user->getCommitteeVotes();
 
-            $arr = array($userName => $userVotes);
-            $arr2 = array_merge($arr2, $arr);
+                $arr = array($userName => $userVotes);
+                $arr2 = array_merge($arr2, $arr);
+            } else {
+                unset($ayesJSON[$key]);
+                $invalid = 1;
+            }
         }
+        if ($invalid) {
+            $this->updateVariable("ayes", json_encode($ayesJSON));
+        }
+
+        arsort($arr2);
         return $arr2;
     }
 
@@ -105,24 +158,32 @@ class partyVote
     {
         $naysJSON = json_decode($this->voteRow['nays']);
         $arr2 = array();
-        foreach ($naysJSON as $key => $value) {
+        $invalid = 0;
+        foreach ($naysJSON as $key => &$value) {
             $user = new User($value);
-            $userName = $user->getVariable("politicianName");
-            $userVotes = $user->getCommitteeVotes();
-
-            $arr = array($userName => $userVotes);
-            $arr2 = array_merge($arr2, $arr);
+            if ($user->getVariable("party") == $this->party->getVariable("id")) {
+                $userName = $user->getVariable("politicianName");
+                $userVotes = $user->getCommitteeVotes();
+                $arr = array($userName => $userVotes);
+                $arr2 = array_merge($arr2, $arr);
+            } else {
+                unset($naysJSON[$key]);
+                $invalid = 1;
+            }
         }
+        if ($invalid) {
+            $this->updateVariable("nays", json_encode($naysJSON));
+        }
+        arsort($arr2);
         return $arr2;
     }
 
     public function getAyes()
     {
         $ayes = 0;
-        $ayesJSON = json_decode($this->voteRow['ayes']);
-        foreach ($ayesJSON as $key => $value) {
-            $user = new User($value);
-            $ayes += $user->getCommitteeVotes();
+        $ayesArray = $this->getAyesArray();
+        foreach ($ayesArray as $key => $value) {
+            $ayes += $value;
         }
         return $ayes;
     }
@@ -130,10 +191,9 @@ class partyVote
     public function getNays()
     {
         $nays = 0;
-        $naysJSON = json_decode($this->voteRow['nays'], true);
-        foreach ($naysJSON as $key => $nayVote) {
-            $user = new User($nayVote);
-            $nays += $user->getCommitteeVotes();
+        $naysArray = $this->getNaysArray();
+        foreach ($naysArray as $key => $value) {
+            $nays += $value;
         }
         return $nays;
     }
@@ -218,8 +278,8 @@ class partyVote
                 break;
         }
 
-        $this->updateVariable("ayes", json_encode($ayes, JSON_PRETTY_PRINT));
-        $this->updateVariable("nays", json_encode($nays, JSON_PRETTY_PRINT));
+        $this->updateVariable("ayes", json_encode($ayes));
+        $this->updateVariable("nays", json_encode($nays));
     }
 
     public function delayVote()
@@ -228,6 +288,66 @@ class partyVote
         $time = (60 * 60) * $hours; // hours in seconds
         $this->updateVariable("expiresAt", $this->voteRow['expiresAt'] + $time);
         $this->updateVariable('delay', 1);
+    }
+
+    public function handleVote()
+    {
+        foreach ($this->voteActions as $key => $action) {
+            $actionType = $action['actionType'];
+            switch ($actionType) {
+                case($actionType == "New Chair"):
+                    $user = new User($action['newChair']);
+                    $this->party->partyRoles->removeFromAllRoles($user->userID);
+                    $this->party->partyRoles->changeLeader($user->userID);
+                    $this->party->partyRoles->updateRoles();
+                    break;
+                case($actionType == "Grant Permission"):
+                    $this->party->partyRoles->appendPermission($action['roleID'], $action['permission']);
+                    $this->party->partyRoles->updateRoles();
+                    break;
+                case($actionType == "Remove Permission"):
+                    $this->party->partyRoles->removePermission($action['roleID'], $action['permission']);
+                    $this->party->partyRoles->updateRoles();
+                    break;
+                case($actionType == "Rename Role"):
+                    $this->party->partyRoles->renameRole($action['roleID'], $action['renameTo']);
+                    $this->party->partyRoles->updateRoles();
+                    break;
+                case($actionType == "Delete Role"):
+                    $this->party->partyRoles->deleteRole($action['roleID']);
+                    $this->party->partyRoles->updateRoles();
+                    break;
+                case($actionType == "Change Role Occupant"):
+                    $this->party->partyRoles->changeOccupant($action['roleID'], $action['newUser']);
+                    $this->party->partyRoles->updateRoles();
+                    break;
+                case($actionType == "Rename Party"):
+                    $this->party->updateVariable("name", $action['renameTo']);
+                    break;
+                case($actionType == "Change Fees"):
+                    $this->party->updateVariable("fees", $action['newFees']);
+                    break;
+                case($actionType == "Change Number of Party Votes"):
+                    if ($action['votes'] > 1000) {
+                        $action['votes'] = 1000;
+                    }
+                    if ($action['votes'] < 5) {
+                        $action['votes'] = 5;
+                    }
+                    $this->party->updateVariable("votes", $action['votes']);
+                    break;
+            }
+        }
+    }
+
+    public function passVote($failed = false)
+    {
+        if ($failed) {
+            $this->updateVariable("passed", 2);
+        } else {
+            $this->updateVariable("passed", 1);
+            $this->handleVote();
+        }
     }
 
 }

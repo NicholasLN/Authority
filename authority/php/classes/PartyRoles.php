@@ -11,11 +11,30 @@ class PartyRoles
         $this->partyID = $partyID;
     }
 
-    public function changeOccupant($roleName, $userID)
+    public function changeOccupant($roleID, $userID)
     {
         foreach ($this->partyRoleJson as $name => &$roleDetails) {
-            if ($name == $roleName) {
+            if ($roleDetails['specialID'] == $roleID) {
                 $roleDetails['occupant'] = $userID;
+            }
+        }
+    }
+
+    public function roleArray()
+    {
+        $arr = array();
+        foreach ($this->partyRoleJson as $roleName => $roleDetails) {
+            $newArr = array($roleName => $roleDetails['specialID']);
+            $arr = array_merge($arr, $newArr);
+        }
+        return $arr;
+    }
+
+    public function removeFromAllRoles($userID)
+    {
+        foreach ($this->partyRoleJson as $name => &$roleDetails) {
+            if ($roleDetails['occupant'] == $userID) {
+                $roleDetails['occupant'] = 0;
             }
         }
     }
@@ -33,7 +52,6 @@ class PartyRoles
     {
         return $this->partyLeaderArray()['title'];
     }
-
     public function partyLeaderArray(): array
     {
         foreach ($this->partyRoleJson as $roleName => $roleDetails) {
@@ -48,7 +66,6 @@ class PartyRoles
             }
         }
     }
-
     public function userLeave(int $userID)
     {
         foreach ($this->partyRoleJson as $roleName => &$roleDetails) {
@@ -58,7 +75,6 @@ class PartyRoles
         }
         $this->updateRoles();
     }
-
     public function echoRoleCard()
     {
         foreach ($this->partyRoleJson as $roleName => $roleDetails) {
@@ -82,12 +98,10 @@ class PartyRoles
 
         }
     }
-
     public function partyLeaderID()
     {
         return $this->partyLeaderArray()['occupant'];
     }
-
     public function getUserTitle(int $userID)
     {
         $hasRole = 0;
@@ -114,10 +128,23 @@ class PartyRoles
         return $i;
     }
 
+    public function getRoleName($roleID)
+    {
+        foreach ($this->partyRoleJson as $roleName => $roleDetails) {
+            if ($roleDetails['specialID'] == $roleID) {
+                return $roleName;
+            }
+        }
+        return false;
+
+    }
+
     public function createNewRole($roleName, $roleOccupant, $rolePerms)
     {
+        $secret = rand(0, 9999999999);
         $arr = array(
             $roleName => array(
+                "specialID" => $secret,
                 "occupant" => (int)$roleOccupant,
                 "perms" => array()
             )
@@ -125,26 +152,69 @@ class PartyRoles
         $this->partyRoleJson = array_merge($this->partyRoleJson, $arr);
 
         foreach ($rolePerms as $key => $value) {
-            $permArray = array($value => 1);
-            $this->appendPermission($roleName, $permArray);
+            $this->appendPermission($secret, $value);
         }
 
         $this->updateRoles();
 
     }
 
-    public function appendPermission($roleName, $arr)
+    public function renameRole($roleID, $newName)
     {
-        foreach ($this->partyRoleJson as $key => &$value) {
-            if ($key == $roleName) {
-                $value['perms'] += $arr;
+        foreach ($this->partyRoleJson as $roleName => &$roleDetails) {
+            if ($roleDetails['specialID'] == $roleID) {
+                $originalArray = $this->partyRoleJson[$roleName];
+                unset($this->partyRoleJson[$roleName]);
+                $newArray = array(
+                    $newName => array(
+                        "specialID" => $roleID,
+                        "occupant" => (int)$originalArray['occupant'],
+                        "perms" => $originalArray['perms']
+                    )
+                );
+                $this->partyRoleJson = array_merge($this->partyRoleJson, $newArray);
+                var_dump($this->partyRoleJson);
+            }
+        }
+    }
+
+    public function deleteRole($roleID)
+    {
+        foreach ($this->partyRoleJson as $roleName => &$roleDetails) {
+            if ($roleDetails['specialID'] == $roleID) {
+                unset($this->partyRoleJson[$roleName]);
+            }
+        }
+    }
+
+    public function appendPermission($roleID, $perm)
+    {
+        foreach ($this->partyRoleJson as $roleName => &$roleDetails) {
+            if ($roleDetails['specialID'] == $roleID) {
+                if (isset($roleDetails['perms'][$perm])) {
+                    $roleDetails['perms'][$perm] = 1;
+                } else {
+                    $arr = array($perm => 1);
+                    $roleDetails['perms'] += $arr;
+                }
+            }
+        }
+    }
+
+    public function removePermission($roleID, $permission)
+    {
+        foreach ($this->partyRoleJson as $roleName => &$roleDetails) {
+            if ($roleDetails['specialID'] == $roleID) {
+                if ($roleDetails['perms'][$permission] == 1) {
+                    $roleDetails['perms'][$permission] = 0;
+                }
             }
         }
     }
 
     public function updateRoles()
     {
-        $update = json_encode($this->partyRoleJson,JSON_PRETTY_PRINT);
+        $update = json_encode($this->partyRoleJson, JSON_PRETTY_PRINT);
         if (!json_last_error()) {
             global $db;
 
@@ -153,7 +223,6 @@ class PartyRoles
             $stmt->execute();
         }
     }
-
     public function hasPermission($permission, $userID) :bool
     {
         $hasPerm = false;
@@ -166,10 +235,20 @@ class PartyRoles
                 }
             }
         }
-        if($this->partyLeaderID() == $userID){
+        if ($this->partyLeaderID() == $userID) {
             $hasPerm = true;
         }
         return $hasPerm;
+    }
+
+    public function isRole($roleID)
+    {
+        foreach ($this->partyRoleJson as $roleName => $roleDetails) {
+            if ($roleDetails['specialID'] == $roleID) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

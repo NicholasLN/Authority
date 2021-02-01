@@ -61,7 +61,7 @@ function echoFA(){
     echo '<script src="https://kit.fontawesome.com/e317ab0c61.js" crossorigin="anonymous"></script>';
 }
 function echoStyles(){
-    echo '<link href="css/main.css?id=115" rel="stylesheet">';
+    echo '<link href="css/main.css?id=141" rel="stylesheet">';
 }
 function echoFavIcon(){
     echo '<link rel="icon" type="image/png" href="images/AuthorityLogoSMALL.png">';
@@ -199,16 +199,18 @@ function partyRoleSearchAjax($partyID, $loggedInID){
     <?
 }
 
-function partySearchAjax($partyID, $loggedInID){
+function partySearchAjax($partyID, $id = "selUser", $name = "partySearch", $script = "yes", $hasRole = "whatever")
+{
     ?>
-    <select id="selUser" name='partySearch' style="width: 100%;margin-top:3px;">
+    <select id="<? echo $id ?>" name='<? echo $name ?>' style="width: 100%;margin-top:8px;">
 
     </select>
+    <?php if ($script == "yes") { ?>
     <script>
-        $(document).ready(function(){
-            $("#selUser").select2({
-                placeholder:"Member",
-                dropdownAutoWidth : true,
+        $(document).ready(function () {
+            $("#<? echo $id ?>").select2({
+                placeholder: "Member",
+                dropdownAutoWidth: true,
                 ajax: {
                     url: "php/ajax/partyUserSearch.php",
                     type: "post",
@@ -218,7 +220,7 @@ function partySearchAjax($partyID, $loggedInID){
                         return {
                             searchTerm: params.term, // search term,
                             partyID: '<? echo $partyID ?>',
-                            loggedInID: '<? echo $loggedInID?>'
+                            hasRole: '<? echo $hasRole ?>'
                         };
                     },
                     processResults: function (response) {
@@ -231,7 +233,8 @@ function partySearchAjax($partyID, $loggedInID){
             });
         });
     </script>
-    <?
+<?
+}
 }
 
 

@@ -76,7 +76,7 @@ class Party
         global $onlineThreshold;
         $total = $db->query("SELECT SUM(partyInfluence) as partyInfluenceSum FROM users WHERE party = " . $this->partyID . " AND lastOnline>$onlineThreshold");
         $total = $total->fetch_assoc();
-        return round($total['partyInfluenceSum'], 2);
+        return round($total['partyInfluenceSum'], 2) + 0.000001;
     }
 
     public function getPartyLeader(): ?User
@@ -146,6 +146,19 @@ class Party
         }
     }
 
+    public function echoRoleOptions($chair = "false")
+    {
+        foreach ($this->partyRoles->roleArray() as $roleName => $roleID) {
+            if ($roleID == 0) {
+                if ($chair == "true") {
+                    echo "<option value='$roleID'>$roleName</option>";
+                }
+            } else {
+                echo "<option value='$roleID'>$roleName</option>";
+            }
+        }
+    }
+
     public function getCommitteeData()
     {
         global $db;
@@ -153,7 +166,7 @@ class Party
         $query = "SELECT * FROM users WHERE party=" . $this->partyID . " AND lastOnline>=$onlineThreshold ORDER BY partyInfluence DESC";
         $result = $db->query($query);
 
-        $committeeSeats = 250;
+        $committeeSeats = $this->getVariable("votes");
         $arr = array();
         while ($urow = $result->fetch_assoc()) {
             $userShare = $urow['partyInfluence'] / $this->getTotalPartyInfluence();

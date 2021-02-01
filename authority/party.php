@@ -94,16 +94,36 @@ if(isset($mode) && $mode=="partyBank"){
                     <hr/>
                     <div class="row justify-content-center">
                         <div class="col">
-                            <a href="party.php?id=<? echo $partyID ?>&mode=members#members" class="btn btn-primary">Members</a>
+                            <a href="party.php?id=<? echo $partyID ?>&mode=members#members"
+                               class="btn btn-primary <? if ($mode == "members") {
+                                   echo 'active';
+                               } ?>">Members</a>
                             <a href="party.php?id=<? echo $partyID ?>&mode=overview"
-                               class="btn btn-primary">Overview</a>
+                               class="btn btn-primary <? if ($mode == "overview") {
+                                   echo 'active';
+                               } ?>">Overview</a>
                             <?
-                            if(isset($loggedInUser) && $loggedInUser->getVariable("party") == $partyID){
-                                echo "<a style='margin-right:3px' class='btn btn-primary' href='party.php?id=$partyID&mode=partyBank'>Party Bank</a>";
-
+                            if (isset($loggedInUser) && $loggedInUser->getVariable("party") == $partyID) {
+                                ?>
+                                <a href="party.php?id=<? echo $partyID ?>&mode=partyBank"
+                                   class="btn btn-primary <? if ($mode == "partyBank") {
+                                       echo 'active';
+                                   } ?>">Party Bank</a>
+                                <?
                             }
-                            if(isset($loggedInID) && $loggedInID == $party->partyRoles->partyLeaderID()){
-                                echo "<a style='margin-right: 3px' class='btn btn-primary' href='party.php?id=$partyID&mode=partyControls'>Management</a>";
+                            if (isset($loggedInID) && $loggedInID == $party->partyRoles->partyLeaderID()) {
+                                ?>
+                                <a href="party.php?id=<? echo $partyID ?>&mode=partyControls"
+                                   class="btn btn-primary <? if ($mode == "partyControls") {
+                                       echo 'active';
+                                   } ?>">Party Management</a>
+                                <?
+                            }
+                            if (isset($loggedInID) && $loggedInUser->getVariable("party") == $partyID) {
+                                ?>
+                                <a href="partycommittee.php?id=<? echo $partyID ?>" class="btn btn-primary">Party
+                                    Committee</a>
+                                <?
                             }
                             if ($party->getPartyDiscordCode() != "0") {
                                 $code = $party->getPartyDiscordCode();
