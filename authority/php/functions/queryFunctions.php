@@ -23,6 +23,22 @@ function query($query)
     mysqli_query($db, $query);
 }
 
+function partyNameAlreadyExists($partyName)
+{
+    global $db;
+    $stmt = $db->prepare("SELECT * FROM parties WHERE name=?");
+    $stmt->bind_param("s", $partyName);
+    $stmt->execute();
+
+    $rows = $stmt->get_result()->num_rows;
+    if ($rows >= 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 function getNumRows($query): ?int
 {
     global $db;
