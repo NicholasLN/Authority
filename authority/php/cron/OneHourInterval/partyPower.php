@@ -24,7 +24,6 @@ if($result = $db->query($query)) {
         if($totalDebuff > 90){
             $totalDebuff = 90;
         }
-        echo $row['politicianName'].': '.$totalDebuff."<br/>";
 
         $netGain = $partyInfluenceGross - ($partyInfluenceGross*($totalDebuff/100));
         $user->updateVariable("partyInfluence",$row['partyInfluence']+$netGain);
