@@ -71,37 +71,13 @@ if ($_SESSION['loggedIn']) {
                         <tr>
                             <td><b>Economic Positions</b></td>
                             <td>
-                                <select class="form-control" name="ecoPos">
-                                    <option value="-5">Collectivism</option>
-                                    <option value="-4">Socialism</option>
-                                    <option value="-3">Left Wing</option>
-                                    <option value="-2">Slightly Left Wing</option>
-                                    <option value="-1">Center Left</option>
-                                    <option value="0" selected>Mixed Capitalism</option>
-                                    <option value="1">Center Right</option>
-                                    <option value="2">Slightly Right Wing</option>
-                                    <option value="3">Right Wing</option>
-                                    <option value="4">Capitalism</option>
-                                    <option value="5">Libertarianism</option>
-                                </select>
+                                <? economicPositionDropdown() ?>
                             </td>
                         </tr>
                         <tr>
                             <td><b>Social Positions</b></td>
                             <td>
-                                <select class="form-control" name="socPos">
-                                    <option value="-5">Anarchism</option>
-                                    <option value="-4">Communalism</option>
-                                    <option value="-3">Left Wing</option>
-                                    <option value="-2">Slightly Left Wing</option>
-                                    <option value="-1">Center Left</option>
-                                    <option value="0" selected>Centrist</option>
-                                    <option value="1">Center Right</option>
-                                    <option value="2">Slightly Right Wing</option>
-                                    <option value="3">Right Wing</option>
-                                    <option value="4">Authoritarian Right</option>
-                                    <option value="5">Totalitarian Right</option>
-                                </select>
+                                <? socialPositionDropdown() ?>
                             </td>
                         </tr>
                         <tr>
