@@ -103,16 +103,6 @@ class User
         }
         $this->updateVariable("hsi", $newSI);
     }
-    public function getUserPartyVotes(){
-        global $db;
-        global $onlineThreshold;
-        $stmt = $db->prepare("SELECT * FROM users WHERE partyVotingFor = ? AND lastOnline > ?");
-        $stmt->bind_param("ii",$this->userID, $onlineThreshold);
-        $stmt->execute();
-
-        return $stmt->get_result()->num_rows;
-
-    }
     public function updateAuthority(int $authority)
     {
         $this->updateVariable("authority", $authority);
@@ -142,29 +132,43 @@ class User
             $pic = substr($this->getUserRow()['profilePic'], 0, strpos($this->getUserRow()[ 'profilePic'], "?ver="));
             try {
                 unlink($pic);
-            }
-            catch (Exception $exception){
+            } catch (Exception $exception) {
 
             }
         }
-        $query = "DELETE FROM users WHERE id=".$this->userID;
+        $query = "DELETE FROM users WHERE id=" . $this->userID;
         $db->query($query);
     }
-    public function leaveCurrentParty(){
+
+    // Party related methods.
+    public function getUserPartyVotes()
+    {
+        global $db;
+        global $onlineThreshold;
+        $stmt = $db->prepare("SELECT * FROM users WHERE partyVotingFor = ? AND lastOnline > ?");
+        $stmt->bind_param("ii", $this->userID, $onlineThreshold);
+        $stmt->execute();
+
+        return $stmt->get_result()->num_rows;
+
+    }
+
+    public function leaveCurrentParty()
+    {
         $party = new Party($this->getUserRow()['party']);
         $party->partyRoles->userLeave($this->userID);
 
-        $this->updateVariable("party",0);
-        $this->updateVariable("partyInfluence",0);
-        $this->updateVariable("partyVotingFor",0);
+        $this->updateVariable("party", 0);
+        $this->updateVariable("partyInfluence", 0);
+        $this->updateVariable("partyVotingFor", 0);
         $this->updateSI($this->getUserRow()['hsi'] * .50);
 
         global $db;
         $query = "UPDATE users SET partyVotingFor = 0 WHERE partyVotingFor=" . $this->userID;
+        $query2 = "DELETE FROM partyVotes WHERE author=" . $this->userID . " AND party=" . $this->getVariable("party");
         $db->query($query);
 
     }
-
     public function hasPartyPerm($permission)
     {
         $party = new Party($this->getVariable("party"));
@@ -172,7 +176,6 @@ class User
 
 
     }
-
     public function getCommitteeVotes()
     {
         $party = new Party($this->getUserRow()['party']);
@@ -183,6 +186,18 @@ class User
             }
         }
 
+    }
+    //
+
+    // CF/LC related methods.
+    public function hasCampaignFunds($amount)
+    {
+        $currentUserCampaignFunds = $this->getVariable("campaignFinance");
+        if ((double)$currentUserCampaignFunds >= $amount) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
