@@ -32,26 +32,34 @@ if(isset($_GET['country'])){
             <div class="col-sm-10">
                 <br/>
                 <h2>Political Parties</h2>
-                <? if(!$defunct){
+                <? if (!$defunct) {
                     echo "
                     <b><i>Parties that are NOT defunct (more than 0 members)</i></b>
                     <br/>
                     <a class='btn btn-primary' style='margin-top:4px' href='politicalparties.php?country=$country&defunct=True'>Defunct Parties</a>
                     ";
-                }
-                else{
+                } else {
                     echo "
                     <b><i>Parties that ARE defunct (no active members)</i></b>
                     <br/>
                     <a class='btn btn-primary' style='margin-top:4px' href='politicalparties.php?country=$country&defunct=False'>Active Parties</a>
                     ";
                 }
+                if ($_SESSION['loggedIn']) {
+                    if ($loggedInUser->getVariable('nation') == $country) {
+                        ?>
+                        <br/>
+                        <a class='btn btn-primary' style='margin-top:4px' href='createParty.php'>Create a Party</a>
+                        <?
+
+                    }
+                }
                 ?>
                 <hr/>
                 <div class="row justify-content-center">
-                <?
+                    <?
                     $query = "SELECT * FROM parties WHERE nation='$country'";
-                    if($result = $db->query($query)){
+                    if ($result = $db->query($query)) {
                         while ($row = $result->fetch_assoc()) {
 
                             $partyID = $row['id'];
@@ -80,37 +88,40 @@ if(isset($_GET['country'])){
 
                             // if party has members and mode is not defunct
                             if($members > 0 && !$defunct) {
-                                echo "
+                                ?>
                                 <div style='padding:4px;' class='col-sm-4'>
                                     <div class='card'>
                                         <div class='partyInfo'>
                                             <div class='partyImgContainer'>
-                                                <img class='partyImgLogo' src='$logo' alt='$name Logo'>
+                                                <img class='partyImgLogo' src="<? echo $logo ?>">
                                             </div>
                                             <div class='partyNameContainer'>
-                                                <a href='party.php?id=$partyID'>$name</a>
+                                                <a href='party.php?id=<? echo $partyID ?>'><? echo $name ?></a>
                                             </div>
                                         </div>
                                         <div class='card-body'>
-                                            <span>$leaderTitle</span>
+                                            <span><? echo $leaderTitle ?></span>
                                             <br/>
-                                            <a href='politician.php?id=$leaderID'>
-                                                <img class='leaderImg' src='$leaderPic' alt='$leaderName Logo'>
+                                            <a href='politician.php?id=<? echo $leaderID ?>'>
+                                                <img class='leaderImg' src='<? echo $leaderPic ?>'>
                                                 <br/>
-                                                <span>$leaderName</span>
+                                                <span><? echo $leaderName ?></span>
                                             </a>
                                             <hr/>
-                                            <pre class='partyBioContainer'>$bio</pre>
+                                            <pre class='partyBioContainer'><? echo $bio ?></pre>
                                             <hr/>
-                                            <span><b>Members: $members</b></span>
+                                            <span><b>Members:<? echo $members ?></b></span>
                                             <hr/>
-                                            Social Ideology: <span style='font-weight: bold;font-family: Ebrima;'><span style='color:$socIdeologyRGB'>$socIdeology ($socNum)</span></span>
+                                            Social Ideology: <span style='font-weight: bold;font-family: Ebrima;'><span
+                                                        style='color: <? echo $socIdeologyRGB ?>'><? echo $socIdeology . "(" . $socNum . ")" ?></span></span>
                                             <br/>
-                                            Economic Ideology: <span style='font-weight: bold;font-family: Ebrima;'><span style='color:$ecoIdeologyRGB'>$ecoIdeology ($ecoNum)</span></span>
+                                            Economic Ideology: <span
+                                                    style='font-weight: bold;font-family: Ebrima;'><span
+                                                        style='color:<? echo $ecoIdeologyRGB ?>'><? echo $ecoIdeology . "(" . $ecoNum . ")" ?></span></span>
                                         </div>
-                                    </div>                        
+                                    </div>
                                 </div>
-                                ";
+                                <?
                             }
                             // if mode is defunct and there are no members.
                             if($defunct && $members == 0){
