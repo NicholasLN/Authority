@@ -5,12 +5,18 @@ class Party
     protected $partyID;
     public $partyRoles;
     public $partyRow;
+    public $partyExists;
 
     public function __construct($partyID)
     {
         $this->partyID = $partyID;
         $this->partyRow = $this->getPartyRowConstructor($partyID);
         $this->partyRoles = new PartyRoles($this->partyRow['partyRoles'], $partyID);
+        if (getNumRows("SELECT * FROM parties WHERE id=$partyID") == 1) {
+            $this->partyExists = true;
+        } else {
+            $this->partyExists = false;
+        }
     }
 
     public function getPartyRowConstructor($partyID): ?array
@@ -165,18 +171,33 @@ class Party
         global $onlineThreshold;
         $query = "SELECT * FROM users WHERE party=" . $this->partyID . " AND lastOnline>=$onlineThreshold ORDER BY partyInfluence DESC";
         $result = $db->query($query);
-
         $committeeSeats = $this->getVariable("votes");
         $arr = array();
         while ($urow = $result->fetch_assoc()) {
-            $userShare = $urow['partyInfluence'] / $this->getTotalPartyInfluence();
+            $userShare = ($urow['partyInfluence'] / $this->getTotalPartyInfluence());
             $userVotes = round($userShare * $committeeSeats);
             if ($userVotes > 0) {
-                $arr2 = array("y" => $userVotes, "label" => $urow['politicianName']);
+                $arr2 = array("y" => $userVotes, "label" => $urow['politicianName'], "share" => $userShare);
                 array_push($arr, $arr2);
             }
         }
-        return json_encode($arr);
+        $sum = 0;
+        foreach ($arr as $item) {
+            $sum += $item['y'];
+        }
+        if ($sum < $committeeSeats) {
+            $diff = $committeeSeats - $sum;
+            $x = end($arr);
+            foreach ($arr as &$item) {
+                if ($item['label'] == $x['label']) {
+                    $item['y'] += $diff;
+                }
+            }
+
+
+        }
+        $arr = json_encode($arr);
+        return $arr;
     }
 
     public function getActiveVotes(): array
