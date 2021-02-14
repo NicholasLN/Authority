@@ -64,8 +64,9 @@ function echoNavBar(): void
                         <?
                         if($loggedInRow['party'] != 0){
                             $party = new Party($loggedInRow['party']);
-                            $partyName = $party->getPartyName();
-                            $partyID = $party->getVariable("id");
+                            if($party->partyExists){
+                                $partyName = $party->getPartyName();
+                                $partyID = $party->getVariable("id");
                         ?>
                         <li class='dropdown'>
                             <a class='nav-link dropdown-toggle' id='navBarDrop' role='button' data-toggle='dropdown'>
@@ -85,6 +86,9 @@ function echoNavBar(): void
                             </ul>
                         </li>
                         <?
+                            }
+                        else{
+                        $loggedInUser->updateVariable("party",0);}
                         }
                         echo "
                     </ul>";
