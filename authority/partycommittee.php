@@ -18,6 +18,15 @@ if (isset($_GET['id'])) {
 } else {
     invalidPage("Not a party.", "Invalid party page.");
 }
+if ($mode == "proposeVote") {
+    if (isset($loggedInUser)) {
+        if ($loggedInUser->getVariable('party') != $partyID) {
+            invalidPage();
+        }
+    } else {
+        invalidPage();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -106,8 +115,8 @@ if (isset($_POST['proposeVoteSubmit'])) {
                 }
                 break;
             case($voteType == "Change Fees"):
-                $fees = numFilter($_POST['newFees']);
-                if (isset($_POST['fees']) && $fees >= 0 && $fees <= 100) {
+                $fees = numFilter($_POST['changeFeesTo']);
+                if (isset($_POST['changeFeesTo']) && $fees >= 0 && $fees <= 100) {
                     $newArr = array("actionType" => "Change Fees", "newFees" => $fees);
                     array_push($voteActionArray, $newArr);
                 }
@@ -219,11 +228,13 @@ if (isset($_POST['proposeVoteSubmit'])) {
         }
         if (sizeof($voteActionArray) > 0) {
             if (getNumRows("SELECT * FROM partyVotes WHERE passed=0 AND author=$loggedInID") < 1) {
-                $voteActionArray = json_encode($voteActionArray, JSON_FORCE_OBJECT);
-                $expiresAt = time() + (60 * 60 * 24);
-                $stmt = $db->prepare("INSERT INTO partyVotes (author,party,name,actions,expiresAt) VALUES (?, ?, ?, ?, ?)");
-                $stmt->bind_param("iissi", $loggedInID, $partyID, $voteName, $voteActionArray, $expiresAt);
-                $stmt->execute();
+                if ($loggedInUser->getVariable("party") == $partyID) {
+                    $voteActionArray = json_encode($voteActionArray, JSON_FORCE_OBJECT);
+                    $expiresAt = time() + (60 * 60 * 24);
+                    $stmt = $db->prepare("INSERT INTO partyVotes (author,party,name,actions,expiresAt) VALUES (?, ?, ?, ?, ?)");
+                    $stmt->bind_param("iissi", $loggedInID, $partyID, $voteName, $voteActionArray, $expiresAt);
+                    $stmt->execute();
+                }
             } else {
                 alert("Error!", "You already have an ongoing vote. Wait!");
             }
