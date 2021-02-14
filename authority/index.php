@@ -21,7 +21,6 @@
                         run countries, play a vital part in the economic system within their countries (and others), and
                         seize power through a variety of methods--legal, or illegal.
                     </p>
-
                     <? if(!$_SESSION['loggedIn']){
                         echo '
                             <hr/>
