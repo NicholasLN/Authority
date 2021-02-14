@@ -166,14 +166,14 @@ function lastOnlineString($time): string
 
 function partyRoleSearchAjax($partyID, $loggedInID){
     ?>
-    <select id="selUser" name='partySearch' style="width: 100%">
+    <select id="selUser" name='partySearch' style="text-align:left;width: 100%">
 
     </select>
     <script>
-        $(document).ready(function(){
+        $(document).ready(function () {
             $("#selUser").select2({
-                placeholder:"Occupant",
-                dropdownAutoWidth : true,
+                placeholder: "Occupant",
+                dropdownAutoWidth: true,
                 ajax: {
                     url: "php/ajax/partyRoleUserSearch.php",
                     type: "post",
@@ -202,7 +202,7 @@ function partyRoleSearchAjax($partyID, $loggedInID){
 function partySearchAjax($partyID, $id = "selUser", $name = "partySearch", $script = "yes", $hasRole = "whatever")
 {
     ?>
-    <select id="<? echo $id ?>" name='<? echo $name ?>' style="width: 100%;margin-top:8px;">
+    <select id="<? echo $id ?>" name='<? echo $name ?>' style="text-align:left!important;width: 100%;margin-top:8px;">
 
     </select>
     <?php if ($script == "yes") { ?>
