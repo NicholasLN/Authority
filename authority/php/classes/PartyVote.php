@@ -142,12 +142,14 @@ class partyVote
                 $arr = array($userName => $userVotes);
                 $arr2 = array_merge($arr2, $arr);
             } else {
+                print_r($key);
                 unset($ayesJSON[$key]);
                 $invalid = 1;
             }
         }
         if ($invalid) {
-            $this->updateVariable("ayes", json_encode($ayesJSON));
+            unset($ayesJSON[$key]);
+            $this->updateVariable("ayes", json_encode(array_values($ayesJSON)));
         }
 
         arsort($arr2);
@@ -156,7 +158,7 @@ class partyVote
 
     public function getNaysArray()
     {
-        $naysJSON = json_decode($this->voteRow['nays']);
+        $naysJSON = json_decode($this->voteRow['nays'], true);
         $arr2 = array();
         $invalid = 0;
         foreach ($naysJSON as $key => &$value) {
@@ -172,7 +174,7 @@ class partyVote
             }
         }
         if ($invalid) {
-            $this->updateVariable("nays", json_encode($naysJSON));
+            $this->updateVariable("nays", json_encode(array_values($naysJSON)));
         }
         arsort($arr2);
         return $arr2;
