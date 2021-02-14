@@ -25,3 +25,7 @@ include 'partyPositionDrift.php';
 
 // Party Power script
 include 'partyPower.php';
+
+// Delete unused profile/party pictures script.
+include 'deleteUnusedProfilePictures.php';
+include 'deleteUnusedPartyPictures.php';
