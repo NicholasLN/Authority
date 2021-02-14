@@ -39,9 +39,16 @@ if(isset($mode) && $mode=="partyBank"){
         <link rel="stylesheet" type="text/css"
               href="https://cdn.datatables.net/v/bs4/dt-1.10.23/b-1.6.5/datatables.min.css"/>
         <link rel="stylesheet" href="css/party.css?id=6"/>
-        <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.23/r-2.2.7/datatables.min.js"></script>
+        <link
+                rel="stylesheet"
+                href="https://unpkg.com/tippy.js@6/themes/light.css"
+        />
+        <script type="text/javascript"
+                src="https://cdn.datatables.net/v/dt/dt-1.10.23/r-2.2.7/datatables.min.js"></script>
         <script src='https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js'></script>
         <script src='https://cdn.datatables.net/plug-ins/1.10.22/sorting/natural.js'></script>
+        <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+        <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
 
     </head>
     <? echoNavBar() ?>
@@ -119,12 +126,12 @@ if(isset($mode) && $mode=="partyBank"){
                                    } ?>">Party Management</a>
                                 <?
                             }
-                            if (isset($loggedInID) && $loggedInUser->getVariable("party") == $partyID) {
+
                                 ?>
                                 <a href="partycommittee.php?id=<? echo $partyID ?>" class="btn btn-primary">Party
                                     Committee</a>
                                 <?
-                            }
+
                             if ($party->getPartyDiscordCode() != "0") {
                                 $code = $party->getPartyDiscordCode();
                                 echo "<a class='btn btn-danger' href='https://discord.gg/$code' target='_BLANK'>Discord</a>";
@@ -189,25 +196,35 @@ if(isset($mode) && $mode=="partyBank"){
                     icon:"warning",
                     title:"Are you sure?",
                     html:"You will lose 50% of your Regional Influence and any positions in the prior party." +
-                    "<br><br>" +
-                    "<form method='post'>"+
-                    "<input type='submit' class='btn btn-danger' name='defectPartySubmit' value='Defect (Lose 50% HSI)'/>"+
-                    "</form>"
-                })
-            }
-            function leaveConfirm(){
-                Swal.fire({
-                    showCancelButton: false,
-                    showConfirmButton: false,
-                    icon:"warning",
-                    title:"Are you sure?",
-                    html:"You will lose 50% of your Regional Influence and any positions in the party." +
                         "<br><br>" +
-                        "<form method='post'>"+
-                        "<input type='submit' class='btn btn-danger' name='leavePartySubmit' value='Leave Party (Lose 50% HSI)'/>"+
+                        "<form method='post'>" +
+                        "<input type='submit' class='btn btn-danger' name='defectPartySubmit' value='Defect (Lose 50% HSI)'/>" +
                         "</form>"
                 })
             }
+
+            function leaveConfirm() {
+                Swal.fire({
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    icon: "warning",
+                    title: "Are you sure?",
+                    html: "You will lose 50% of your Regional Influence and any positions in the party." +
+                        "<br><br>" +
+                        "<form method='post'>" +
+                        "<input type='submit' class='btn btn-danger' name='leavePartySubmit' value='Leave Party (Lose 50% HSI)'/>" +
+                        "</form>"
+                })
+            }
+        </script>
+        <script>
+            $(document).ready(function () {
+                tippy('[data-tippy-content]', {
+                    placement: "bottom",
+                    theme: 'light',
+                    allowHTML: true
+                });
+            });
         </script>
         <? echoFooter() ?>
     </div>
@@ -368,23 +385,28 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
             alert("h", print_r($check));
         }
     }
+    // Submit new party discord
+    if (isset($_POST['newPartyDiscordSubmit'])) {
+        $newCode = trim($_POST['newPartyDiscord']);
+        $party->updateVariable("discord", $newCode);
+    }
     // Accept Fund Request
-    if(isset($_POST['acceptFundRequest'])){
-        if(isset($_POST['secretValue'])){
+    if (isset($_POST['acceptFundRequest'])) {
+        if (isset($_POST['secretValue'])) {
             $secret = numFilterNeg($_POST['secretValue']);
             $stmt = $db->prepare("SELECT * FROM fundRequests WHERE secret = ? AND fulfilled = 0");
             $stmt->bind_param("d", $secret);
             $stmt->execute();
             $result = $stmt->get_result();
 
-            if($result->num_rows == 1){
+            if ($result->num_rows == 1) {
                 $request = $result->fetch_array(MYSQLI_ASSOC);
                 $requestingUser = new User($request['requester']);
                 $requestAmount = $request['requesting'];
 
-                if($party->getVariable("partyTreasury") >= $requestAmount){
+                if ($party->getVariable("partyTreasury") >= $requestAmount) {
                     $requestingUser->addCampaignFinance($requestAmount);
-                    $party->updateVariable("partyTreasury",$party->getVariable("partyTreasury")-$requestAmount);
+                    $party->updateVariable("partyTreasury", $party->getVariable("partyTreasury") - $requestAmount);
 
                     $query = "UPDATE fundRequests SET fulfilled = 1 WHERE secret=$secret";
                     $db->query($query);
