@@ -7,18 +7,18 @@ if ($result = $db->query($query)) {
         $minDifference = getMinDifference($expiresAt, time());
 
         $percentage = 51;
-        $currentVotePercentage = ($vote->ayes / $vote->party->getVariable("votes")) * 100;
+        $autoPassPercent = $vote->totalVotesPartyPercentage * 100;
+        $regularPassPercent = round(($vote->ayes / $vote->totalVotes) * 100, 2);
 
         if (time() > $expiresAt) {
-            echo $currentVotePercentage;
-            if ($currentVotePercentage > $percentage) {
+            if ($regularPassPercent > $percentage) {
                 $vote->passVote(false);
             } else {
                 $vote->passVote(true);
             }
         } else {
             // auto pass
-            if ($currentVotePercentage > $percentage) {
+            if ($autoPassPercent > $percentage) {
                 $vote->passVote(false);
             }
         }
