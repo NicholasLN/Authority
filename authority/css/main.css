@@ -104,13 +104,18 @@ a{
     font-size:12px;
     margin-top:-9px;
 }
-.nav-link{
-    font-family: "Bahnschrift",sans-serif;
+.nav-link {
+    font-family: "Bahnschrift", sans-serif;
 }
-.dark > tr{
-    font-family: "Source Sans Pro",'sans-serif';
+
+#leftText > tbody > tr > td {
+    text-align: left;
+}
+
+.dark > tr {
+    font-family: "Source Sans Pro", 'sans-serif';
     background-color: #111111;
-    color:white;
+    color: white;
 }
 .xdebug-var-dump{
     text-align: left;
