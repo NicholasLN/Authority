@@ -66,6 +66,7 @@ class PartyRoles
             }
         }
     }
+
     public function userLeave(int $userID)
     {
         foreach ($this->partyRoleJson as $roleName => &$roleDetails) {
@@ -75,6 +76,23 @@ class PartyRoles
         }
         $this->updateRoles();
     }
+
+    public function echoRoleToolTip($roleID): string
+    {
+        $str = "";
+        foreach ($this->partyRoleJson as $roleName => $roleDetails) {
+            if ($roleDetails['specialID'] == $roleID) {
+                $str .= "<h6 style=color:black>Permissions</h6>";
+                foreach ($roleDetails['perms'] as $perm => $permEnabled) {
+                    if ($permEnabled == 1) {
+                        $str .= "<u class=bold>$perm</u><br/>";
+                    }
+                }
+            }
+        }
+        return $str;
+    }
+
     public function echoRoleCard()
     {
         foreach ($this->partyRoleJson as $roleName => $roleDetails) {
@@ -88,7 +106,7 @@ class PartyRoles
                 <div class='col-sm-3' style='margin-top: 8px'>
                     <span>$roleName</span>
                     <br/>
-                    <a href='politician.php?id=$occupantID'>
+                    <a id='#tooltip' href='politician.php?id=$occupantID' data-tippy-content='" . $this->echoRoleToolTip($roleDetails['specialID']) . "'>
                         <img style='max-width:80px;height:75px;border:5px ridge darkgrey' src='$occupantPic'/>
                         <p>$occupantName</p>
                     </a>
