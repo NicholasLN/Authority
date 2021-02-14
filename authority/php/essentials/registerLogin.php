@@ -4,15 +4,15 @@ function register($username, $password, $politicianName, $ecoPosition, $socPosit
 {
     global $db;
     $username = trim($username);
-    if (is_numeric($ecoPosition) || in_range($ecoPosition, -5, 5)) {
-        if (is_numeric($socPosition) || in_range($socPosition, -5, 5)) {
+    if (in_range($ecoPosition, -5, 5)) {
+        if (in_range($socPosition, -5, 5)) {
             $ipAddress = $_SERVER['REMOTE_ADDR'];
             $initCookie = $_COOKIE['sessionIdentifier'];
             $passwordHashed = password_hash($password, PASSWORD_BCRYPT);
             $country = getStateByAbbreviation($state)['country'];
 
             $usernameStmt = $db->prepare("SELECT * FROM users WHERE username = ?");
-            $usernameStmt->bind_param("s",$username);
+            $usernameStmt->bind_param("s", $username);
             $usernameStmt->execute();
             $usernameRows = $usernameStmt->get_result()->num_rows;
 
