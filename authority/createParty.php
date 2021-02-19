@@ -80,8 +80,8 @@ if ($_SESSION['loggedIn']) {
                 if (strlen($partyName) >= 7) {
                     $ecoPosition = $_POST['ecoPos'];
                     $socPosition = $_POST['socPos'];
-                    if (in_range($ecoPosition, -5, 5) === true) {
-                        if (in_range($socPosition, -5, 5) === true) {
+                    if (in_range($ecoPosition, -6, 6) === true) {
+                        if (in_range($socPosition, -6, 6) === true) {
                             if (isset($_POST['leaderTitle']) && strlen($_POST['leaderTitle']) > 0) {
                                 $leaderTitle = trim($_POST['leaderTitle']);
                             } else {
