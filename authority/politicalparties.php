@@ -58,74 +58,76 @@ if(isset($_GET['country'])){
                 <hr/>
                 <div class="row justify-content-center">
                     <?
-                    $query = "SELECT * FROM parties WHERE nation='$country'";
-                    if ($result = $db->query($query)) {
-                        while ($row = $result->fetch_assoc()) {
+                    $nation = new Nation($country);
 
-                            $partyID = $row['id'];
-                            $party = new Party($partyID);
-                            $logo = $party->getPartyLogo();
-                            $name = $party->getPartyName();
-                            $members = $party->getPartyMembers();
-                            $bio = $party->getPartyBio();
 
-                            // party leader details
-                            $leader = $party->getPartyLeader();
-                            $leaderTitle = $party->partyRoles->partyLeaderTitle();
-                            // GRAB user DETAILS
-                            $leaderPic = $leader->pictureArray()['picture'];
-                            $leaderName = $leader->pictureArray()['name'];
-                            $leaderID = $leader->pictureArray()['id'];
+                    $rows = $nation->getPartiesArray();
 
-                            $socIdeologyRGB = getPositionFontColor($party->partyRow['socPos']);
-                            $ecoIdeologyRGB = getPositionFontColor($party->partyRow['ecoPos']);
+                    foreach ($rows as $row) {
+                        $partyID = $row['id'];
+                        $party = new Party($partyID);
+                        $logo = $party->getPartyLogo();
+                        $name = $party->getPartyName();
+                        $members = $party->getPartyMembers();
+                        $bio = $party->getPartyBio();
 
-                            $socNum = $party->getVariable("socPos");
-                            $ecoNum = $party->getVariable("ecoPos");
+                        // party leader details
+                        $leader = $party->getPartyLeader();
+                        $leaderTitle = $party->partyRoles->partyLeaderTitle();
+                        // GRAB user DETAILS
+                        $leaderPic = $leader->pictureArray()['picture'];
+                        $leaderName = $leader->pictureArray()['name'];
+                        $leaderID = $leader->pictureArray()['id'];
 
-                            $socIdeology = getSocPositionName($socNum);
-                            $ecoIdeology = getEcoPositionName($ecoNum);
+                        $socIdeologyRGB = getPositionFontColor($party->partyRow['socPos']);
+                        $ecoIdeologyRGB = getPositionFontColor($party->partyRow['ecoPos']);
 
-                            // if party has members and mode is not defunct
-                            if($members > 0 && !$defunct) {
-                                ?>
-                                <div style='padding:4px;' class='col-sm-4'>
-                                    <div class='card'>
-                                        <div class='partyInfo'>
-                                            <div class='partyImgContainer'>
-                                                <img class='partyImgLogo' src="<? echo $logo ?>">
-                                            </div>
-                                            <div class='partyNameContainer'>
-                                                <a href='party.php?id=<? echo $partyID ?>'><? echo $name ?></a>
-                                            </div>
+                        $socNum = $party->getVariable("socPos");
+                        $ecoNum = $party->getVariable("ecoPos");
+
+                        $socIdeology = getSocPositionName($socNum);
+                        $ecoIdeology = getEcoPositionName($ecoNum);
+
+                        // if party has members and mode is not defunct
+                        if($members > 0 && !$defunct) {
+                            ?>
+                            <div style='padding:4px;' class='col-sm-4'>
+                                <div class='card'>
+                                    <div class='partyInfo'>
+                                        <div class='partyImgContainer'>
+                                            <img class='partyImgLogo' src="<? echo $logo ?>">
                                         </div>
-                                        <div class='card-body'>
-                                            <span><? echo $leaderTitle ?></span>
-                                            <br/>
-                                            <a href='politician.php?id=<? echo $leaderID ?>'>
-                                                <img class='leaderImg' src='<? echo $leaderPic ?>'>
-                                                <br/>
-                                                <span><? echo $leaderName ?></span>
-                                            </a>
-                                            <hr/>
-                                            <pre class='partyBioContainer'><? echo $bio ?></pre>
-                                            <hr/>
-                                            <span><b>Members:<? echo $members ?></b></span>
-                                            <hr/>
-                                            Social Ideology: <span style='font-weight: bold;font-family: Ebrima;'><span
-                                                        style='color: <? echo $socIdeologyRGB ?>'><? echo $socIdeology . "(" . $socNum . ")" ?></span></span>
-                                            <br/>
-                                            Economic Ideology: <span
-                                                    style='font-weight: bold;font-family: Ebrima;'><span
-                                                        style='color:<? echo $ecoIdeologyRGB ?>'><? echo $ecoIdeology . "(" . $ecoNum . ")" ?></span></span>
+                                        <div class='partyNameContainer'>
+                                            <a href='party.php?id=<? echo $partyID ?>'><? echo $name ?></a>
                                         </div>
                                     </div>
+                                    <div class='card-body'>
+                                        <span><? echo $leaderTitle ?></span>
+                                        <br/>
+                                        <a href='politician.php?id=<? echo $leaderID ?>'>
+                                            <img class='leaderImg' src='<? echo $leaderPic ?>'>
+                                            <br/>
+                                            <span><? echo $leaderName ?></span>
+                                        </a>
+                                        <hr/>
+                                        <pre class='partyBioContainer'><? echo $bio ?></pre>
+                                        <hr/>
+                                        <span><b>Members:<? echo $members ?></b></span>
+                                        <hr/>
+                                        Social Ideology: <span style='font-weight: bold;font-family: Ebrima;'><span
+                                                    style='color: <? echo $socIdeologyRGB ?>'><? echo $socIdeology . "(" . $socNum . ")" ?></span></span>
+                                        <br/>
+                                        Economic Ideology: <span
+                                                style='font-weight: bold;font-family: Ebrima;'><span
+                                                    style='color:<? echo $ecoIdeologyRGB ?>'><? echo $ecoIdeology . "(" . $ecoNum . ")" ?></span></span>
+                                    </div>
                                 </div>
-                                <?
-                            }
-                            // if mode is defunct and there are no members.
-                            if($defunct && $members == 0){
-                                echo "
+                            </div>
+                            <?
+                        }
+                        // if mode is defunct and there are no members.
+                        if($defunct && $members == 0){
+                            echo "
                                 <div class='col-sm-4'>
                                     <div class='card'>
                                         <div class='partyInfo'>
@@ -154,7 +156,6 @@ if(isset($_GET['country'])){
                                     </div>                        
                                 </div>
                                 ";
-                            }
                         }
                     }
                 ?>
