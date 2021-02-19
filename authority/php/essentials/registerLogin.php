@@ -4,8 +4,8 @@ function register($username, $password, $politicianName, $ecoPosition, $socPosit
 {
     global $db;
     $username = trim($username);
-    if (in_range($ecoPosition, -5, 5)) {
-        if (in_range($socPosition, -5, 5)) {
+    if (in_range($ecoPosition, -6, 6)) {
+        if (in_range($socPosition, -6, 6)) {
             $ipAddress = $_SERVER['REMOTE_ADDR'];
             $initCookie = $_COOKIE['sessionIdentifier'];
             $passwordHashed = password_hash($password, PASSWORD_BCRYPT);
@@ -49,7 +49,11 @@ function register($username, $password, $politicianName, $ecoPosition, $socPosit
                 alert("Error!", "Sorry, something went wrong. Please message a member of moderation or the developer.");
 
             }
+        } else {
+            alert("Error", "$socPosition");
         }
+    } else {
+        alert("Error", "$ecoPosition");
     }
 
 
