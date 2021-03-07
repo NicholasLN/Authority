@@ -26,7 +26,9 @@ if (isset($_GET['state'])) {
         <div class="row">
             <div class="col-sm"></div>
             <div class="col-sm-8">
-                <h1><?=$state->stateName ?> Demographics</h1>
+                <h1 style="padding-top: 16px"><?=$state->stateInfoArray['name'] ?> Demographics</h1>
+                <a href="state.php?state=<?= $state -> stateAbbr?>" class="btn btn-primary ">State Politics</a>
+                <hr>
                 <table class="table table-striped">
                     <tr>
                         <td><b class="bold">Demographic Race</b></td>
