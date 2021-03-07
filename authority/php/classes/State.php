@@ -3,41 +3,36 @@
 class State
 {
     public bool $doesItExist;
-    public String $stateName;
+    public String $stateAbbr;
+    public array $stateInfoArray;
 
-    public function __construct(String $name)
+    public function __construct(String $abbreviation)
     {
-        $this -> stateName = $name;
-
         global $db;
 
-        // TODO: Change demographic State column to use abbreviations instead.
-        $stmt = $db -> prepare("SELECT * FROM states WHERE name = ?");
-        $stmt -> bind_param("s", $name);
+        $stmt = $db -> prepare("SELECT * FROM states WHERE abbreviation = ?");
+        $stmt -> bind_param("s", $abbreviation);
         $stmt -> execute();
 
-        if ($stmt -> get_result() -> num_rows == 1) {
+        $result = $stmt -> get_result();
+
+        if ($result -> num_rows == 1) {
             $this -> doesItExist = true;
-            $this -> stateName = $name;
+            $this -> stateAbbr = $abbreviation;
         } else {
             $this -> doesItExist = false;
         }
     }
 
-    public function getDemographics() {
+    public function getDemographics()
+    {
         global $db;
 
         $stmt = $db -> prepare("SELECT * FROM demographics WHERE State = ?");
-        $stmt -> bind_param("s", $this -> stateName);
+        $stmt -> bind_param("s", $this -> stateAbbr);
         $stmt -> execute();
 
         $result = $stmt -> get_result();
-        $demographicArray = $result -> fetch_all(MYSQLI_ASSOC);
-
-        usort($demographicArray, function ($item1, $item2) {
-            return $item2['Population'] <=> $item1['Population'];
-        });
-
-        return $demographicArray;
+        return $result -> fetch_all(MYSQLI_ASSOC);
     }
 }

@@ -30,8 +30,8 @@ if (isset($_GET['state'])) {
                 <table class="table table-striped">
                     <tr>
                         <td><b class="bold">Demographic Race</b></td>
-                        <td><b class="bold">Demographic Population</b></td>
                         <td><b class="bold">Demographic Gender</b></td>
+                        <td><b class="bold">Demographic Population</b></td>
                         <td><b class="bold">Demographic Social Mean</b></td>
                         <td><b class="bold">Demographic Economic Mean</b></td>
                     </tr>
@@ -44,10 +44,10 @@ if (isset($_GET['state'])) {
                                 <?= $demographic['Race']; ?>
                             </td>
                             <td>
-                                <?= number_format($demographic['Population']); ?>
+                                <?= $demographic['Gender']; ?>
                             </td>
                             <td>
-                                <?= $demographic['Gender']; ?>
+                                <?= number_format($demographic['Population']); ?>
                             </td>
                             <td>
                                 <?= socPositionString($demographic['SocPosMean']); ?>
