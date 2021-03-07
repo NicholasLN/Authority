@@ -11,9 +11,9 @@ class Party
     {
         $this->partyID = $partyID;
         $this->partyRow = $this->getPartyRowConstructor($partyID);
-        $this->partyRoles = new PartyRoles($this->partyRow['partyRoles'], $partyID);
         if (getNumRows("SELECT * FROM parties WHERE id=$partyID") == 1) {
             $this->partyExists = true;
+            $this->partyRoles = new PartyRoles($this->partyRow['partyRoles'], $partyID);
         } else {
             $this->partyExists = false;
         }
