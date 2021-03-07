@@ -156,3 +156,14 @@ function socialPositionDropdown()
     </select>
     <?
 }
+
+function getPartyFromId(int $partyId): array {
+    global $db;
+
+    $stmt = $db -> prepare("SELECT * FROM parties WHERE id = ?");
+    $stmt -> bind_param("i", $partyId);
+    $stmt -> execute();
+
+    $result = $stmt -> get_result();
+    return $result -> fetch_array();
+}
