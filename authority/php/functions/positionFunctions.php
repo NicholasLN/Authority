@@ -144,3 +144,10 @@ function getSocPositionName($position){
     }
     return $str;
 }
+
+function ecoPositionString($position){
+    echo "<p style='color:".getPositionFontColor($position)."'>".getEcoPositionName($position)."</p>";
+}
+function socPositionString($position){
+    echo "<p style='color:".getPositionFontColor($position)."'>".getSocPositionName($position)."</p>";
+}
