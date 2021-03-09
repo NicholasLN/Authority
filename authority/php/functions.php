@@ -60,3 +60,4 @@ include 'functions/discordMeta.php';
 
 include 'views/party.php';
 include 'views/partycommittee.php';
+include 'views/demographics.php';

@@ -1,11 +1,11 @@
 <?php
 
-function selectColor($colors, $x){
+function selectColor($colors, $x, $returnAsHex=False){
     $r = 0.0; $g = 0.0; $b = 0.0;
     $total = 0.0;
     $step = -1/(count($colors));
     $mu = 0.0;
-    $sigma_2 = 0.4;
+    $sigma_2 = 0.37;
 
     foreach($colors as $color){
         $total += exp(-($x - $mu) * ($x - $mu) / (2.0 * $sigma_2)) / sqrt(2.0 * pi() * $sigma_2);
@@ -20,25 +20,35 @@ function selectColor($colors, $x){
         $g += ($color['g'] * $percent) /$total;
         $b += ($color['b'] * $percent) /$total;
     }
-    return "rgb($r,$g,$b)";
+    if(!$returnAsHex){
+        return "rgb($r,$g,$b)";
+    }
+    else{
+        return sprintf("#%02x%02x%02x", $r, $g, $b);
+    }
 
 }
-function getPositionFontColor($pos)
+function getPositionFontColor($pos, $returnAsHex=False)
 {
-    $red = array("r" => 139, "g" => 0, "b" => 0);
+    $red = array("r" => 255, "g" => 0, "b" => 0);
     $lightred = array("r"=>255,"g"=>0,"b"=>0);
     $grey = array("r" => 0, "g" => 0, "b" => 0);
     $white = array("r" => 255, "g" => 255, "b" => 255);
     $lightblue = array("r"=>0,"g"=>0,"b"=>255);
-    $blue = array("r" => 0, "g" => 0, "b" => 139);
+    $blue = array("r" => 0, "g" => 0, "b" => 255);
 
     $gradientColors = array($red,$lightred,$grey,$grey,$lightblue,$blue);
-    $rgb = selectColor($gradientColors, $pos);
+    $rgb = selectColor($gradientColors, $pos, $returnAsHex);
 
-    if($pos < 0.1 && $pos > -0.1){
-        return "rgb(0,0,0)";
+    if(!$returnAsHex){
+        if($pos < 0.1 && $pos > -0.1){
+            return "rgb(0,0,0)";
+        }
+        else {
+            return $rgb;
+        }
     }
-    else {
+    else{
         return $rgb;
     }
 
@@ -143,6 +153,14 @@ function getSocPositionName($position){
             break;
     }
     return $str;
+}
+function getPositionName($positionType, $position){
+    if($positionType == "social"){
+        return getSocPositionName($position);
+    }
+    else if($positionType=="economic"){
+        return getEcoPositionName($position);
+    }
 }
 
 function ecoPositionString($position){

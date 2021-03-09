@@ -56,9 +56,21 @@ if (isset($_GET['state'])) {
                             <td style="text-align: left; border-style: none;">
                                 <?
                                 $party = new Party($player['party']);
-                                $partyInformation = $party->pictureArray(true);
+                                $partyInformation = $party->pictureArray();
+                                if ($partyInformation['name'] != "Independent"){
                                 ?>
-                                <a href="party.php?id=<?= $partyInformation['id'] ?>"><?= $partyInformation['name'] ?></a>
+                                <a href="party.php?id=<?= $partyInformation['id'] ?>">
+                                    <?
+                                    }
+                                    ?>
+                                    <img style="max-width:30px;" src='<?= $partyInformation['picture'] ?>'
+                                         alt='<?= $partyInformation['name'] ?> Picture'/><?= $partyInformation['name'] ?>
+                                </a>
+                                <?
+                                if ($partyInformation['name'] != "Independent") {
+                                    echo "</a>";
+                                }
+                                ?>
                             </td>
 
                             <td style="text-align: left; border-style: none;">

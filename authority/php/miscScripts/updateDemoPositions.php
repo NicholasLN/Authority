@@ -17,48 +17,54 @@ if ($serverConfigFile == false) {
     @mysqli_set_charset($db, "utf8");
 }
 
-$stmt = $db->prepare("SELECT * FROM demographics");
+$stmt = $db->prepare("SELECT * FROM demographics WHERE demographics.State IN (SELECT states.abbreviation FROM states WHERE active = 1)");
 $stmt->execute();
 
 $result = $stmt->get_result();
 
 $demos = $result->fetch_all(MYSQLI_ASSOC);
 
+$queryString = "";
+
 foreach ($demos as $demoKeyID => $demoDetails) {
     $demoID = $demoDetails['demoID'];
-    $eArray = getPositionsFromNRAND(5000, $demoDetails['EcoPosMean'], 1.4);
+    $eArray = getPositionsFromNRAND(rand(1000,2500), $demoDetails['EcoPosMean'], 1.4);
     //var_dump($eArray);
-    $sArray = getPositionsFromNRAND(5000, $demoDetails['SocPosMean'], 1.4);
+    $sArray = getPositionsFromNRAND(rand(1000,2500), $demoDetails['SocPosMean'], 1.4);
 
-    $e = "UPDATE demoPositions 
-                SET 
-                    `-5` = ?, `-4` = ?, `-3` = ?, `-2` = ?, `-1` = ?,
-                    `0` = ?,
-                    `1` = ?, `2` = ?, `3` = ?, `4` = ?, `5` = ?
-                WHERE demoID = $demoID AND type='economic'
-          ";
-    $s = "UPDATE demoPositions 
-                SET 
-                    `-5` = ?, `-4` = ?, `-3` = ?, `-2` = ?, `-1` = ?,
-                    `0` = ?,
-                    `1` = ?, `2` = ?, `3` = ?, `4` = ?, `5` = ?
-                WHERE demoID = $demoID AND type='social'
-          ";
-
-    $eArrayStmt = $db->prepare($e);
-    $eArrayStmt->bind_param("ddddddddddd",
-        $eArray[-5]['percent'], $eArray[-4]['percent'], $eArray[-3]['percent'], $eArray[-2]['percent'], $eArray[-1]['percent'],
-        $eArray[0]['percent'],
-        $eArray[1]['percent'], $eArray[2]['percent'], $eArray[3]['percent'], $eArray[4]['percent'], $eArray[5]['percent']
-    );
-    $sArrayStmt = $db->prepare($s);
-    echo $sArray[-5]['percent'];
-    $sArrayStmt->bind_param("ddddddddddd",
-        $sArray[-5]['percent'], $sArray[-4]['percent'], $sArray[-3]['percent'], $sArray[-2]['percent'], $sArray[-1]['percent'],
-        $sArray[0]['percent'],
-        $sArray[1]['percent'], $sArray[2]['percent'], $sArray[3]['percent'], $sArray[4]['percent'], $sArray[5]['percent']
-    );
-    $eArrayStmt->execute();
-    $sArrayStmt->execute();
-
+    $e = "
+    UPDATE demoPositions 
+        SET 
+            `-5` = ".$eArray[-5]['percent'].", 
+            `-4` = ".$eArray[-4]['percent'].", 
+            `-3` = ".$eArray[-3]['percent'].", 
+            `-2` = ".$eArray[-2]['percent'].", 
+            `-1` = ".$eArray[-1]['percent'].",
+            `0` = ".$eArray[0]['percent'].",
+            `1` = ".$eArray[1]['percent'].",
+            `2` = ".$eArray[2]['percent'].",
+            `3` = ".$eArray[3]['percent'].", 
+            `4` = ".$eArray[4]['percent'].", 
+            `5` = ".$eArray[5]['percent']."
+        WHERE demoID = $demoID AND type='economic';
+    ";
+    $s = "
+    UPDATE demoPositions 
+        SET 
+            `-5` = ".$sArray[-5]['percent'].", 
+            `-4` = ".$sArray[-4]['percent'].", 
+            `-3` = ".$sArray[-3]['percent'].", 
+            `-2` = ".$sArray[-2]['percent'].", 
+            `-1` = ".$sArray[-1]['percent'].",
+            `0` = ".$sArray[0]['percent'].",
+            `1` = ".$sArray[1]['percent'].",
+            `2` = ".$sArray[2]['percent'].",
+            `3` = ".$sArray[3]['percent'].", 
+            `4` = ".$sArray[4]['percent'].", 
+            `5` = ".$sArray[5]['percent']."
+        WHERE demoID = $demoID AND type='social';
+    ";
+    $queryString.=$e;
+    $queryString.=$s;
 }
+$db->multi_query($queryString);

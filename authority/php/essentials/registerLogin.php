@@ -49,11 +49,13 @@ function register($username, $password, $politicianName, $ecoPosition, $socPosit
                 alert("Error!", "Sorry, something went wrong. Please message a member of moderation or the developer.");
 
             }
-        } else {
-            alert("Error", "$socPosition");
         }
-    } else {
-        alert("Error", "$ecoPosition");
+        else{
+            alert("Error","$socPosition");
+        }
+    }
+    else{
+        alert("Error","$ecoPosition");
     }
 
 

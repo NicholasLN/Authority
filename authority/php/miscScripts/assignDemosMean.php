@@ -22,6 +22,9 @@ $stmt->execute();
 
 $result = $stmt->get_result();
 
+
+$queryString = "";
+
 $demos = $result->fetch_all(MYSQLI_ASSOC);
 var_dump($demos);
 foreach ($demos as $demoID => $demoDetails) {
@@ -29,10 +32,11 @@ foreach ($demos as $demoID => $demoDetails) {
     $ecoPosMean = Demographic::getDemographicMean($demoDetails, "economic");
     $socPosMean = Demographic::getDemographicMean($demoDetails, "social");
 
-    $queryEco = "UPDATE demographics SET EcoPosMean = '$ecoPosMean' WHERE demoID=$demoID";
-    $querySoc = "UPDATE demographics SET SocPosMean = '$socPosMean' WHERE demoID=$demoID";
+    $queryEco = "UPDATE demographics SET EcoPosMean = '$ecoPosMean' WHERE demoID=$demoID;";
+    $querySoc = "UPDATE demographics SET SocPosMean = '$socPosMean' WHERE demoID=$demoID;";
 
-    $db->query($queryEco);
-    $db->query($querySoc);
+    $queryString.=$queryEco;
+    $queryString.=$querySoc;
 }
+$db->multi_query($queryString);
 

@@ -1,3 +1,6 @@
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^europeanperil.com [NC]
+RewriteRule ^(.*)$ https://www.europeanperil.com/authority/$1 [L,R=301,NC]
 
 RewriteCond %{HTTP_HOST} ^europeanperil.com [NC]
 RewriteCond %{HTTPS} off

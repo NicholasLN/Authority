@@ -1,0 +1,4 @@
+AuthName "Login, fucker!"
+AuthType Basic
+AuthUserFile /home/532845.cloudwaysapps.com/jwjfgexukw/public_html/.htpasswd
+require valid-user

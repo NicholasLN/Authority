@@ -75,6 +75,14 @@ function nrand($mean, $sd, $limit = 5, $lowerLimit = -5)
         return $z;
     }
 }
+function nrandAverage($iterations,$mean,$sd,$upperLimit,$lowerLimit){
+    $total = 0;
+    for($i = 0; $i<=$iterations; $i++){
+        $total += nrand($mean,$sd,$upperLimit,$lowerLimit);
+    }
+    echo $total/$iterations."<br/>";
+    return $total/$iterations;
+}
 
 function array_avg($array, $round = 2)
 {

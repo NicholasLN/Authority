@@ -38,6 +38,8 @@ if (isset($_GET['state'])) {
     <meta charset="utf-8"/>
     <title>Authority</title>
     <? echoHeader(); ?>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
 </head>
 <? echoNavBar() ?>
 <body>
@@ -49,40 +51,9 @@ if (isset($_GET['state'])) {
                 <h1 style="padding-top: 16px"><?=$state->stateInfoArray['name'] ?> Demographics</h1>
                 <a href="state.php?state=<?= $state -> stateAbbr?>" class="btn btn-primary ">State Politics</a>
                 <hr>
-                <table class="table table-striped">
-                    <tr>
-                        <td><b class="bold">Demographic Race</b></td>
-                        <td><b class="bold">Demographic Gender</b></td>
-                        <td><b class="bold">Demographic Population</b></td>
-                        <td><b class="bold">Demographic Social Mean</b></td>
-                        <td><b class="bold">Demographic Economic Mean</b></td>
-                    </tr>
-                    <?
-                    foreach($stateDemographics as $demographic) {
-                        ?>
-                        <tr>
-                            <td>
-                                <?= $demographic['Race']; ?>
-                            </td>
-                            <td>
-                                <?= $demographic['Gender']; ?>
-                            </td>
-                            <td>
-                                <?= number_format($demographic['Population']); ?>
-                            </td>
-                            <td>
-                                <?= socPositionString($demographic['SocPosMean']); ?>
-                            </td>
-                            <td>
-                                <? ecoPositionString($demographic['EcoPosMean']); ?>
-                            </td>
-                        </tr>
-                        <?
-                    }
-
-                    ?>
-                </table>
+                <? charts($stateDemographics) ?>
             </div>
+
             <div class="col-sm"></div>
         </div>
     </div>
