@@ -3,7 +3,7 @@
 
 class Demographic
 {
-    public static function getDemographicMean($demoDetails, $type)
+    public static function getDemographicMean(Array $demoDetails, String $type)
     {
         $ecoMean = 0;
         $socMean = 0;
@@ -34,5 +34,13 @@ class Demographic
         } else {
             return $socMean;
         }
+    }
+    public static function validRace(String $demoRace): bool
+    {
+        return $demoRace == "all" || $demoRace=="White" || $demoRace == "Black" || $demoRace == "Hispanic" || $demoRace == "Native American" || $demoRace == "Pacific Islander";
+    }
+    public static function validGender(String $demoGender): bool
+    {
+        return $demoGender == "all" ||  $demoGender == "Male" || $demoGender == "Female" || $demoGender == "Transgender/Nonbinary";
     }
 }

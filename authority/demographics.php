@@ -4,7 +4,27 @@ if (isset($_GET['state'])) {
     $state = new State($_GET['state']);
 
     if ($state -> doesItExist) {
-        $state -> getDemographics();
+        if(!isset($_GET['gender'])){ $_GET['gender'] = "all"; }
+        if(!isset($_GET['race'])){ $_GET['race'] = "all"; }
+
+        $gender = $_GET['gender'];
+        $race = $_GET['race'];
+
+
+        if(Demographic::validGender($gender) && Demographic::validRace($race)){
+            $stateDemographics = $state -> getDemographics($gender,$race);
+        }
+        else{
+            if(Demographic::validGender($gender) && !Demographic::validRace($race)){
+                $stateDemographics = $state->getDemographics($gender,"all");
+            }
+            else if(!Demographic::validGender($gender) && Demographic::validRace($race)){
+                $stateDemographics = $state->getDemographics("all",$race);
+            }
+            else{
+                $stateDemographics = $state->getDemographics();
+            }
+        }
     } else {
         invalidPage("Invalid State!", "State does not exist. Fuck off");
     }
@@ -38,7 +58,6 @@ if (isset($_GET['state'])) {
                         <td><b class="bold">Demographic Economic Mean</b></td>
                     </tr>
                     <?
-                    $stateDemographics = $state->getDemographics();
                     foreach($stateDemographics as $demographic) {
                         ?>
                         <tr>

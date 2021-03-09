@@ -38,16 +38,37 @@ class State
 
     }
 
-    public function getDemographics(): array
+    public function getDemographics(String $gender = "all", String $race = "all"): array
     {
         global $db;
 
-        $stmt = $db->prepare("SELECT * FROM demographics WHERE State = ?");
-        $stmt->bind_param("s", $this->stateAbbr);
+        if($gender=="all" && $race=="all"){
+            $stmt = $db->prepare("SELECT * FROM demographics WHERE State = ?");
+            $stmt->bind_param("s",$this->stateAbbr);
+        }
+        else if($gender!="all"){
+            if($race == "all"){
+                $stmt = $db->prepare("SELECT * FROM demographics WHERE Gender=? AND State=?");
+                $stmt -> bind_param("ss",$gender,$this->stateAbbr);
+            }
+            else{
+                $stmt = $db->prepare("SELECT * FROM demographics WHERE Gender=? AND Race=? AND State=?");
+                $stmt -> bind_param("sss",$gender,$race,$this->stateAbbr);
+            }
+        }
+        else if($race != "all"){
+            if($gender == "all"){
+                $stmt = $db->prepare("SELECT * FROM demographics WHERE Race=? AND State=?");
+                $stmt -> bind_param("ss",$race,$this->stateAbbr);
+            }
+            else{
+                $stmt = $db->prepare("SELECT * FROM demographics WHERE Race=? AND Gender = ? AND State=?");
+                $stmt -> bind_param("sss",$race,$gender,$this->stateAbbr);
+            }
+        }
         $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-        $result = $stmt->get_result();
-        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     public function getStatePlayers(bool $active = True, bool $sortByInfluence = True): array
