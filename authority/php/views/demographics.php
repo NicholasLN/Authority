@@ -5,11 +5,11 @@ function charts($demographicsArray){
     <h5>Social Position Distribution</h5>
     <div class="chart" id="socialPositionsChart"></div>
     <h5>Economic Position Distribution</h5>
-    <div class="chart" id="economicPositionsChart"></div>
+    <div class='chart' id="economicPositionsChart"></div>
     <script>
 
             var chart = new CanvasJS.Chart("socialPositionsChart", {
-                animationEnabled: false,
+                animationEnabled: true,
                 axisY: {
                     title: "Population"
                 },
@@ -26,7 +26,7 @@ function charts($demographicsArray){
     <script>
 
             var chart = new CanvasJS.Chart("economicPositionsChart", {
-                animationEnabled: false,
+                animationEnabled: true,
                 axisY: {
                     title: "Population"
                 },
@@ -41,5 +41,45 @@ function charts($demographicsArray){
             chart.render();
     </script>
 
+    <?
+}
+function genderChart($demographicsArray){
+    ?>
+    <h5>Gender Distribution</h5>
+    <div class='chart' id="genderDistrChart"></div>
+    <script>
+
+            var chart = new CanvasJS.Chart("genderDistrChart", {
+                animationEnabled: true,
+                data: [{
+                    type: "pie",
+                    startAngle: 0,
+                    dataPoints: <?=Demographic::generateGenderShare($demographicsArray); ?>
+                }],
+
+                backgroundColor: "transparent"
+            });
+            chart.render();
+    </script>
+    <?
+}
+function raceChart($demographicsArray){
+    ?>
+    <h5>Race Distribution</h5>
+    <div class='chart' id="raceDistrChart"></div>
+    <script>
+
+            var chart = new CanvasJS.Chart("raceDistrChart", {
+                animationEnabled: true,
+                data: [{
+                    type: "pie",
+                    startAngle: 0,
+                    dataPoints: <?=Demographic::generateRaceShare($demographicsArray); ?>
+                }],
+
+                backgroundColor: "transparent"
+            });
+            chart.render();
+    </script>
     <?
 }

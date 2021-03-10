@@ -83,4 +83,107 @@ class Demographic
 
 
     }
+    public static function generateGenderShare(Array $demographicsArray, bool $parseForChart=True){
+        global $db;
+        $genderArray = array(
+            "Male"=>0,
+            "Female"=>0,
+            "Transgender/Nonbinary"=>0
+        );
+        $associatedColors = array(
+            "Male"=>"#99ace0",
+            "Female"=>"#ff748c",
+            "Transgender/Nonbinary"=>"#CA93CA"
+        );
+        $sumPopulation = 0;
+        foreach($demographicsArray as $demo){
+            $sumPopulation += $demo['Population'];
+        }
+        foreach($demographicsArray as $demo){
+            foreach($genderArray as $key=>&$value){
+                if($key == $demo['Gender']){
+                    $value += $demo['Population'];
+                }
+            }
+        }
+        
+        // Condition for returning data in the required format for a chart.
+        if($parseForChart){
+            $chartArray = array();
+            foreach($genderArray as $gender=>$population){
+                if($population>0){
+                    $subArray = array("y"=>round($population), "label"=>$gender, "share"=>$population/$sumPopulation, "color"=>$associatedColors[$gender]);
+                    array_push($chartArray,$subArray);
+                }
+            }
+            $json = json_encode($chartArray);
+            return $json;            
+
+        }
+        return $genderArray;
+
+
+    }
+    public static function generateRaceShare(Array $demographicsArray, bool $parseForChart=True){
+        global $db;
+        $raceArray = array(
+            "White"=>0,
+            "Black"=>0,
+            "Hispanic"=>0,
+            "Native American"=>0,
+            "Pacific Islander"=>0,
+            "Asian"=>0
+        );
+        $associatedColors = array(
+            "White"=>"darkgrey",
+            "Black"=>"grey",
+            "Hispanic"=>"blue",
+            "Native American"=>"#ff6500",
+            "Pacific Islander"=>"orange",
+            "Asian"=>"green"
+        );
+        $sumPopulation = 0;
+        foreach($demographicsArray as $demo){
+            $sumPopulation += $demo['Population'];
+        }
+        foreach($demographicsArray as $demo){
+            foreach($raceArray as $key=>&$value){
+                if($key == $demo['Race']){
+                    $value += $demo['Population'];
+                }
+            }
+        }
+        
+        // Condition for returning data in the required format for a chart.
+        if($parseForChart){
+            $chartArray = array();
+            foreach($raceArray as $race=>$population){
+                if($population>0){
+                    $subArray = array("y"=>round($population), "label"=>$race, "share"=>$population/$sumPopulation, "color"=>$associatedColors[$race]);
+                    array_push($chartArray,$subArray);
+                }
+            }
+            $json = json_encode($chartArray);
+            return $json;            
+
+        }
+        return $raceArray;
+
+
+    }
+
+
+    // rig = raceIsGET, gig = genderIsGET. Simplified condition for echoing "selected" in dropdown.
+    public static function rig($demoRace, $get){
+        $get = ucwords($get);
+        if($get==$demoRace){
+            return "selected";
+        }
+    }
+    public static function gig($demoRace, $get){
+        $get = ucwords($get);
+        if($get==$demoRace){
+            return "selected";
+        }
+    }
 }
