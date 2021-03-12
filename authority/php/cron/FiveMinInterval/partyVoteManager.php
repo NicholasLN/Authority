@@ -8,8 +8,16 @@ if ($result = $db->query($query)) {
 
         $percentage = 51;
         $autoPassPercent = $vote->totalVotesPartyPercentage * 100;
-        $regularPassPercent = round(($vote->ayes / $vote->totalVotes) * 100, 2);
+        
+        if($vote->totalVotes > 0){
+            $regularPassPercent = round(($vote->ayes / $vote->totalVotes) * 100, 2);
+        }
+        else{ 
+            $regularPassPercent = 0;
+        }
 
+
+        // If the bill has run out of time.
         if (time() > $expiresAt) {
             if ($regularPassPercent > $percentage) {
                 $vote->passVote(false);
@@ -19,6 +27,7 @@ if ($result = $db->query($query)) {
         } else {
             // auto pass
             if ($autoPassPercent > $percentage) {
+                echo "trueeeee th";
                 $vote->passVote(false);
             }
         }
