@@ -12,22 +12,32 @@ class Demographic
         $demoRace = $demoDetails['Race'];
 
         if($demoDetails['State'] == "CA"){
-            $ecoMean += nrandAverage(50, -0.3, 1, 5, -5);
-            $socMean += nrandAverage(50,0.2,1,5,-5);
+            $ecoMean += nrandAverage(-0.18, 3);
+            $socMean += nrandAverage(0.09, 3);
         }
         if($demoDetails['State'] == "TX"){
-            $ecoMean += nrandAverage(50, 0, 1, 5, -5);
-            $socMean += nrandAverage(50,-0.3,1,5,-5);
+            $ecoMean += nrandAverage(0.07, 3);
+            $socMean += nrandAverage(-0.04,3);
+        }
+        switch($demoRace){
+            case "Hispanic" || "Black" || "Native American" || "Pacific Islander":
+                $ecoMean += nrandAverage(-0.82, 1);
+                $socMean += nrandAverage(0.23, 1);
+            case "Asian":
+                $ecoMean += nrandAverage(0.40, 2);
+            case "White":
+                echo "hi";
+                $ecoMean += nrandAverage(0.21, 1);
         }
         if ($type == "economic") {
-            return $ecoMean;
+            return round($ecoMean,2);
         } else {
-            return $socMean;
+            return round($socMean,2);
         }
     }
     public static function validRace(String $demoRace): bool
     {
-        return $demoRace == "all" || $demoRace=="White" || $demoRace == "Black" || $demoRace == "Hispanic" || $demoRace == "Native American" || $demoRace == "Pacific Islander";
+        return $demoRace == "all" || $demoRace=="White" || $demoRace == "Black" || $demoRace == "Hispanic" || $demoRace == "Native American" || $demoRace == "Pacific Islander" || $demoRace == "Asian";
     }
     public static function validGender(String $demoGender): bool
     {

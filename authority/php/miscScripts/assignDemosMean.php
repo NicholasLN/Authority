@@ -26,7 +26,6 @@ $result = $stmt->get_result();
 $queryString = "";
 
 $demos = $result->fetch_all(MYSQLI_ASSOC);
-var_dump($demos);
 foreach ($demos as $demoID => $demoDetails) {
     $id = $demoDetails['demoID'];
     $ecoPosMean = Demographic::getDemographicMean($demoDetails, "economic");
