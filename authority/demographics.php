@@ -56,6 +56,14 @@ if (isset($_GET['state'])) {
                 <a href="state.php?state=<?= $state -> stateAbbr?>" class="btn btn-primary ">State Politics</a>
                 <hr>
                 <div class='row justify-content-center'>
+                    <div class='col-md-6'>
+                    <? genderChart($stateDemographics); ?>
+                    </div>
+                    <div class='col-md-6'>
+                    <? raceChart($stateDemographics); ?>
+                    </div>
+                </div>
+                <div class='row justify-content-center'>
                     <div class='col-md-8'>
                         <div class='row justify-content-center'>
                             <h5>Parameter Search</h5>
@@ -101,10 +109,13 @@ if (isset($_GET['state'])) {
                             <table class='table table-striped' id="demographicTable" style="text-align: left">
                                 <thead class='dark'>
                                     <tr>
-                                        <th style="width:20%">Race</th>
-                                        <th style="width:20%">Gender</th>
+                                        <th style="width:13%;">Race</th>
+                                        <th style="width:10%;">Gender</th>
                                         <th>Population</th>
-                                        <th style="width:20%">Turnout</th>
+                                        <th>Turnout</th>
+                                        <th>Economic Position</th>
+                                        <th>Social Position</th>
+
                                     </tr>
                                 </thead>
                                 <?
@@ -115,6 +126,8 @@ if (isset($_GET['state'])) {
                                         <td><?=$demographic['Gender']?></td>
                                         <td><?=number_format($demographic['Population']);?>
                                         <td>100%</td>
+                                        <td><?=ecoPositionString($demographic['EcoPosMean'])?> (<?=$demographic['EcoPosMean']?>)</td>
+                                        <td><?=socPositionString($demographic['SocPosMean'])?> (<?=$demographic['SocPosMean']?>)</td>
                                     </tr>
                                     <?
                                     }
@@ -126,20 +139,13 @@ if (isset($_GET['state'])) {
                         <? charts($stateDemographics) ?>
                     </div>
                 </div>
-                <div class='row justify-content-center'>
-                    <div class='col-sm-6'>
-                    <? genderChart($stateDemographics); ?>
-                    </div>
-                    <div class='col-sm-6'>
-                    <? raceChart($stateDemographics); ?>
-                    </div>
-                </div>
             </div>
 
             <div class="col-sm"></div>
         </div>
         <script>
         $('#demographicTable').DataTable({
+            "autoWidth":false,
             "responsive":true,
             "order": [[2, "desc"]],
         });
