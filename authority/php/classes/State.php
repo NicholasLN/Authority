@@ -41,7 +41,7 @@ class State
     public function getDemographics(String $gender = "all", String $race = "all"): array
     {
         global $db;
-
+        
         if($gender=="all" && $race=="all"){
             $stmt = $db->prepare("SELECT * FROM demographics WHERE State = ?");
             $stmt->bind_param("s",$this->stateAbbr);

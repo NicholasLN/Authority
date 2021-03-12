@@ -75,12 +75,12 @@ function nrand($mean, $sd, $limit = 5, $lowerLimit = -5)
         return $z;
     }
 }
-function nrandAverage($iterations,$mean,$sd,$upperLimit,$lowerLimit){
+function nrandAverage($mean,$sd,$upperLimit=5,$lowerLimit=-5){
     $total = 0;
+    $iterations = 200;
     for($i = 0; $i<=$iterations; $i++){
         $total += nrand($mean,$sd,$upperLimit,$lowerLimit);
     }
-    echo $total/$iterations."<br/>";
     return $total/$iterations;
 }
 
