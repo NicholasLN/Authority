@@ -43,6 +43,13 @@ class Demographic
     {
         return $demoGender == "all" ||  $demoGender == "Male" || $demoGender == "Female" || $demoGender == "Transgender/Nonbinary";
     }
+    public static function demoSetPopulation(Array $demographicsArray){
+        $sumPopulation = 0;
+        foreach($demographicsArray as $demo){
+            $sumPopulation += $demo['Population'];
+        }
+        return $sumPopulation;
+    }
     public static function generatePoliticalLeanings(Array $demographicsArray, String $EconomicOrSocial, bool $parseForChart=True){
         global $db;
         $politicalLeaningsArray = array(
@@ -58,10 +65,7 @@ class Demographic
             4=>0,
             5=>0
         );
-        $sumPopulation = 0;
-        foreach($demographicsArray as $demo){
-            $sumPopulation += $demo['Population'];
-        }
+        $sumPopulation = Demographic::demoSetPopulation($demographicsArray);
         foreach($demographicsArray as $demo){
 
             // Pull Positions array for each demographic in list
@@ -105,10 +109,7 @@ class Demographic
             "Female"=>"#ff748c",
             "Transgender/Nonbinary"=>"#CA93CA"
         );
-        $sumPopulation = 0;
-        foreach($demographicsArray as $demo){
-            $sumPopulation += $demo['Population'];
-        }
+        $sumPopulation = Demographic::demoSetPopulation($demographicsArray);
         foreach($demographicsArray as $demo){
             foreach($genderArray as $key=>&$value){
                 if($key == $demo['Gender']){
@@ -152,10 +153,7 @@ class Demographic
             "Pacific Islander"=>"orange",
             "Asian"=>"green"
         );
-        $sumPopulation = 0;
-        foreach($demographicsArray as $demo){
-            $sumPopulation += $demo['Population'];
-        }
+        $sumPopulation = Demographic::demoSetPopulation($demographicsArray);
         foreach($demographicsArray as $demo){
             foreach($raceArray as $key=>&$value){
                 if($key == $demo['Race']){
@@ -181,7 +179,46 @@ class Demographic
 
 
     }
+    public static function pollCost(Array $demographicsArray, $confidenceLevel, $populationSize){
+        $baseCost = 50;
+        try{
+            $confidenceLevel = numfilter(floatval(str_replace("%", "", $confidenceLevel)));
+            $populationSize = numfilter(floatval(str_replace(",", "", $populationSize)));
+            $costPerPerson = round($confidenceLevel/100 * $baseCost,2);
 
+
+            $totalCost =$populationSize * $costPerPerson;
+            return $totalCost;
+        }
+        catch(Exception $e){
+            return $e;
+        }
+    }
+    public static function marginOfError(Array $demographicsArray, $confidenceLevel, $populationSize){
+        
+
+
+    }
+    public static function calcDemSupport($demographicArray,$loggedInUser){
+        global $db;
+        $supportArray = array(
+            -5=>0,
+            -4=>0,
+            -3=>0,
+            -2=>0,
+            -1=>0,
+            0=>0,
+            1=>0,
+            2=>0,
+            3=>0,
+            4=>0,
+            5=>0
+        );
+        $stmt = $db->prepare("SELECT * FROM demoPositions WHERE id=?");
+        $stmt->bind_param("i",$demographicArray['demoID']);
+        $stmt->execute();
+        $positionArray = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 
     // rig = raceIsGET, gig = genderIsGET. Simplified condition for echoing "selected" in dropdown.
     public static function rig($demoRace, $get){
