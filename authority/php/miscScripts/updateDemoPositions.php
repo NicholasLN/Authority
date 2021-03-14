@@ -28,9 +28,9 @@ $queryString = "";
 
 foreach ($demos as $demoKeyID => $demoDetails) {
     $demoID = $demoDetails['demoID'];
-    $eArray = getPositionsFromNRAND(rand(1000,2500), $demoDetails['EcoPosMean'], 1.2);
+    $eArray = getPositionsFromNRAND(rand(1000,2500), $demoDetails['EcoPosMean'], $demoDetails['Polarization']);
     //var_dump($eArray);
-    $sArray = getPositionsFromNRAND(rand(1000,2500), $demoDetails['SocPosMean'], 1.2);
+    $sArray = getPositionsFromNRAND(rand(1000,2500), $demoDetails['SocPosMean'], $demoDetails['Polarization']);
 
     $e = "
     UPDATE demoPositions 

@@ -33,6 +33,7 @@ function generateCookie(): string
     return hash('fnv1a64', $randomInt);
 }
 
+$loggedIn = false;
 if (!isset($_SESSION['loggedIn'])) {
     $_SESSION['loggedIn'] = false;
     setcookie("sessionIdentifier", generateCookie());
@@ -42,6 +43,7 @@ if (isset($_SESSION['loggedInID'])) {
         session_destroy();
     } else {
         $user = new User($_SESSION['loggedInID']);
+        $loggedIn = true;
         $loggedInID = $_SESSION['loggedInID'];
         $loggedInRow = $user->getUserRow();
         $loggedInUser = new User($loggedInID);
