@@ -355,7 +355,7 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == True) {
         // is image
         if (($check !== false)) {
             if ($_FILES['newPartyPicture']['size'] < 500000) {
-                $name = $party->getVariable("name");
+                $name = $party->getVariable("id");
                 $pic = $party->getVariable("partyPic");
                 if($party->getVariable("partyPic") != "images/partyPics/independent.png") {
                     $pic = substr($pic, 0, strpos($pic, "?ver="));

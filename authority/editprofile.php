@@ -70,7 +70,7 @@ if (isset($_POST)) {
         // is image
         if (($check !== false)) {
             if ($_FILES['newProfilePicture']['size'] < 500000) {
-                $name = $loggedInRow['politicianName'];
+                $name = $loggedInID;
                 if ($loggedInRow['profilePic'] != "images/userPics/default.jpg") {
                     $pic = substr($loggedInRow['profilePic'], 0, strpos($loggedInRow['profilePic'], "?ver="));
                     unlink($pic);
