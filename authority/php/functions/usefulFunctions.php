@@ -12,6 +12,7 @@ function in_range($number, $min, $max, $inclusive = FALSE): bool
         return false;
     }
 }
+
 function numFilter($number)
 {
     return preg_replace("/[^0-9.]/", "", $number);
@@ -33,14 +34,18 @@ function invalidPage($alertHeader = "Invalid Page", $alertMsg = "")
     }
 
 }
-function getMinDifference($time1, $time2){
-    $difference = abs($time1-$time2);
+
+function getMinDifference($time1, $time2)
+{
+    $difference = abs($time1 - $time2);
     // in unix time, a minute is equivalent to 60 (60 seconds)
-    return $difference/60;
+    return $difference / 60;
 }
-function getHourDifference($time1,$time2){
+
+function getHourDifference($time1, $time2)
+{
     $mins = getMinDifference($time1, $time2);
-    return $mins/60;
+    return $mins / 60;
 
 }
 
@@ -75,13 +80,15 @@ function nrand($mean, $sd, $limit = 5, $lowerLimit = -5)
         return $z;
     }
 }
-function nrandAverage($mean,$sd,$upperLimit=5,$lowerLimit=-5){
+
+function nrandAverage($mean, $sd, $upperLimit = 5, $lowerLimit = -5)
+{
     $total = 0;
     $iterations = 200;
-    for($i = 0; $i<=$iterations; $i++){
-        $total += nrand($mean,$sd,$upperLimit,$lowerLimit);
+    for ($i = 0; $i <= $iterations; $i++) {
+        $total += nrand($mean, $sd, $upperLimit, $lowerLimit);
     }
-    return $total/$iterations;
+    return $total / $iterations;
 }
 
 function array_avg($array, $round = 2)
@@ -165,13 +172,25 @@ function socialPositionDropdown()
     <?
 }
 
-function getPartyFromId(int $partyId): array {
+function getPartyFromId(int $partyId): array
+{
     global $db;
 
-    $stmt = $db -> prepare("SELECT * FROM parties WHERE id = ?");
-    $stmt -> bind_param("i", $partyId);
-    $stmt -> execute();
+    $stmt = $db->prepare("SELECT * FROM parties WHERE id = ?");
+    $stmt->bind_param("i", $partyId);
+    $stmt->execute();
 
-    $result = $stmt -> get_result();
-    return $result -> fetch_array();
+    $result = $stmt->get_result();
+    return $result->fetch_array();
+}
+
+function changeKey($array, $oldKey, $newKey): array
+{
+    if(!array_key_exists($oldKey, $array)) {
+        return $array;
+    }
+    $keys = array_keys($array);
+    $keys[array_search($oldKey, $keys, false)] = $newKey;
+
+    return array_combine($keys, $array);
 }

@@ -179,18 +179,9 @@ class PartyRoles
 
     public function renameRole($roleID, $newName)
     {
-        foreach ($this->partyRoleJson as $roleName => &$roleDetails) {
-            if ($roleDetails['specialID'] == $roleID) {
-                $originalArray = $this->partyRoleJson[$roleName];
-                unset($this->partyRoleJson[$roleName]);
-                $newArray = array(
-                    $newName => array(
-                        "specialID" => $roleID,
-                        "occupant" => (int)$originalArray['occupant'],
-                        "perms" => $originalArray['perms']
-                    )
-                );
-                $this->partyRoleJson = array_merge($this->partyRoleJson, $newArray);
+        foreach ($this->partyRoleJson as $roleName => $roleDetails) {
+            if ( $roleDetails['specialID'] == $roleID){
+                $this->partyRoleJson = changeKey($this->partyRoleJson, $roleName, $newName);
                 var_dump($this->partyRoleJson);
             }
         }

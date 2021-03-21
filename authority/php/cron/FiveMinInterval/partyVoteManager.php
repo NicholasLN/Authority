@@ -27,7 +27,6 @@ if ($result = $db->query($query)) {
         } else {
             // auto pass
             if ($autoPassPercent > $percentage) {
-                echo "trueeeee th";
                 $vote->passVote(false);
             }
         }
