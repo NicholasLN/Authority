@@ -46,7 +46,7 @@ function partyMembersTable($partyID)
                     $userName = $user->pictureArray()['name'];
                     $userID = $user->pictureArray()['id'];
                     $userRegion = $user->getUserRow()['state'];
-                    $userPartyInfluence = $user->getUserRow()['partyInfluence'];
+                    $userPartyInfluence = $user->getVariable("partyInfluence");
                     $userRole = $party->partyRoles->getUserTitle($userID);
                     $votes = $user->getUserPartyVotes();
 
@@ -57,8 +57,14 @@ function partyMembersTable($partyID)
                     $votingForID = $votingFor->pictureArray()['id'];
 
 
-                    $totalInfluence = $party->getTotalPartyInfluence() + 1;
-                    $percentage = round($user->getVariable("partyInfluence") / $totalInfluence * 100, 2) . "%";
+                    $totalInfluence = $party->getTotalPartyInfluence();
+                    if($totalInfluence == 0){
+                        $percentage = 100;
+                    }
+                    else{
+                        $percentage = round($userPartyInfluence/$totalInfluence * 100, 2);
+
+                    }
                     ?>
                     <tr>
                         <td>
@@ -75,7 +81,7 @@ function partyMembersTable($partyID)
                             <p style='vertical-align: center'><? echo $userRegion ?></p>
                         </td>
                         <td>
-                            <span><? echo $percentage ?></span>
+                            <span><? echo $percentage ?>%</span>
                         </td>
                         <td>
                             <span><? echo $votes ?></span>
