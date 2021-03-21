@@ -73,6 +73,7 @@ if (!$_SESSION['loggedIn']) {
     </html>
 <?php
 if ($_SESSION['loggedIn']) {
+    /** @var User $loggedInUser */
     if ($loggedInUser->hasCampaignFunds(50000)) {
         if (isset($_POST['partyName'])) {
             $partyName = trim($_POST['partyName']);
@@ -80,42 +81,18 @@ if ($_SESSION['loggedIn']) {
                 if (strlen($partyName) >= 7) {
                     $ecoPosition = $_POST['ecoPos'];
                     $socPosition = $_POST['socPos'];
-                    if (in_range($ecoPosition, -6, 6) === true) {
-                        if (in_range($socPosition, -6, 6) === true) {
-                            if (isset($_POST['leaderTitle']) && strlen($_POST['leaderTitle']) > 0) {
-                                $leaderTitle = trim($_POST['leaderTitle']);
-                            } else {
-                                $leaderTitle = "Chairman";
-                            }
-                            $nation = $loggedInUser->getVariable("nation");
-                            $rolesArray = json_encode(
-                                array(
-                                    "$leaderTitle" => array(
-                                        "occupant" => $loggedInUser->userID,
-                                        "specialID" => 0,
-                                        "perms" => array(
-                                            "leader" => 1
-                                        )
-                                    )
-                                ), JSON_PRETTY_PRINT);
-                            $stmt = $db->prepare("INSERT INTO parties 
-                        (nation, name, initialEcoPos, initialSocPos, ecoPos, socPos, partyRoles) VALUES (?,?,?,?,?,?,?)");
-                            $stmt->bind_param("ssiiiis", $nation, $partyName, $ecoPosition, $socPosition, $ecoPosition, $socPosition, $rolesArray);
-                            $stmt->execute();
-                            $newPartyID = $stmt->insert_id;
-                            $loggedInUser->leaveCurrentParty();
-                            $loggedInUser->updateVariable("party", $newPartyID);
-                            $loggedInUser->updateVariable("partyInfluence", 100);
-                            $loggedInUser->addCampaignFinance(-50000);
-                            redirect("party.php?id=$newPartyID");
-
-                        }
+                    if ((in_range($ecoPosition, -6, 6) === true) && in_range($socPosition, -6, 6) === true) {
+                        $leaderTitle = isset($_POST['leaderTitle']) && strlen($_POST['leaderTitle']) > 0 ? trim($_POST['leaderTitle']) : "Chairman";
+                        $nation = $loggedInUser->getVariable("nation");
+                        Party::createParty($ecoPosition, $socPosition, $nation, $partyName, $leaderTitle, $loggedInUser);
                     }
+                }
+                else{
+                    alert("Error!","Name too short.");
                 }
             } else {
                 alert("Error!", "Party name already taken.");
             }
-
         }
     } else {
         alert("Error!", "Not enough monies. Get more.", "error");

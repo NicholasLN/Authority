@@ -218,5 +218,63 @@ class Party
         return $voteArray;
 
     }
+
+    public static function createDefaultRoleArray($leaderTitle, $leaderID): string{
+        try {
+            $rolesArray = json_encode(array(
+                (string)$leaderTitle => array(
+                    "occupant" => $leaderID,
+                    "specialID" => 0,
+                    "perms" => array(
+                        "leader" => 1
+                    )
+                )
+            ), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT);
+        } catch (JsonException $e) {
+            echo $e;
+            $rolesArray = null;
+        }
+        return $rolesArray;
+    }
+
+    public static function updateUserOnCreateParty(User $loggedInUser, int $newPartyID): void
+    {
+        if($loggedInUser->isUser) {
+            $loggedInUser->leaveCurrentParty();
+            $loggedInUser->updateVariable("party", $newPartyID);
+            $loggedInUser->updateVariable("partyInfluence", 100);
+            $loggedInUser->addCampaignFinance(-50000);
+            redirect("party.php?id=$newPartyID");
+        }
+        else{
+            echo "Something went wrong. User doesn't exist.";
+        }
+
+    }
+
+    public static function createParty(int $ecoPosition, int $socPosition, string $nation, string $partyName, string $leaderTitle, User $loggedInUser){
+        global $db;
+        $rolesArray = self::createDefaultRoleArray($leaderTitle, $loggedInUser->userID);
+        $stmt = $db->prepare("
+            INSERT INTO parties (nation, name, initialEcoPos, initialSocPos, ecoPos, socPos, partyRoles) 
+            VALUES ( ?, ?, ?, ?, ?, ?, ? )
+        ");
+
+        $stmt->bind_param("ssiiiis",
+            $nation,
+            $partyName,
+            $ecoPosition,
+            $socPosition,
+            $ecoPosition,
+            $socPosition,
+            $rolesArray
+        );
+
+        $stmt->execute();
+
+        $newPartyID = $stmt->insert_id;
+
+        self::updateUserOnCreateParty($loggedInUser, $newPartyID);
+    }
 }
 
