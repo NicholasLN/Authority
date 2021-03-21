@@ -5,20 +5,24 @@
  */
 class User
 {
-    public $userID;
-    public $isUser;
+    public int $userID;
+    public bool $isUser;
+    public int $ecoPos;
+    public int $socPos;
 
     public function __construct(int $userID)
     {
         global $db;
-        $this->userID = $userID;
 
+        $this->userID = $userID;
 
         $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->bind_param("i",$userID);
         $stmt->execute();
         if($stmt->get_result()->num_rows == 1){
             $this->isUser = true;
+            $this->ecoPos = $this->getVariable("ecoPos");
+            $this->socPos = $this->getVariable("socPos");
         }
         else{
             $this->isUser = false;
@@ -108,7 +112,7 @@ class User
         $this->updateVariable("authority", $authority);
     }
     public function addCampaignFinance(int $funding){
-        $this->updateVariable("campaignFinance", ($this->getVariable("campaignFinance") +$funding ));
+        $this->updateVariable("campaignFinance", ($this->getVariable("campaignFinance") + $funding));
     }
     public function pictureArray(): array
     {
@@ -152,21 +156,22 @@ class User
         return $stmt->get_result()->num_rows;
 
     }
-
     public function leaveCurrentParty()
     {
-        $party = new Party($this->getUserRow()['party']);
-        $party->partyRoles->userLeave($this->userID);
+        if($this->getVariable("party") !== 0) {
+            $party = new Party($this->getUserRow()['party']);
+            $party->partyRoles->userLeave($this->userID);
 
-        $this->updateVariable("party", 0);
-        $this->updateVariable("partyInfluence", 0);
-        $this->updateVariable("partyVotingFor", 0);
-        $this->updateSI($this->getUserRow()['hsi'] * .50);
+            $this->updateVariable("party", 0);
+            $this->updateVariable("partyInfluence", 0);
+            $this->updateVariable("partyVotingFor", 0);
+            $this->updateSI($this->getUserRow()['hsi'] * .50);
 
-        global $db;
-        $query = "UPDATE users SET partyVotingFor = 0 WHERE partyVotingFor=" . $this->userID;
-        $query2 = "DELETE FROM partyVotes WHERE author=" . $this->userID . " AND party=" . $this->getVariable("party");
-        $db->query($query);
+            global $db;
+            $query = "UPDATE users SET partyVotingFor = 0 WHERE partyVotingFor=" . $this->userID;
+            $query2 = "DELETE FROM partyVotes WHERE author=" . $this->userID . " AND party=" . $this->getVariable("party");
+            $db->query($query);
+        }
 
     }
     public function hasPartyPerm($permission)
