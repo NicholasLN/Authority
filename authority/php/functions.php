@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+$memcached = new Memcached();
+$memcached->addServer("localhost", 11211) or die ("Could not connect");
+
 $onlineThreshold = time() - 259200;
 $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
 
