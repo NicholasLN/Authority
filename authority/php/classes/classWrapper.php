@@ -7,3 +7,4 @@ include 'DemographicSupport.php';
 include 'Demographic.php';
 include 'Nation.php';
 include 'State.php';
+include 'Poll.php';
