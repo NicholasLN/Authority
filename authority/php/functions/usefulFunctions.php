@@ -194,3 +194,14 @@ function changeKey($array, $oldKey, $newKey): array
 
     return array_combine($keys, $array);
 }
+
+// I'll mainly use this for database storage.
+function compressObject($object, $level=9): string
+{
+    return base64_encode(gzcompress(serialize($object),$level));
+}
+function decompressObject($object, $class, $level=9){
+    $array = array("allowed_classes"=>true);
+
+    return unserialize(gzuncompress(base64_decode($object)),$array);
+}
