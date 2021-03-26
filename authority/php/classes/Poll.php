@@ -244,7 +244,7 @@ class Poll
             $pollDemographics = $this->pollRandomDemographic($randomDemographic);
 
 
-            $approval = DemographicApproval::getTotalApproval($pollDemographics, $this->user);
+            $approval = DemographicSupport::getTotalApproval($pollDemographics, $this->user);
             $sumApproval += $approval;
 
             $sampleArray[] = [$approval];
