@@ -83,3 +83,38 @@ function raceChart($demographicsArray){
     </script>
     <?
 }
+function demographicTable($stateDemographics){
+    ?>
+
+    <table class='table table-striped' id="demographicTable" style="text-align: left">
+        <thead class='dark'>
+        <tr>
+            <th style="width:13%;">Race</th>
+            <th style="width:20%;">Gender</th>
+            <th>Population</th>
+            <th>Turnout</th>
+            <th>Economic Position</th>
+            <th>Social Position</th>
+        </tr>
+        </thead>
+        <?
+        foreach ($stateDemographics as $demographic) {
+            ?>
+            <tr>
+                <td><?=$demographic['Race'] ?></td>
+                <td><?=$demographic['Gender'] ?></td>
+                <td><?=number_format($demographic['Population']); ?>
+                <td>100%</td>
+                <td><?=ecoPositionString($demographic['EcoPosMean']) ?>
+                    (<?= $demographic['EcoPosMean'] ?>)
+                </td>
+                <td><?=socPositionString($demographic['SocPosMean']) ?>
+                    (<?= $demographic['SocPosMean'] ?>)
+                </td>
+            </tr>
+            <?
+        }
+        ?>
+    </table>
+    <?php
+}
