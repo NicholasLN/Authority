@@ -3,53 +3,92 @@
 
 class Demographic
 {
-    public static function getDemographicMean(Array $demoDetails, String $type)
+    /**
+     * @param array $demoDetails
+     * @param String $type
+     * @return float
+     */
+
+    public static function isMinority(array $demoDetails){
+        $demoRace = $demoDetails['Race'];
+        return $demoRace == "Hispanic" || $demoRace == "Black" || $demoRace == "Pacific Islander" || $demoRace == "Native American";
+    }
+    public static function getDemographicMean(Array $demoDetails, String $type): float
     {
         $ecoMean = 0;
         $socMean = 0;
 
         $demoGender = $demoDetails['Gender'];
         $demoRace = $demoDetails['Race'];
+        $demoState = $demoDetails['State'];
 
-        if($demoDetails['State'] == "CA"){
-            $ecoMean += nrandAverage(-0.18, 3);
-            $socMean += nrandAverage(0.09, 3);
+        if(!self::isMinority($demoDetails)){
+            if($demoState === "CA"){
+                $ecoMean += nrandAverage(-0.4, 4);
+                $socMean += nrandAverage(0.43, 2);
+            }
+            else if($demoState === "VT"){
+                $ecoMean += nrandAverage(-0.7,3);
+            }
+            else if($demoState === "TX"){
+                $ecoMean += nrandAverage(0.9, 2);
+                $socMean += nrandAverage(-0.32,2);
+            }
+            else{
+                $ecoMean += nrandAverage(0.45, 2.2);
+                $socMean += nrandAverage(0, 3.4);
+            }
         }
-        if($demoDetails['State'] == "TX"){
-            $ecoMean += nrandAverage(0.07, 3);
-            $socMean += nrandAverage(-0.04,3);
+        else{
+            $ecoMean += nrandAverage(-0.8, 2);
+            $socMean += nrandAverage(0.7, 2);
         }
-        switch($demoRace){
-            case "Hispanic" || "Black" || "Native American" || "Pacific Islander":
-                $ecoMean += nrandAverage(-0.82, 1);
-                $socMean += nrandAverage(0.23, 1);
-            case "Asian":
-                $ecoMean += nrandAverage(0.40, 2);
-            case "White":
-                echo "hi";
-                $ecoMean += nrandAverage(0.21, 1);
-        }
+
+
         if ($type == "economic") {
             return round($ecoMean,2);
         } else {
             return round($socMean,2);
         }
     }
+
+    /**
+     * @param String $demoRace
+     * @return bool
+     */
     public static function validRace(String $demoRace): bool
     {
         return $demoRace == "all" || $demoRace=="White" || $demoRace == "Black" || $demoRace == "Hispanic" || $demoRace == "Native American" || $demoRace == "Pacific Islander" || $demoRace == "Asian";
     }
+
+    /**
+     * @param String $demoGender
+     * @return bool
+     */
     public static function validGender(String $demoGender): bool
     {
         return $demoGender == "all" ||  $demoGender == "Male" || $demoGender == "Female" || $demoGender == "Transgender/Nonbinary";
     }
-    public static function demoSetPopulation(Array $demographicsArray){
+
+    /**
+     * @param array $demographicsArray
+     * @return int
+     */
+    public static function demoSetPopulation(Array $demographicsArray): int
+    {
         $sumPopulation = 0;
         foreach($demographicsArray as $demo){
             $sumPopulation += $demo['Population'];
         }
         return $sumPopulation;
     }
+
+    /**
+     * @param array $demographicsArray
+     * @param String $EconomicOrSocial
+     * @param bool $parseForChart
+     * @return false|int[]|string
+     */
     public static function generatePoliticalLeanings(Array $demographicsArray, String $EconomicOrSocial, bool $parseForChart=True){
         global $db;
         $politicalLeaningsArray = array(
@@ -97,6 +136,21 @@ class Demographic
 
 
     }
+
+    public static function grabPoliticalShare(int $demoID, string $ecoOrSoc){
+        global $db;
+        $query = "SELECT `-5`,`-4`,`-3`,`-2`,`-1`,`0`,`1`,`2`,`3`,`4`,`5` FROM demoPositions WHERE demoID = $demoID AND type = '$ecoOrSoc'";
+        $result = $db->query($query);
+        return $result->fetch_array(MYSQLI_ASSOC);
+
+
+    }
+
+    /**
+     * @param array $demographicsArray
+     * @param bool $parseForChart
+     * @return false|int[]|string
+     */
     public static function generateGenderShare(Array $demographicsArray, bool $parseForChart=True){
         global $db;
         $genderArray = array(
@@ -135,6 +189,12 @@ class Demographic
 
 
     }
+
+    /**
+     * @param array $demographicsArray
+     * @param bool $parseForChart
+     * @return false|int[]|string
+     */
     public static function generateRaceShare(Array $demographicsArray, bool $parseForChart=True){
         global $db;
         $raceArray = array(
@@ -179,55 +239,82 @@ class Demographic
 
 
     }
+
+    /**
+     * @param array $demographicsArray
+     * @param $confidenceLevel
+     * @param $populationSize
+     * @return Exception|float|int
+     */
     public static function pollCost(Array $demographicsArray, $confidenceLevel, $populationSize){
         $baseCost = 50;
         try{
-            $confidenceLevel = numfilter(floatval(str_replace("%", "", $confidenceLevel)));
-            $populationSize = numfilter(floatval(str_replace(",", "", $populationSize)));
+            $confidenceLevel = numfilter((float)str_replace("%", "", $confidenceLevel));
+            $populationSize = numfilter((float)str_replace(",", "", $populationSize));
             $costPerPerson = round($confidenceLevel/100 * $baseCost,2);
 
 
-            $totalCost =$populationSize * $costPerPerson;
-            return $totalCost;
+            return $populationSize * $costPerPerson;
         }
         catch(Exception $e){
             return $e;
         }
     }
-    public static function marginOfError(Array $demographicsArray, $confidenceLevel, $populationSize){
-        
 
 
+    /**
+     * @param array $demographicsArray
+     * @return array
+     * For turning the demographicsArray into a distribution (Black Females = 60% of array, White Men = 40%... etc.)
+     */
+    public static function demographicArrayPopShare(Array $demographicsArray){
+        global $memcached;
+        global $loggedInID;
+
+        $memCacheString = md5("$loggedInID DemoPopShare");
+        $getCacheDetail = $memcached->get($memCacheString);
+        if($getCacheDetail) {
+            $popArray = $getCacheDetail;
+            return $popArray;
+        }
+
+        $sum = 0;
+        $popArray = array();
+        foreach ($demographicsArray as $demographic) {
+            $subArray = array($demographic['demoID'] => array("popShare" => 0, "demoInformation" => $demographic));
+            $popArray += $subArray;
+            $sum += $demographic['Population'];
+        }
+        foreach ($demographicsArray as $demographic) {
+            $share = $demographic['Population'] / $sum * 100;
+            $popArray[$demographic['demoID']]['popShare'] = $share;
+        }
+        $memcached->set($memCacheString, $popArray);
+        return $popArray;
     }
-    public static function calcDemSupport($demographicArray,$loggedInUser){
-        global $db;
-        $supportArray = array(
-            -5=>0,
-            -4=>0,
-            -3=>0,
-            -2=>0,
-            -1=>0,
-            0=>0,
-            1=>0,
-            2=>0,
-            3=>0,
-            4=>0,
-            5=>0
-        );
-        $stmt = $db->prepare("SELECT * FROM demoPositions WHERE id=?");
-        $stmt->bind_param("i",$demographicArray['demoID']);
-        $stmt->execute();
-        $positionArray = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
+
 
     // rig = raceIsGET, gig = genderIsGET. Simplified condition for echoing "selected" in dropdown.
-    public static function rig($demoRace, $get){
+    /**
+     * @param $demoRace
+     * @param $get
+     * @return string
+     */
+    public static function rig($demoRace, $get)
+    {
         $get = ucwords($get);
         if($get==$demoRace){
             return "selected";
         }
     }
-    public static function gig($demoRace, $get){
+
+    /**
+     * @param $demoRace
+     * @param $get
+     * @return string
+     */
+    public static function gig($demoRace, $get)
+    {
         $get = ucwords($get);
         if($get==$demoRace){
             return "selected";
