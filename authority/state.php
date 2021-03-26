@@ -63,8 +63,7 @@ if (isset($_GET['state'])) {
                                     <?
                                     }
                                     ?>
-                                    <img style="max-width:30px;" src='<?= $partyInformation['picture'] ?>'
-                                         alt='<?= $partyInformation['name'] ?> Picture'/><?= $partyInformation['name'] ?>
+                                    <img style="max-width:30px;" src='<?= $partyInformation['picture'] ?>'/><?= $partyInformation['name'] ?>
                                 </a>
                                 <?
                                 if ($partyInformation['name'] != "Independent") {
